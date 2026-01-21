@@ -70,6 +70,13 @@
 </style>
 <div id="app">
 
+    <div class="no-print text-center mb-3">
+        <!-- زر خارج الطباعة -->
+        <button v-on:click="handler.downloadPDF" class="pdf-btn btn btn-danger">
+            تحميل PDF
+        </button>
+    </div>
+  
     <!-- محتوى الـ PDF فقط -->
     <div id="content">
 
@@ -204,10 +211,7 @@
 
     </div>
 
-    <!-- زر خارج الطباعة -->
-    <button v-on:click="handler.downloadPDF" class="pdf-btn">
-        تحميل PDF
-    </button>
+  
 
 
 </div>
