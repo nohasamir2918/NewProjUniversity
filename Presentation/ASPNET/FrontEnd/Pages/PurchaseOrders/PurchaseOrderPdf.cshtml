@@ -12,14 +12,15 @@
 
     #content, #content * {
         direction: rtl !important;
-        text-align: right !important;
+        text-align: right ;
+        font-size:19px;
     }
 
     .print-area {
         width: 210mm;
         min-height: 297mm;
         background: #fff;
-        padding: 15mm;
+        padding: 10mm;
         margin: auto;
         border: 1px solid #000;
     }
@@ -72,6 +73,17 @@
             display: none;
         }
     }
+
+    ol {
+        list-style: none !important;
+        padding-right: 0;
+    }
+
+        ol li::before {
+            content: "• ";
+            float: right;
+            margin-left: 6px;
+        }
 </style>
 
 <div id="app">
@@ -85,47 +97,60 @@
     <div id="content" class="print-area">
 
         <!-- ===== Header ===== -->
-        <table class="no-border">
-            <tr>
-                <td style="width:25%">
-                    <img src="/images/logo.png" height="70" />
-                </td>
-                <td class="center">@* 
-                    <div class="bold">جامعة الزقازيق</div> *@
-                    <div>الإدارة العامة للمشتريات والمخازن</div>
-                    <div class="title">أمر توريد</div>
-                </td>
-                <td style="width:25%">
+        <div class="row">
+            <div class="col-md-4">
+                <span style="color:#000;font-weight:bold;">جامعة الزقازيق</span>
+                <br />
+                <span style="color:#000;font-weight:bold;">الإدارة العامة للمشتريات والمخازن</span>
+            </div>
+            <div class="col-md-4 center" >
+                
                     رقم: {{ state.orderNumber }}<br />
                     التاريخ: {{ state.orderDate }}
-                </td>
-            </tr>
-        </table>
+                
+               
+            </div>
+           
+            <div class="col-md-4"><img src="~/adminlte/img/logo (1).png" height="70" style="float:left;"/></div>
+        </div>
+       
 
         <!-- ===== السادة / العنوان ===== -->
         <div class="section">
             <div class="bold">
+                <span style="color:#000;font-weight:bold;text-decoration:underline;">
+                    جامعة الزقازيق
                 السادة / {{ state.vendor.name }} المحترمين
+                </span>
             </div>
             <div>
                 العنوان : {{ state.vendorAddress }}
             </div>
         </div>
-
+        
+        <div class="row">
+            <div class="col-md-12 center">
+                
+                    <span>تحية طيبة وبعد ................</span>
+             
+            </div>
+        </div>
         <!-- ===== نص تمهيدي رسمي ===== -->
         <div class="section">@* 
             إشارة إلى العرض المقدم منكم والمؤيد بالمستندات القانونية والفنية،
             وبعد الفحص والدراسة، فقد تقرر التعاقد معكم على توريد الأصناف الموضحة
             
             بالجدول التالي طبقًا للأسعار والكميات الموضحة: *@
-            رجاء سرعة توريد الاصناف التالية وفقاً للعرض المقدم من سيادتكم:
+            <span>
+                رجاء سرعة توريد الاصناف التالية وفقاً للعرض المقدم من منكم:
+            </span>
         </div>
 
         <!-- ===== جدول الأصناف ===== -->
         <table>
             <thead>
                 <tr class="center bold">
-                    <th>م</th>
+                    <th>بند</th>
                     <th>الصنف</th>
                     <th>الكمية</th>
                     <th>سعر الوحدة</th>
@@ -140,11 +165,23 @@
                     <td class="center">{{ item.unitPrice }}</td>
                     <td class="center">{{ item.total }}</td>
                 </tr>
+                <tr>
+                    <td colspan="4">الجملة</td>
+                    <td>{{ state.subTotal }}</td>
+                </tr>
+                 <tr>
+                    <td colspan="4">ضريبة القيمة المضافة 14%</td>
+                    <td>{{ state.tax }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">اجمالي شامل الضريبة</td>
+                    <td>{{ state.totalAmount }}</td>
+                </tr>
             </tbody>
         </table>
 
         <!-- ===== الإجماليات ===== -->
-        <table style="width:60%; margin-top:10px;">
+       @*  <table style="width:60%; margin-top:10px;">
             <tr>
                 <td>الإجمالي</td>
                 <td>{{ state.subTotal }}</td>
@@ -157,7 +194,7 @@
                 <td>الإجمالي شامل الضريبة</td>
                 <td>{{ state.totalAmount }}</td>
             </tr>
-        </table>
+        </table> *@
 
         <div class="section bold">
             ووفقًا للعرض المقدم منكم والمقبول فنيًا بإجمالي مبلغ
@@ -176,11 +213,17 @@
                 <li>الدفع إلكتروني لحساب / الخزينة الموحدة.</li>
                 <li>الاستلام بمخازن الجامعة.</li>
                 <li>خصم 0.5% تأمين نهائي.</li>
-            </ol>
+            </ul>
         </div>
-
+        <div class="row">
+            <div class="col-md-12 center">
+                <span style="color:#000;font-weight:bold;"> وتفضلوا بقبول فائق الاحترام والتقدير
+            
+                </span>
+                </div>
+        </div>
         <!-- ===== التوقيعات ===== -->
-        <table class="signature">
+    @*     <table class="signature">
             <tr>
                 <td>توقيع المورد</td>
                 <td>يعتمد</td>
@@ -189,8 +232,15 @@
                 <td></td>
                 <td>أمين عام الجامعة</td>
             </tr>
-        </table>
+        </table> *@
+        <br />
+        <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6 center">
+                <span style="color:#000;font-weight:bold;">أمين عام الجامعة</span>
 
+            </div>
+        </div>
     </div>
 </div>
 
