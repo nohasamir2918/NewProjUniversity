@@ -2,7 +2,72 @@
 @{
     ViewData["Title"] = "فحص البضائع PDF";
 }
+<style>
+    body {
+        direction: rtl;
+        font-family: "Times New Roman", serif;
+        background: #f5fI5F5;
+    }
 
+    #content, #content * {
+        direction: rtl !important;
+        text-align: right;
+        font-size: 19px;
+    }
+
+    .print-area {
+        width: 210mm;
+        min-height: 297mm;
+        background: #fff;
+        padding: 10mm;
+        margin: auto;
+        border: 1px solid #000;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    td, th {
+        border: 1px solid #000;
+        padding: 6px;
+        vertical-align: middle;
+    }
+
+    .no-border td {
+        border: none;
+    }
+
+    .center {
+        text-align: center !important;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .title {
+        font-size: 20px;
+        text-decoration: underline;
+        margin: 5px 0;
+    }
+
+    .section {
+        margin-top: 10px;
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+   
+
+    @@media print {
+        .no-print {
+            display: none;
+        }
+    }
+</style>
 <div id="app">
 
     <!-- محتوى الـ PDF فقط -->
@@ -11,12 +76,24 @@
         <!-- الصفحة الأولى -->
         <section class="print-area">
 
-            <header class="top-header">
-                <div>اسم الجهة: كلية الزراعة - جامعة الزقازيق</div>
-                <div>نموذج رقم (12)</div>
-            </header>
-
-            <h2 class="title">محضر لجنة الفحص</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <span style="color:#000;font-weight:bold;">
+                        اسم الجهة: كلية الزراعة - جامعة الزقازيق
+                </span></div>
+                <div class="col-md-6 center">
+                    <span style="color:#000;font-weight:bold;">
+                        نموذج رقم (12)
+                    </span>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-12 ">
+                    <h2 style="text-align:center;font-size:30px;text-decoration:underline;">محضر لجنة الفحص</h2>
+                </div>
+            </div>
+          
 
             <p style="text-align:right"  class="text">
                 اليوم ..............
@@ -25,25 +102,35 @@
                 اجتمعت لجنة الفحص المشكلة بالقرار رقم
                 (<strong>{{ state.committeeDesionNumber }}</strong>)
                 الصادر بتاريخ <strong>{{ state.commiteeDate }} </strong>
+
+                <strong style="margin-right:3px;">برئاسة السيد / {{ chairman.employeePositionName }}  </strong>
+                {{ chairman.employeeName }}
+
             </p>
 
-            <p style="text-align:right" v-if="chairman" >
-                <strong>برئاسة السيد / {{ chairman.employeePositionName }}  </strong>
-                {{ chairman.employeeName }}
-                 
-            </p>
+          
 
             <br />
             <p style="text-align:right"><strong>وعضوية كل من:</strong></p>
+            <br />
+            <div class="row">
+                <div class="col-md-6" v-for="(member,index) in members" :key="index">
+                    <span style="color:#000;font-weight:bold;"> السيد / </span>
+                    {{ member.employeeName }}
+                </div>
+                <div class="col-md-6" v-for="(member,index) in members" :key="index">
+                    <span style="color:#000;font-weight:bold;"> الوظيفة / </span>
+                    {{ member.employeePositionName }}
+                </div>
+            </div>
 
-
-            <div class="committee">
+            @* <div class="committee">
                 <p v-for="(member,index) in members" :key="index">
                     السيد / {{ member.employeeName }}
                     — الوظيفة: {{ member.employeePositionName }}
                 </p>
             </div>
-
+ *@
 
             
 
@@ -52,7 +139,7 @@
                 وقد قامت اللجنة بفحص الأصناف المدرجة في ظهره بالنسبة المئوية ووفقا لما أرتائه من القبول او الرفض والاسباب المبينة قرين كل صنف وذلك علي مقتضي امر التوريد الصادر الي ......... برقم () بتاريخ ..... وبالمواصفات المنصوص عليها بكراسة الشروط والمواصفات والعقد المبرم مع المورد وبحضور / وعدم حضور المورد او مندوبه .
             </p>
 
-            <div class="signatures">
+           @*  <div class="signatures">
                 <div>
                     <strong>رئيس اللجنة</strong><br>
                     الاسم: .................................<br>
@@ -63,10 +150,10 @@
                     الاسم: .................................<br>
                     التوقيع: ...............................
                 </div>
-            </div>
+            </div> *@
 
         </section>
-
+        <br />
         <!-- الصفحة الثانية -->
         <section class="print-area">
 
@@ -74,12 +161,12 @@
                 <thead>
                     <tr>
                         <th>اسم الصنف ومواصفاته</th>
-                        <th>الكمية</th>
+                        <th>عدد أو مقدار</th>
                         <th>الوحدة</th>
-                        <th>نسبة المطابقة</th>
+                        <th>نسبة المئوية لمقادير الفحص</th>
                         <th>مقبول</th>
                         <th>مرفوض</th>
-                        <th>الأسباب</th>
+                        <th>اسباب القبول والرفض</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,10 +182,23 @@
                 </tbody>
             </table>
 
-            <footer class="footer-sign">
-                <div>رئيس لجنة الفحص</div>
-                <div>أعضاء اللجنة</div>
-            </footer>
+            <br />
+            <div class="row">
+                <div class="col-md-4 center">
+                    <span style="color:#000;font-weight:bold;">لجنة الفحص</span>
+                </div>
+                <div class="col-md-4 center">
+                    <span style="color:#000;font-weight:bold;">رئيس لجنة الفحص</span>
+
+                    <span style="color:#000;font-weight:bold;"> الاسم:...............</span>
+                    <span style="color:#000;font-weight:bold;"> التوقيع:.................</span>
+                </div>
+                <div class="col-md-4 center">
+                    <span style="color:#000;font-weight:bold;">  اعتماد السلطة المختصة</span>
+                    <span style="color:#000;font-weight:bold;"> الاسم:...............</span>
+                    <span style="color:#000;font-weight:bold;"> التوقيع:.................</span>
+                </div>
+            </div>
 
         </section>
 
@@ -111,108 +211,7 @@
 
 
 </div>
-<style>
-    .print-area {
-        width: 210mm;
-        min-height: 297mm;
-        padding: 20mm;
-        font-family: "Times New Roman", serif;
-        font-size: 15px;
-        direction: rtl;
-        page-break-after: always;
-    }
 
-    .top-header {
-        display: flex;
-        justify-content: space-between;
-        font-weight: bold;
-        border-bottom: 2px solid #000;
-        padding-bottom: 8px;
-        margin-bottom: 25px;
-    }
-
-    .title {
-        text-align: center;
-        text-decoration: underline;
-        font-size: 20px;
-        margin-bottom: 25px;
-    }
-
-    .text {
-        line-height: 1.9;
-        margin: 12px 0;
-    }
-
-    .paragraph {
-        margin-top: 25px;
-        line-height: 2;
-        text-align: justify;
-    }
-
-    .committee p {
-        margin-right: 25px;
-        margin-bottom: 8px;
-    }
-
-    .signatures {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 70px;
-    }
-
-        .signatures div {
-            width: 45%;
-            text-align: center;
-        }
-
-    .inspection-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-    }
-
-        .inspection-table th,
-        .inspection-table td {
-            border: 1px solid #000;
-            padding: 8px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .inspection-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-    .check {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .footer-sign {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 45px;
-        font-weight: bold;
-    }
-
-    .pdf-btn {
-        margin: 20px;
-        padding: 10px 25px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    .committee,
-    .committee p {
-        text-align: right;
-    }
-
-    .chairman {
-        text-align: right;
-    }
-
-</style>
 
 @section scripts {
     <script src="~/FrontEnd/Pages/GoodsExamine/GoodsExaminePdf.cshtml.js"></script>
