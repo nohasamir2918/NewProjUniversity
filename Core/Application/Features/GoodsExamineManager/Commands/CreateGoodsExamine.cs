@@ -85,7 +85,7 @@ public class CreateGoodsExamineHandler : IRequestHandler<CreateGoodsExamineReque
         var entity = new GoodsExamine();
         entity.CreatedById = request.CreatedById;
 
-        entity.Number = _numberSequenceService.GenerateNumber(nameof(GoodsExamine), "", "GR");
+        entity.Number = _numberSequenceService.GenerateNumber(nameof(GoodsExamine), "", "GE");
         entity.ExamineDate = request.ExamineDate;
         entity.Status = (GoodsExamineStatus)int.Parse(request.Status!);
         entity.Description = request.Description;

@@ -21,17 +21,25 @@ public class GetGoodsExamineSingleProfile : Profile
         public string? CommitteeDesionNumber { get; set; }
         public string? Description { get; set; }
         public string? PurchaseOrderId { get; set; }
-
+        public string? PurchaseOrderNumber { get; set; }
+        public DateTime? PurchaseOrderDate { get; set; }
+        public string? VendorName { get; set; }
+        
         public List<ExamineCommiteeDto> CommitteeList { get; set; } = new();
     }
 
     public GetGoodsExamineSingleProfile()
     {
         CreateMap<GoodsExamine, GetGoodsExamineSingleDto>()
-            .ForMember(
-                d => d.CommitteeList,
-                o => o.MapFrom(s => s.Committees)
-            );
+    .ForMember(d => d.CommitteeList,
+        o => o.MapFrom(s => s.Committees))
+    .ForMember(d => d.PurchaseOrderNumber,
+        o => o.MapFrom(s => s.PurchaseOrder.Number))
+    .ForMember(d => d.PurchaseOrderDate,
+        o => o.MapFrom(s => s.PurchaseOrder.OrderDate))
+    .ForMember(d => d.VendorName,
+        o => o.MapFrom(s => s.PurchaseOrder.Vendor.Name));
+
 
         CreateMap<ExamineCommitee, ExamineCommiteeDto>();
     }
@@ -85,7 +93,18 @@ public class GetGoodsExamineSingleHandler
         if (entity == null)
             return new GetGoodsExamineSingleResult();
 
-        var dto = _mapper.Map<GetGoodsExamineSingleDto>(entity);
+        var dto = new GetGoodsExamineSingleDto
+        {
+            Id = entity.Id,
+            Number = entity.Number,
+            CommiteeDate = entity.CommiteeDate,
+            CommitteeDesionNumber = entity.CommitteeDesionNumber,
+            PurchaseOrderNumber = entity.PurchaseOrder?.Number,
+            PurchaseOrderDate = entity.PurchaseOrder?.OrderDate,
+            VendorName = entity.PurchaseOrder?.Vendor?.Name,
+            CommitteeList = _mapper.Map<List<ExamineCommiteeDto>>(entity.Committees)
+        };
+
 
         var PuchaseOrderItemList = await _context
             .PurchaseOrderItem

@@ -767,8 +767,8 @@ const App = {
                     columns: [
                         { type: 'checkbox', width: 60 },
                         { field: 'id', isPrimaryKey: true, headerText: 'Id', visible: false },
-                        { field: 'number', headerText: 'Number', width: 150, minWidth: 150 },
-                        { field: 'examineDate', headerText: 'تاريخ الاستلام', width: 150, format: 'yyyy-MM-dd' },
+                        { field: 'number', headerText: 'رقم طلب الفحص', width: 150, minWidth: 150 },
+                        { field: 'examineDate', headerText: 'تاريخ الفحص', width: 150, format: 'yyyy-MM-dd' },
                         { field: 'purchaseOrderNumber', headerText: 'رقم أمر التوريد', width: 150, minWidth: 150 },
                         { field: 'statusName', headerText: 'الحالة', width: 150, minWidth: 150 },
                         { field: 'committeeDesionNumber', headerText: 'رقم القرار', width: 150, minWidth: 150 },
@@ -907,7 +907,7 @@ const App = {
                             state.deleteMode = true;
                             if (mainGrid.obj.getSelectedRecords().length) {
                                 const selectedRecord = mainGrid.obj.getSelectedRecords()[0];
-                                state.mainTitle = 'حذف اذن الاستلام?';
+                                state.mainTitle = 'حذف اذن الفحص?';
                                 state.id = selectedRecord.id ?? '';
                                 state.number = selectedRecord.number ?? '';
                                 state.examineDate = selectedRecord.examineDate ? new Date(selectedRecord.examineDate) : null;
@@ -1001,7 +1001,7 @@ const App = {
 
                         {
                             field: 'unitPrice',
-                            headerText: 'وحدة المنتج',
+                            headerText: 'سعر المنتج',
                             width: 200, validationRules: { required: true }, type: 'number', format: 'N2', textAlign: 'Right',
                             allowEditing: false,
                             edit: {
@@ -1018,10 +1018,12 @@ const App = {
                                 write: (args) => {
                                     priceObj = new ej.inputs.NumericTextBox({
                                         value: args.rowData.unitPrice ?? 0,
+                                        readonly: true,
                                         change: (e) => {
                                             if (quantityObj && totalObj) {
                                                 const total = e.value * quantityObj.value;
                                                 totalObj.value = total;
+                                                
                                             }
                                         }
                                     });
@@ -1038,7 +1040,7 @@ const App = {
                                 required: true,
                                 custom: [(args) => {
                                     return args['value'] > 0;
-                                }, 'Must be a positive number and not zero']
+                                }, 'يجب ان يكون الرقم موجب']
                             },
                             type: 'number', format: 'N2', textAlign: 'Right',
                             edit: {
@@ -1091,34 +1093,10 @@ const App = {
                                 }
                             }
                         },
-                        {
-                            field: 'productNumber',
-                            headerText: 'اسم المنتج',
-                            allowEditing: false,
-
-                            width: 180,
-                            edit: {
-                                create: () => {
-                                    let numberElem = document.createElement('input');
-                                    return numberElem;
-                                },
-                                read: () => {
-                                    return numberObj.value;
-                                },
-                                destroy: () => {
-                                    numberObj.destroy();
-                                },
-                                write: (args) => {
-                                    numberObj = new ej.inputs.TextBox();
-                                    numberObj.value = args.rowData.productNumber;
-                                    numberObj.readonly = true;
-                                    numberObj.appendTo(args.element);
-                                }
-                            }
-                        },
+                       
                          {
                             field: 'summary',
-                             headerText: 'الشروط',
+                             headerText: 'المواصفات',
                              allowEditing: false,
                             width: 200,
                             edit: {
@@ -1220,7 +1198,7 @@ const App = {
                             Swal.fire({
                                 icon: 'warning',
                                 title: 'تنبيه',
-                                text: 'يجب حفظ إذن الاستلام أولاً قبل إضافة المنتجات'
+                                text: 'يجب حفظ إذن الفحص أولاً قبل إضافة المنتجات'
                             });
                             secondaryGrid.obj.refresh();
                             return;

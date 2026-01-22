@@ -19,6 +19,10 @@ const App = {
             commiteeDayName: '',   // ✅ جديد
             commiteeDate: '',
             committeeDesionNumber: '',
+            // 🟢 بيانات أمر التوريد
+            purchaseOrderNumber: '',
+            purchaseOrderDate: '',
+            vendorName: '',
             committeeList: [],
             mappedItems: []
         });
@@ -41,6 +45,15 @@ const App = {
                 const result = await services.getPDFData(id);
 
                 const header = result.data;
+                state.purchaseOrderNumber = header.purchaseOrderNumber ?? '';
+                state.vendorName = header.vendorName ?? '';
+
+                if (header.purchaseOrderDate) {
+                    state.purchaseOrderDate = new Date(header.purchaseOrderDate)
+                        .toLocaleDateString('ar-EG');
+                } else {
+                    state.purchaseOrderDate = '';
+                }
 
                 // ❗ ده الصح
                 const transactions = result.purchaseOrder;
@@ -74,6 +87,7 @@ const App = {
                 state.mappedItems = (transactions ?? []).map(x => ({
                     product: `${x.product?.number ?? ''} - ${x.product?.name ?? ''}`,
                     qty: x.quantity ?? '',
+                    description: x.summary ?? '',
                     unit: 'عدد',
                     matchPercent: x.percentage ?? '',
                     accepted: x.itemStatus === true,

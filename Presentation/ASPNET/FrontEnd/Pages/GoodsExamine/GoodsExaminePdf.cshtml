@@ -142,8 +142,20 @@
             
 
 
-            <p class="paragraph">
+          @*   <p class="paragraph">
                 وقد قامت اللجنة بفحص الأصناف المدرجة في ظهره بالنسبة المئوية ووفقا لما أرتائه من القبول او الرفض والاسباب المبينة قرين كل صنف وذلك علي مقتضي امر التوريد الصادر الي ......... برقم () بتاريخ ..... وبالمواصفات المنصوص عليها بكراسة الشروط والمواصفات والعقد المبرم مع المورد وبحضور / وعدم حضور المورد او مندوبه .
+            </p> *@
+            <p class="paragraph">
+                وقد قامت اللجنة بفحص الأصناف المدرجة طبقًا
+                لأمر التوريد الصادر إلى
+                <strong>{{ state.vendorName }}</strong>
+                برقم
+                <strong>{{ state.purchaseOrderNumber }}</strong>
+                بتاريخ
+                <strong>{{ state.purchaseOrderDate }}</strong>
+                وبالمواصفات المنصوص عليها بكراسة الشروط
+                والمواصفات والعقد المبرم مع المورد
+                وبحضور / عدم حضور المورد أو مندوبه.
             </p>
 
            @*  <div class="signatures">
@@ -178,7 +190,12 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item,index) in state.mappedItems" :key="index">
-                        <td>{{ item.product }}</td>
+                        <td>
+                            <strong>{{ item.product }}</strong>
+                            <br />
+                            <span>{{ item.description }}</span>
+                        </td>
+
                         <td>{{ item.qty }}</td>
                         <td>{{ item.unit }}</td>
                         <td>{{ item.matchPercent }}</td>
