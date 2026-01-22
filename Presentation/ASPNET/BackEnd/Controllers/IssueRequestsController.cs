@@ -143,6 +143,27 @@ public class IssueRequestsController : BaseApiController
 
 
 
+    [Authorize]
+    [HttpGet("GetEmployeesByDepartment")]
+    public async Task<ActionResult<ApiSuccessResult<GetEmployeesByDepartmentForIssueRequestResult>>>
+    GetEmployeesByDepartmentAsync(
+         string departmentId,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetEmployeesByDepartmentForIssueRequestQuery
+        {
+            DepartmentId = departmentId
+        };
+
+        var response = await _sender.Send(request, cancellationToken);
+
+        return Ok(new ApiSuccessResult<GetEmployeesByDepartmentForIssueRequestResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = "Success executing GetEmployeesByDepartment",
+            Content = response
+        });
+    }
 
 
 
