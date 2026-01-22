@@ -103,6 +103,7 @@ namespace ASPNET.BackEnd.Controllers
         CancellationToken cancellationToken,
         [FromQuery] string id
         )
+        
         {
             var request = new GetGoodsExamineSingleRequest { Id = id };
             var response = await _sender.Send(request, cancellationToken);

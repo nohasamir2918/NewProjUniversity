@@ -374,7 +374,7 @@ i.fas.fa-lock.mr-2 {
     }
     /***********/
 .main-sidebar {
-    background: linear-gradient(180deg, #1f2937, #111827);
+    background: linear-gradient(90deg,#06a192 0%,#01384d 100%);
     border-left: 1px solid rgba(255,255,255,0.05);
     box-shadow: 0 0 30px rgba(0,0,0,0.4);
 }
@@ -382,7 +382,7 @@ i.fas.fa-lock.mr-2 {
     background: transparent;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     font-weight: 600;
-    font-size: 20px;
+    font-size: 26px;
     color: #e5e7eb !important;
     letter-spacing: .3px;
     position: relative;
@@ -395,16 +395,18 @@ i.fas.fa-lock.mr-2 {
         right: 20%;
         width: 60%;
         height: 1px;
-        background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+        background: linear-gradient(90deg, transparent, #00fff5, transparent);
     }
 .user-panel {
-    background: rgba(255,255,255,0.03);
+    background: #01384d;
     border-radius: 12px;
     padding: 10px;
     margin: 0 10px 15px;
     align-items: center;
 }
-
+[class*=sidebar-dark] .user-panel {
+    border-bottom: 1px solid #37c6ab;
+}
     .user-panel img {
         border: 2px solid #3b82f6;
         transition: transform .3s ease;
@@ -426,7 +428,7 @@ i.fas.fa-lock.mr-2 {
 }
 
     .e-treeview .e-list-text {
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 500;
     }
     .e-treeview .e-level-1 > .e-text-content {
@@ -494,7 +496,7 @@ i.fas.fa-lock.mr-2 {
     }
 
 .e-toolbar .e-tbar-btn.e-btn .e-icons {
-    color: #2867ec;
+    color: #01384d;
 }
 .navbar-light .navbar-nav .nav-link {
     color: rgb(44 109 239 / 90%);
@@ -599,4 +601,19 @@ i.fas.fa-lock.mr-2 {
 .modal-footer .btn-secondary {
     background: #6b7280;
     border: none;
+}
+
+.e-treeview .e-active > .e-text-content {
+    background: linear-gradient(135deg, rgb(1 56 77), rgb(6 147 137));
+    box-shadow: rgb(6 145 136) 0px 6px 15px;
+    color: rgb(255, 255, 255) !important;
+}
+.e-toolbar .e-tbar-btn:hover {
+    background: linear-gradient(135deg, rgb(1 56 77), rgb(6 147 137));
+}
+.e-toolbar .e-tbar-btn.e-btn .e-icons:hover{
+    color:#fff;
+}
+.e-grid .e-gridpager .e-currentitem {
+    background-color: #01384d;
 }

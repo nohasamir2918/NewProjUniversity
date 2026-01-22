@@ -73,6 +73,7 @@ public static class DI
         services.AddScoped<DeliveryOrderSeeder>();
         services.AddScoped<SalesReturnSeeder>();
         services.AddScoped<GoodsReceiveSeeder>();
+        services.AddScoped<GoodsExamineSeeder>();
         services.AddScoped<PurchaseReturnSeeder>();
         services.AddScoped<TransferOutSeeder>();
         services.AddScoped<TransferInSeeder>();
@@ -160,6 +161,9 @@ public static class DI
 
             var goodsReceiveSeeder = serviceProvider.GetRequiredService<GoodsReceiveSeeder>();
             goodsReceiveSeeder.GenerateDataAsync().Wait();
+
+            var goodsExamineSeeder = serviceProvider.GetRequiredService<GoodsExamineSeeder>();
+            goodsExamineSeeder.GenerateDataAsync().Wait();
 
             var purchaseReturnSeeder = serviceProvider.GetRequiredService<PurchaseReturnSeeder>();
             purchaseReturnSeeder.GenerateDataAsync().Wait();

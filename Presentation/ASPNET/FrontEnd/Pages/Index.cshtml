@@ -3,7 +3,84 @@
     Layout = "~/FrontEnd/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home page";
 }
+<style>
+  
+    .lock-login {
+        display: inline-block;
+        text-align: center;
+        margin-top: 30px;
+        position: relative;
+        cursor: pointer;
+    }
 
+    .lock-icon {
+        color: #d1d1d1;
+        transition: all 0.3s ease;
+        animation: pulse 2.5s infinite;
+    }
+
+    
+    .lock-login:hover .lock-icon {
+        color: #f5a623;
+        transform: scale(1.2);
+        text-shadow: 0 0 15px #f5a623, 0 0 30px #f5a62380;
+    }
+
+    @@keyframes pulse {
+        0%
+
+    {
+        transform: scale(1);
+        text-shadow: 0 0 0px #f5a62350;
+    }
+
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 20px #f5a62350;
+    }
+
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 0px #f5a62350;
+    }
+
+    }
+
+ 
+    .lock-login::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 120%;
+        height: 120%;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        border: 2px solid #f5a62350;
+        opacity: 0.5;
+        animation: neon-ring 2s infinite;
+    }
+
+    @@keyframes neon-ring {
+        0%
+
+    {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.3;
+    }
+
+    }
+</style>
 <div class="lock-overlay">
     <h1 class="lock-welcome">المخازن55</h1>
     <a asp-area="" asp-page="/Accounts/Login" class="lock-login">
