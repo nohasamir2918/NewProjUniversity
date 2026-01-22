@@ -66,30 +66,6 @@ namespace Infrastructure.SecurityManager.NavigationMenu
                     
                 ]
             },
-        
-            {
-                "URL": "#",
-                "Name": "المنتجات",
-                "IsModule": true,
-                "Children": [
-                    {
-                        "URL": "/UnitMeasures/UnitMeasureList",
-                        "Name": "وحدات القياس",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/ProductGroups/ProductGroupList",
-                        "Name": "مجموعات المنتجات",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/Products/ProductList",
-                        "Name": "المنتجات",
-                        "IsModule": false
-                    }
-                   
-                ]
-            },
 
         {
                 "URL": "#",
@@ -101,7 +77,11 @@ namespace Infrastructure.SecurityManager.NavigationMenu
                         "Name": "أوامر التوريد",
                         "IsModule": false
                     },
-      
+        {
+            "URL": "/GoodsReceives/GoodsReceiveList",
+            "Name": "فحص واستلام ",
+            "IsModule": false
+        },
                
                     {
                         "URL": "/PurchaseReports/PurchaseReportList",
@@ -165,6 +145,47 @@ namespace Infrastructure.SecurityManager.NavigationMenu
                     {
                         "URL": "/StockCounts/StockCountList",
                         "Name": "جرد المخزون",
+                        "IsModule": false
+                    }
+                ]
+            },
+        
+            {
+                "URL": "#",
+                "Name": "المنتجات",
+                "IsModule": true,
+                "Children": [
+                    {
+                        "URL": "/UnitMeasures/UnitMeasureList",
+                        "Name": "وحدات القياس",
+                        "IsModule": false
+                    },
+                    {
+                        "URL": "/ProductGroups/ProductGroupList",
+                        "Name": "مجموعات المنتجات",
+                        "IsModule": false
+                    },
+                    {
+                        "URL": "/Products/ProductList",
+                        "Name": "المنتجات",
+                        "IsModule": false
+                    }
+                   
+                ]
+            },
+            {
+                "URL": "#",
+                "Name": "الأدوات",
+                "IsModule": true,
+                "Children": [   
+                    {
+                        "URL": "/Todos/TodoList",
+                        "Name": "المهام",
+                        "IsModule": false
+                    },
+                    {
+                        "URL": "/TodoItems/TodoItemList",
+                        "Name": "عناصر المهام",
                         "IsModule": false
                     }
                 ]
