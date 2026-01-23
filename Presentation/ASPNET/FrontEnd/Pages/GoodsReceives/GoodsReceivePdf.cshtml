@@ -2,10 +2,76 @@
 @{
     ViewData["Title"] = "اذن اضافة  البضائع PDF";
 }
+<style>
+    body {
+        direction: rtl;
+        font-family: "Times New Roman", serif;
+        background: #f5fI5F5;
+    }
+
+    #content, #content * {
+        direction: rtl !important;
+        text-align: right;
+        font-size: 19px;
+    }
+
+    .print-area {
+        width: 210mm;
+        min-height: 297mm;
+        background: #fff;
+        padding: 10mm;
+        margin: auto;
+        border: 1px solid #000;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    td, th {
+        border: 1px solid #000;
+        padding: 6px;
+        vertical-align: middle;
+    }
+
+    .no-border td {
+        border: none;
+    }
+
+    .center {
+        text-align: center !important;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .title {
+        font-size: 20px;
+        text-decoration: underline;
+        margin: 5px 0;
+    }
+
+    .section {
+        margin-top: 10px;
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+
+
+    @@media print {
+        .no-print {
+            display: none;
+        }
+    }
+</style>
 <div id="app">
     <div id="content" class="print-area form-sheet">
         <!-- ===== رأس الصفحة ===== -->
-        <table class="header-table">
+       @*  <table class="header-table">
             <tr>
                 <td class="right">
                     <strong>اسم الجهة:</strong><br>
@@ -21,29 +87,42 @@
                     <strong>رقم الإذن:</strong> {{ state.number }}
                 </td>
             </tr>
-        </table>
+        </table> *@
+        <div class="row">
+            <div class="col-md-6">
+                <span style="color:#000;font-weight:bold;">اسم الجهة: {{ state.company.name }}</span>
+                <br />
+                <span style="color:#000;font-weight:bold;">مخزن: ..............</span>
+                <br />
+                <span style="color:#000;font-weight:bold;">التاريخ: {{ state.date }}</span>
+            </div>
+            <div class="col-md-6"> <span style="color:#000;font-weight:bold;">اذن اضافة</span>
+                <br />
+                <span style="color:#000;font-weight:bold;">وارد من: {{ state.vendor.name }}</span>
+                <br />
+                <span style="color:#000;font-weight:bold;">سند الاضافة: ...........</span>
+                <span style="color:#000;font-weight:bold;">بتاريخ: ...........</span>
+                </div>
+            
 
+        </div>
+        <br />
         <!-- ===== بيانات ===== -->
-        <table class="info-table">
-            <tr>
-                <td><strong>اسم المورد:</strong></td>
-                <td colspan="3">{{ state.vendor.name }}</td>
-            </tr>
-        </table>
+       
 
       
         <table class="items-table">
             <thead>
                 <tr>
-                    <th style="width:4%">م</th>
+                    <th style="width:4%">رقم الصنف</th>
                     <th style="width:20%">اسم الصنف</th>
                     <th style="width:8%">الوحدة</th>
                     <th style="width:8%">الكمية</th>
                     <th style="width:10%">سعر الوحدة</th>
                     <th style="width:10%">القيمة</th>
-                    <th style="width:10%">الحالة</th>
+                    <th style="width:10%">حالة الصنف</th>
                     <th style="width:15%">الملاحظات</th>
-                    <th style="width:15%">المبلغ</th>
+                   
                 </tr>
             </thead>
             <tbody>
@@ -56,7 +135,7 @@
                     <td class="center">{{ item.value }}</td>
                     <td class="center">{{ item.status }}</td>
                     <td>{{ item.notes }}</td>
-                    <td class="center">{{ item.amount }}</td>
+                    @* <td class="center">{{ item.amount }}</td> *@
                 </tr>
 
                 <!-- صفوف فاضية للطباعة اليدوية -->
@@ -69,249 +148,70 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                 
                 </tr>
             </tbody>
         </table>
-        <div class="tafqeet" style="text-align:right">
-            <strong>فقط مبلغ :</strong>
-            {{ state.amountInWords }}
+        <br />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="tafqeet" style="text-align:right">
+                    <strong>فقط مبلغ :</strong>
+                    {{ state.amountInWords }}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="tafqeet" style="text-align:right">
+                    <strong>الاجمالي :</strong>
+                    ...............
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="tafqeet" style="text-align:right">
+                    <strong> كاتب الشطب :</strong>
+                    ..............
+                </div>
+            </div>
         </div>
+        
+        <br />
 
 
-        <!-- ===== جملة الاستلام (موجودة بالصورة) ===== -->
-        <div class="receive-text">
-           .استلمت الأصناف المبينة أعلاه بحالة جيدة وتم اضافتها في دفتر عهدة المخزن
+      <div class="row">
+          <div class="col-md-9">
+                <span style="color:#000;font-weight:bold;">    .استلمت الأصناف المبينة أعلاه بحالة جيدة وتم اضافتها في دفتر عهدة المخزن</span>
+          </div>
+          <div class="col-md-3">
+                <span style="color:#000;font-weight:bold;">أمين المخزن/....... </span>
+            </div>
+      </div>
+      <br />
+        <div class="row">
+            <div class="col-md-9">
+                <span style="color:#000;font-weight:bold;">  
+                    *فاتورة - اذن ارتجاع - اذن صرف - كشف الزيادة - شهادة إدارية
+                    <br />
+                **(1) جديد (2) مستعمل (3) قابل للإصلاح (4) كهنة وخردة
+                </span>
+           
         </div>
+    
 
-        <!-- ===== التوقيعات ===== -->
-        <table class="sign-table">
-            <tr>
-                <td>
-                    أمين المخزن<br><br>
-                    الاسم:<br>
-                    التوقيع:
-                </td>
-                <td>
-                    المستلم<br><br>
-                    الاسم:<br>
-                    التوقيع:
-                </td>
-                <td>
-                    يعتمد<br><br>
-                    الاسم:<br>
-                    التوقيع:
-                </td>
-            </tr>
-        </table>
-
+    </div>
+    <div class="row">
+        <div class="col-md-6"></div>
+            <div class="col-md-3">
+                <span style="color:#000;font-weight:bold;">يعتمد</span>
+            </div>
+            <div class="col-md-3">
+                <span style="color:#000;font-weight:bold;">مدير المخزن </span>
+            </div>
     </div>
 </div>
 
 
-<style>
-    .items-table th,
-    .items-table td {
-        font-size: 12px;
-        padding: 3px;
-    }
 
-    .tafqeet {
-        margin-top: 10px;
-        font-size: 14px;
-        font-weight: bold;
-        border: 1.5px solid #000;
-        padding: 6px;
-    }
 
-    .print-area.form-sheet {
-        width: 210mm;
-        height: 297mm;
-        padding: 6mm;
-        font-family: "Arial", Tahoma;
-        font-size: 13px;
-        direction: rtl;
-        color: #000;
-    }
-
-    /* ===== الجداول ===== */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        border: 1.5px solid #000;
-        padding: 4px;
-        vertical-align: middle;
-    }
-
-    .center {
-        text-align: center;
-    }
-
-    .right {
-        text-align: right;
-    }
-
-    .left {
-        text-align: left;
-    }
-
-    /* ===== رأس الصفحة ===== */
-    .header-table td {
-        height: 55px;
-    }
-
-    .title-cell {
-        vertical-align: middle;
-    }
-
-    .form-title {
-        font-size: 22px;
-        font-weight: bold;
-    }
-
-    /* ===== بيانات ===== */
-    .info-table {
-        margin-top: 6px;
-    }
-
-    /* ===== جدول الأصناف ===== */
-    .items-table {
-        margin-top: 6px;
-    }
-
-        .items-table th {
-            text-align: center;
-            font-weight: bold;
-        }
-
-    /* ===== جملة الاستلام ===== */
-    .receive-text {
-        margin-top: 12px;
-        font-size: 14px;
-        font-weight: bold;
-        text-align: right;
-    }
-
-    /* ===== التوقيعات ===== */
-    .sign-table {
-        margin-top: 25px;
-    }
-
-        .sign-table td {
-            height: 75px;
-            padding-top: 6px;
-            text-align: right;
-        }
-
-    /* ===== الطباعة ===== */
-    @@media print {
-        body
-
-    {
-        margin: 0;
-    }
-
-    button {
-        display: none;
-    }
-
-    }
-</style>
-<style>
-<!-- CSS -->
-.print-area.form-sheet {
-    width: 210mm;
-    height: 297mm;
-    padding: 5mm;
-    background: #fff;
-    font-family: "Arial", Tahoma;
-    font-size: 13px;
-    direction: rtl;
-    color: #000;
-}
-
-/* ====== الجداول ====== */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid #000;
-    padding: 4px;
-    vertical-align: middle;
-}
-
-.center {
-    text-align: center;
-}
-
-/* ====== رأس الصفحة ====== */
-.header-table td {
-    height: 55px;
-}
-
-.header-cell {
-    width: 33%;
-    font-size: 13px;
-}
-
-.header-center {
-    width: 34%;
-    text-align: center;
-}
-
-.form-title {
-    font-size: 22px;
-    font-weight: bold;
-}
-
-/* ====== بيانات المورد ====== */
-.info-table {
-    margin-top: 6px;
-}
-
-/* ====== جدول الأصناف ====== */
-.items-table {
-    margin-top: 6px;
-}
-
-.items-table th {
-    text-align: center;
-    font-weight: bold;
-}
-
-/* ====== الإجمالي ====== */
-.total-table {
-    margin-top: 6px;
-    width: 40%;
-}
-
-/* ====== التوقيعات ====== */
-.sign-table {
-    margin-top: 20px;
-}
-
-.sign-table td {
-    height: 70px;
-    text-align: right;
-    padding-top: 5px;
-}
-
-/* ====== الطباعة ====== */
-@@media print {
-    body {
-        margin: 0;
-    }
-
-    button {
-        display: none;
-    }
-}
-</style>
 
 @section scripts {
     <script src="~/FrontEnd/Pages/GoodsReceives/GoodsReceivePdf.cshtml.js"></script>
