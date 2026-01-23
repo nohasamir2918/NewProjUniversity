@@ -1,0 +1,37 @@
+﻿@page
+@{
+    ViewData["Title"] = "تقرير مراقبة العهدة";
+}
+<div id="app" v-cloak>
+    <div class="row">
+        <div class="col-md-4">
+            <label>الإدارة</label>
+            <div ref="departmentRef"></div>
+            <label class="text-danger">{{ state.errors.departmentId }}</label>
+        </div>
+
+        <div class="col-md-4">
+            <label>الموظف</label>
+            <div ref="employeeRef"></div>
+            <label class="text-danger">{{ state.errors.employeeId }}</label>
+        </div>
+
+        <div class="col-md-4">
+            <label>الصنف</label>
+            <div ref="productRef"></div>
+            <label class="text-danger">{{ state.errors.productId }}</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="grid-container">
+                <div ref="mainGridRef"></div> <!-- سيملأه Grid باللغة العربية -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/FrontEnd/Pages/CustodyMonitoring/CustodyMonitoring.cshtml.js"></script>
+}

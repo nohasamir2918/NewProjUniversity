@@ -112,7 +112,8 @@ namespace Infrastructure.SecurityManager.NavigationMenu
             "URL": "/GoodsExamine/GoodsExamineList",
             "Name": "فحص  ",
             "IsModule": false
-        },{
+        },
+        {
             "URL": "/GoodsReceives/GoodsReceiveList",
             "Name": "اذن الاضافة ",
             "IsModule": false
@@ -123,43 +124,15 @@ namespace Infrastructure.SecurityManager.NavigationMenu
             "Name": "طلب وإذن الصرف ",
             "IsModule": false
         },
+         {
+            "URL": "/CustodyMonitoring/CustodyMonitoring",
+            "Name": "مراقبة عهدة",
+            "IsModule": false
+        },
          
-         
-                     
-         
-                    {
-                        "URL": "/PurchaseReturns/PurchaseReturnList",
-                        "Name": "مرتجعات المشتريات",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/TransferOuts/TransferOutList",
-                        "Name": "تحويل صادر",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/TransferIns/TransferInList",
-                        "Name": "تحويل وارد",
-                        "IsModule": false
-                    },
                     {
                         "URL": "/Reports/ScrappingReport",
                         "Name": "دفتر الشطب",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/PositiveAdjustments/PositiveAdjustmentList",
-                        "Name": "تسويات موجبة",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/NegativeAdjustments/NegativeAdjustmentList",
-                        "Name": "تسويات سالبة",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/Scrappings/ScrappingList",
-                        "Name": "الإتلاف",
                         "IsModule": false
                     },
                     {
