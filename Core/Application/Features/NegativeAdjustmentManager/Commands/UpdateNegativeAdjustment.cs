@@ -75,6 +75,7 @@ public class UpdateNegativeAdjustmentHandler : IRequestHandler<UpdateNegativeAdj
             entity.IsDeleted,
             entity.UpdatedById,
             null,
+            null,
             cancellationToken
             );
 

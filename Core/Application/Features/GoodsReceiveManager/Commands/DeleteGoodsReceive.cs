@@ -65,7 +65,7 @@ public class DeleteGoodsReceiveHandler : IRequestHandler<DeleteGoodsReceiveReque
             entity.IsDeleted,
             entity.UpdatedById,
             null,
-            cancellationToken
+            null, cancellationToken
             );
 
         return new DeleteGoodsReceiveResult

@@ -151,32 +151,26 @@ const App = {
                 /* ===== 1️⃣ Mapping الأصناف (من PO Item + Transaction) ===== */
                 const poItems = state.pdfData?.purchaseOrder?.purchaseOrderItemList || [];
 
-                state.mappedItems = (state.pdfTransactionList || []).map(trx => {
+                state.mappedItems = (state.pdfTransactionList || [])
+                    .map(trx => {
+                        const poItem = poItems.find(x => x.productId === trx.productId);
+                        if (!poItem || poItem.status !== true) return null; // ✅ تجاهل غير المقبول
+                        const qty = trx.movement || 0;
+                        const price = poItem.unitPrice || 0;
+                        const amount = qty * price;
 
-                    const poItem = poItems.find(
-                        x => x.productId === trx.productId
-                    ) || {};
-
-                    const qty = trx.movement || 0;
-                    const price = poItem.unitPrice || 0;
-                    const amount = qty * price;
-
-                    return {
-                        product: `${trx.product?.number || ''} ${trx.product?.name || ''}`,
-                        unit: trx.product?.unit?.name || '',
-                        movement: qty,
-
-                        // ✔ جاية من PurchaseOrderItem
-                        unitPrice: price,
-                        status:
-                            poItem.status === true ? 'مقبول' :
-                                poItem.status === false ? 'مرفوض' : '',
-                        notes: poItem.reasons || '',
-
-                        value: amount,
-                        amount: amount
-                    };
-                });
+                        return {
+                            product: `${trx.product?.number || ''} ${trx.product?.name || ''}`,
+                            unit: trx.product?.unit?.name || '',
+                            movement: qty,
+                            unitPrice: price,
+                            status: 'مقبول', // لأنه بس المقبولة هتجي
+                            notes: poItem.reasons || '',
+                            value: amount,
+                            amount: amount
+                        };
+                    })
+                    .filter(Boolean); // ✅ إزالة العناصر اللي كانت null
 
                
 

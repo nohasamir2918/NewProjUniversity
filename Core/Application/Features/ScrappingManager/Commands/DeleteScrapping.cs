@@ -66,7 +66,7 @@ public class DeleteScrappingHandler : IRequestHandler<DeleteScrappingRequest, De
             entity.IsDeleted,
             entity.UpdatedById,
             null,
-            cancellationToken
+            null,   cancellationToken
             );
 
         return new DeleteScrappingResult

@@ -20,6 +20,9 @@ public class UpdateGoodsReceiveRequest : IRequest<UpdateGoodsReceiveResult>
     public string? Description { get; init; }
     public string? PurchaseOrderId { get; init; }
     public string? UpdatedById { get; init; }
+    public string? WarehouseId { get; init; }
+
+    public string? ProductId { get; init; }
 }
 
 public class UpdateGoodsReceiveValidator : AbstractValidator<UpdateGoodsReceiveRequest>
@@ -61,7 +64,7 @@ public class UpdateGoodsReceiveHandler : IRequestHandler<UpdateGoodsReceiveReque
         }
 
         entity.UpdatedById = request.UpdatedById;
-
+       
         entity.ReceiveDate = request.ReceiveDate;
         entity.Status = (GoodsReceiveStatus)int.Parse(request.Status!);
         entity.Description = request.Description;
@@ -77,8 +80,9 @@ public class UpdateGoodsReceiveHandler : IRequestHandler<UpdateGoodsReceiveReque
             (InventoryTransactionStatus?)entity.Status,
             entity.IsDeleted,
             entity.UpdatedById,
-            null,
-            cancellationToken
+            request.WarehouseId,
+            request.ProductId,
+              cancellationToken
             );
 
         return new UpdateGoodsReceiveResult

@@ -81,6 +81,7 @@ public class DeleteIssueRequestsItemHandler : IRequestHandler<DeleteIssueRequest
             entity.IsDeleted,
             entity.UpdatedById,
             null,
+            null,
             cancellationToken);
         }
         // 2. Delete IssueRequestsItem

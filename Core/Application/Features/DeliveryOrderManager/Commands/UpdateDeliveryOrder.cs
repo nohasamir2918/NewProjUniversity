@@ -78,6 +78,7 @@ public class UpdateDeliveryOrderHandler : IRequestHandler<UpdateDeliveryOrderReq
             entity.IsDeleted,
             entity.UpdatedById,
             null,
+            null,
             cancellationToken
             );
 

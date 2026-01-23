@@ -34,6 +34,7 @@ public class ExamineCommiteeDto
     public string? EmployeePositionName { get; init; }
     public bool? EmployeeType { get; init; }
     public string? Description { get; init; }
+    public bool IsDeleted { get; set; } = false;
 }
 
 public class GetGoodsExamineListProfile : Profile
@@ -96,7 +97,13 @@ public class GetGoodsExamineListHandler : IRequestHandler<GetGoodsExamineListReq
             .AsQueryable();
 
         var entities = await query.ToListAsync(cancellationToken);
-
+        // فلترة اللجان على IsDeleted = false
+        foreach (var entity in entities)
+        {
+            entity.Committees = entity.Committees
+                .Where(c => !c.IsDeleted)
+                .ToList();
+        }
         var dtos = _mapper.Map<List<GetGoodsExamineListDto>>(entities);
 
         return new GetGoodsExamineListResult

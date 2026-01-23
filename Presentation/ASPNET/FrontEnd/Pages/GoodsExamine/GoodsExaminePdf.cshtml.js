@@ -10,6 +10,10 @@
     ];
     return days[date.getDay()];
 };
+const toArabicNumber = (value) => {
+    if (!value) return '';
+    return value.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+};
 
 const App = {
     setup() {
@@ -18,6 +22,8 @@ const App = {
             number: '',
             commiteeDayName: '',   // ✅ جديد
             commiteeDate: '',
+            examineDayName: '',     // ✅ اليوم
+            examineDate: '',        // ✅ تاريخ الفحص
             committeeDesionNumber: '',
             // 🟢 بيانات أمر التوريد
             purchaseOrderNumber: '',
@@ -77,6 +83,20 @@ const App = {
                 //state.commiteeDate = header.commiteeDate
                 //    ? new Date(header.commiteeDate).toLocaleDateString('ar-EG')
                 //    : '';
+                if (header.examineDate) {
+                    const d = new Date(header.examineDate);
+
+                    state.examineDayName = getArabicDayName(d);
+
+                    const day = toArabicNumber(d.getDate());
+                    const month = toArabicNumber(d.getMonth() + 1);
+                    const year = toArabicNumber(d.getFullYear());
+
+                    state.examineDate = `${day} / ${month} / ${year}`;
+                } else {
+                    state.examineDayName = '';
+                    state.examineDate = '';
+                }
 
                 state.committeeDesionNumber =
                     header.committeeDesionNumber ?? '';

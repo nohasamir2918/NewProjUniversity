@@ -39,6 +39,7 @@ public class ExamineCommiteeDto
     public string? EmployeePositionName { get; init; }
     public bool? EmployeeType { get; init; }
     public string? Description { get; init; }
+    public bool IsDeleted { get; set; } = false;
 }
 
 public class CreateGoodsExamineValidator : AbstractValidator<CreateGoodsExamineRequest>

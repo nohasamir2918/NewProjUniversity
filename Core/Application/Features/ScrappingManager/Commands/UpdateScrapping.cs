@@ -78,6 +78,7 @@ public class UpdateScrappingHandler : IRequestHandler<UpdateScrappingRequest, Up
             entity.IsDeleted,
             entity.UpdatedById,
             entity.WarehouseId,
+            null,
             cancellationToken
             );
 

@@ -73,13 +73,14 @@ public partial class InventoryTransactionService
         InventoryTransactionStatus? status,
         bool? isDeleted,
         string? updatedId,
-        string? warehouseId = null,
+        string? warehouseId,
+        string? productId,
         CancellationToken cancellationToken = default
         )
     {
         var childs = await _inventoryTransactionRepository
             .GetQuery()
-            .Where(x => x.ModuleId == moduleId && x.ModuleName == moduleName)
+            .Where(x => x.ModuleId == moduleId && x.ModuleName == moduleName && x.ProductId==productId )
             .ToListAsync(cancellationToken);
 
         foreach (var item in childs)
@@ -88,10 +89,12 @@ public partial class InventoryTransactionService
             item.Status = status;
             item.IsDeleted = isDeleted ?? false;
             item.UpdatedById = updatedId;
+           
             item.UpdatedAtUtc = DateTime.UtcNow;
             if (warehouseId != null)
             {
                 item.WarehouseId = warehouseId;
+                item.WarehouseToId = warehouseId;
             }
         }
 

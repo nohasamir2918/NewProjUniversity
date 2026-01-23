@@ -59,12 +59,28 @@ function numberToArabicWordsWithPiasters(amount) {
 
     return words;
 }
+function toArabicNumber(value) {
+    if (value === null || value === undefined) return '';
+
+    return value.toString().replace(/\d/g, function (d) {
+        return '٠١٢٣٤٥٦٧٨٩'[d];
+    });
+}
 
 /* =========================
    Vue App
 ========================= */
 const App = {
     setup() {
+        const hasTax = Vue.computed(() => {
+            if (!state.tax) return false;
+
+            const numericTax = parseFloat(
+                state.tax.toString().replace(/,/g, '')
+            );
+
+            return numericTax > 0;
+        });
 
         const state = Vue.reactive({
             company: {
@@ -89,6 +105,8 @@ const App = {
                 emailAddress: '',
                 phoneNumber: ''
             },
+           
+
             vendorAddress: '',
             orderNumber: '',
             orderDate: '',
@@ -226,7 +244,9 @@ const App = {
         return {
             state,
             handler,
-            totalAmountInWords
+            totalAmountInWords,
+            toArabicNumber,
+            hasTax
         };
     }
 };
