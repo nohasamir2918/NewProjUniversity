@@ -50,6 +50,7 @@ public interface IEntityDbSet
     public DbSet<IssueRequestsItem> IssueRequestsItem { get; set; }
     public DbSet<Employee> Employee { get; set; }
     public DbSet<Department> Departments { get; set; }
+    public DbSet<ItemReturnRequests> ItemReturnRequests { get; set; }
 
 }
 

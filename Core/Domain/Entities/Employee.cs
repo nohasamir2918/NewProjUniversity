@@ -27,4 +27,5 @@ public class Employee : BaseEntity
     public string? DepartmentId { get; set; }
     public Department? Department { get; set; }
     public ICollection<IssueRequests> IssueRequestsList { get; set; } = new List<IssueRequests>();
+    public ICollection<ItemReturnRequests> ItemReturnRequestsList { get; set; } = new List<ItemReturnRequests>();
 }

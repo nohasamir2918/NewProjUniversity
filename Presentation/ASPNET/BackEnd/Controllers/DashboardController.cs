@@ -86,6 +86,21 @@ public class DashboardController : BaseApiController
         });
     }
 
+    [Authorize]
+    [HttpGet("GetIssueDashboard")]
+    public async Task<ActionResult<ApiSuccessResult<GetIssueRequestsDashboardResult>>>
+    GetIssueDashboardAsync(CancellationToken cancellationToken)
+    {
+        var response = await _sender.Send(
+            new GetIssueRequestsDashboardRequest(), cancellationToken);
+
+        return Ok(new ApiSuccessResult<GetIssueRequestsDashboardResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = "Issue dashboard loaded",
+            Content = response
+        });
+    }
 
 
 }
