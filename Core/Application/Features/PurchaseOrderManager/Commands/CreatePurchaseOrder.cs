@@ -38,13 +38,13 @@ public class CreatePurchaseOrderHandler : IRequestHandler<CreatePurchaseOrderReq
     private readonly ICommandRepository<PurchaseOrder> _repository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly NumberSequenceService _numberSequenceService;
-    private readonly PurchaseOrderService _purchaseOrderService;
+    private readonly ItemReturnRequestsService _purchaseOrderService;
 
     public CreatePurchaseOrderHandler(
         ICommandRepository<PurchaseOrder> repository,
         IUnitOfWork unitOfWork,
         NumberSequenceService numberSequenceService,
-        PurchaseOrderService purchaseOrderService
+        ItemReturnRequestsService purchaseOrderService
         )
     {
         _repository = repository;

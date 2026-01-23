@@ -29,12 +29,12 @@ public class DeletePurchaseOrderItemHandler : IRequestHandler<DeletePurchaseOrde
 {
     private readonly ICommandRepository<PurchaseOrderItem> _repository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly PurchaseOrderService _purchaseOrderService;
+    private readonly ItemReturnRequestsService _purchaseOrderService;
 
     public DeletePurchaseOrderItemHandler(
         ICommandRepository<PurchaseOrderItem> repository,
         IUnitOfWork unitOfWork,
-        PurchaseOrderService purchaseOrderService
+        ItemReturnRequestsService purchaseOrderService
         )
     {
         _repository = repository;

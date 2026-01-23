@@ -118,10 +118,14 @@ namespace Infrastructure.SecurityManager.NavigationMenu
             "Name": "اذن الاضافة ",
             "IsModule": false
         },
-
+        {
+            "URL": "/GoodsReceives/GoodsReceiveList",
+            "Name": "اذن الاضافة ",
+            "IsModule": false
+        },
          {
-            "URL": "/IssueRequests/IssueRequestsList",
-            "Name": "طلب وإذن الصرف ",
+            "URL": "/ItemReturnRequests/ItemReturnRequestsList",
+            "Name": "طلب مرتجع ",
             "IsModule": false
         },
          {
