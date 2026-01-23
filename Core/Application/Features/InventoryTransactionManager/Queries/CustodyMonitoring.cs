@@ -12,7 +12,7 @@ public record CustodyMonitoringDto
     public string? ModuleName { get; init; }
     public string? ModuleNumber { get; set; }
     public double? Movement { get; init; }
-  
+
 }
 
 
@@ -73,38 +73,47 @@ public class CustodyMonitoringHandler : IRequestHandler<CustodyMonitoringRequest
     //    };
     //}
     public async Task<CustodyMonitoringResult> Handle(
-    CustodyMonitoringRequest request,
-    CancellationToken cancellationToken)
+     CustodyMonitoringRequest request,
+     CancellationToken cancellationToken)
     {
         var query =
-            from it in _context.InventoryTransaction.AsNoTracking()
+            from it in _context.InventoryTransaction
+                .AsNoTracking()
                 .ApplyIsDeletedFilter(request.IsDeleted)
 
             join issue in _context.IssueRequests
                 on it.ModuleId equals issue.Id into issueGroup
             from issue in issueGroup.DefaultIfEmpty()
 
-            //join ret in _context.ItemReturnRequest
-            //    on it.ModuleId equals ret.Id into returnGroup
-            //from ret in returnGroup.DefaultIfEmpty()
+            join ret in _context.ItemReturnRequests
+                on it.ModuleId equals ret.Id into returnGroup
+            from ret in returnGroup.DefaultIfEmpty()
 
             where it.ProductId == request.ProductId
 
-            // 👇 الفلترة بالموظف
-            && (
-                (issue != null && issue.EmployeeId == request.EmployeeId) 
-                //||
-                //(ret != null && ret.EmployeeId == request.EmployeeId)
-               )
-
-            select new CustodyMonitoringDto
+            select new
             {
-                ModuleName = it.ModuleName,
-                ModuleNumber = it.ModuleId,
-                Movement = it.Movement,
+                it,
+                issue,
+                ret
             };
 
-        var entities = await query.ToListAsync(cancellationToken);
+        if (request.EmployeeId != null)
+        {
+            query = query.Where(x =>
+                (x.issue != null && x.issue.EmployeeId == request.EmployeeId)
+                || (x.ret != null && x.ret.EmployeeId == request.EmployeeId)
+            );
+        }
+
+        var entities = await query
+            .Select(x => new CustodyMonitoringDto
+            {
+                ModuleName = (x.it.ModuleName== "IssueRequests" ? "اذن صرف" : "اذن ارتجاع"),
+                ModuleNumber = x.it.ModuleId,
+                Movement = x.it.Movement
+            })
+            .ToListAsync(cancellationToken);
 
         return new CustodyMonitoringResult
         {

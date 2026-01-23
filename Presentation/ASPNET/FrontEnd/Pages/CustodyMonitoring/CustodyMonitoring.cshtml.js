@@ -99,9 +99,9 @@ const App = {
                     throw error;
                 }
             },
-            getProductLookupData: async () => {
+            getProductLookupData: async (employeeId) => {
                 try {
-                    const response = await AxiosManager.get('/Product/GetProductList', {});
+                    const response = await AxiosManager.post('/CustodyMonitoring/GetProductByEmployeeList', { employeeId });
                     return response;
                 } catch (error) {
                     throw error;
@@ -115,7 +115,9 @@ const App = {
                         '/CustodyMonitoring/CustodyMonitoringList',
                         { employeeId, productId }
                     );
+                    console.log("response", response);
                     return response;
+                   
                 } catch (error) {
                     throw error;
                 }
@@ -131,20 +133,20 @@ const App = {
                         ? response.data.content.data
                         : [];
             },
-            populateEmployeeLookupData: async () => {
-                const response = await services.getEmployeeLookupData();
-                state.employeeList =
-                    response?.data?.content?.data && Array.isArray(response.data.content.data)
-                        ? response.data.content.data
-                        : [];
-            },
-            populateProductLookupData: async () => {
-                const response = await services.getProductLookupData();
-                state.productList =
-                    response?.data?.content?.data && Array.isArray(response.data.content.data)
-                        ? response.data.content.data
-                        : [];
-            },
+            //populateEmployeeLookupData: async () => {
+            //    const response = await services.getEmployeeLookupData();
+            //    state.employeeList =
+            //        response?.data?.content?.data && Array.isArray(response.data.content.data)
+            //            ? response.data.content.data
+            //            : [];
+            //},
+            //populateProductLookupData: async () => {
+            //    const response = await services.getProductLookupData();
+            //    state.productList =
+            //        response?.data?.content?.data && Array.isArray(response.data.content.data)
+            //            ? response.data.content.data
+            //            : [];
+            //},
 
         };
 
@@ -285,14 +287,54 @@ const App = {
             }
         };
 
-        Vue.watch(() => state.departmentId, (newVal) => {
-            if (employeeLookup.obj) {
-                const filtered = state.employeeList.filter(e => e.departmentId === newVal);
-                employeeLookup.obj.dataSource = filtered;
-                employeeLookup.obj.value = null;
-                state.employeeId = null;
+        Vue.watch(
+            () => state.departmentId,
+            async (newVal) => {
+                if (!newVal) return;
+
+                const response = await services.getEmployeeLookupData();
+
+                state.employeeList =
+                    response?.data?.content?.data && Array.isArray(response.data.content.data)
+                        ? response.data.content.data
+                        : [];
+
+                if (employeeLookup.obj) {
+                    const filtered = state.employeeList.filter(e => e.departmentId === newVal);
+                    employeeLookup.obj.dataSource = filtered;
+                    employeeLookup.obj.value = null;
+                    state.employeeId = null;
+                }
             }
-        });
+        );
+
+
+        Vue.watch(
+            () => state.employeeId,
+            async (newVal) => {
+                if (!newVal) {
+                    state.productList = [];
+                    if (productLookup.obj) {
+                        productLookup.obj.dataSource = [];
+                        productLookup.obj.value = null;
+                    }
+                    return;
+                }
+
+                const response = await services.getProductLookupData(newVal);
+
+                state.productList =
+                    response?.data?.content?.data && Array.isArray(response.data.content.data)
+                        ? response.data.content.data
+                        : [];
+
+                if (productLookup.obj) {
+                    productLookup.obj.dataSource = state.productList;
+                    productLookup.obj.value = null;
+                }
+            }
+        );
+
 
         Vue.watch(() => state.productId, async (newProductId) => {
             if (!newProductId) {
@@ -313,7 +355,8 @@ const App = {
                     state.employeeId,
                     newProductId
                 );
-                state.custodyData = res?.data?.content?.data ?? [];
+                state.mainData = res?.data?.content?.data ?? [];
+                mainGrid.refresh();
             } catch (e) {
                 console.error(e);
                 state.mainData = [];
@@ -333,8 +376,8 @@ const App = {
                 await SecurityManager.authorizePage(['CustodyMonitoring']);
                 await SecurityManager.validateToken();
                 await methods.populateDepartmentLookupData();
-                await methods.populateEmployeeLookupData();
-                await methods.populateProductLookupData();
+               // await methods.populateEmployeeLookupData();
+               // await methods.populateProductLookupData();
                 await mainGrid.create(state.mainData);
                 departmentLookup.create();
                 employeeLookup.create();

@@ -36,5 +36,22 @@ namespace ASPNET.BackEnd.Controllers
             });
         }
 
+        [Authorize]
+        [HttpPost("GetProductByEmployeeList")]
+        public async Task<ActionResult<ApiSuccessResult<GetProductByEmployeeListResult>>> GetProductByEmployeeListAsync(
+           [FromBody] GetProductByEmployeeListRequest request,
+       CancellationToken cancellationToken
+       )
+        {
+
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetProductByEmployeeListResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetProductByEmployeeListAsync)}",
+                Content = response
+            });
+        }
     }
 }
