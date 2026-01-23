@@ -45,29 +45,54 @@
                                         </div>
 
                                         <div class="row mb-2">
-                                            @* <div class="col-md-6">
-                                                <label for="PurchaseOrderId">أمر التوريد</label>
-                                                <div ref="purchaseOrderIdRef"></div>
-                                                <label class="text-danger">{{ state.errors.purchaseOrderId }}</label>
-                                            </div> *@
                                             <div class="col-md-6">
-                                                <label for="productStatus">حالة المنتج</label>
+                                                <label for="EmployeeId">الموظف</label>
+                                                <div ref="employeeRef"></div>
+                                                <label class="text-danger">{{ state.errors.employeeId }}</label>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="ProductId">المنتج</label>
+                                                <div ref="productRef"></div>
+                                                <label class="text-danger">{{ state.errors.productId }}</label>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row mb-2">
+                                       
+                                            <div class="col-md-6">
+                                                <label for="ProductStatus">حالة المنتج</label>
                                                 <div ref="productStatusRef"></div>
                                                 <label class="text-danger">{{ state.errors.productStatus }}</label>
                                             </div>
 
                                             <div class="col-md-6">
-                                                <label for="Status">الحالة</label>
+                                                <label for="Status">حالة الطلب</label>
                                                 <div ref="statusRef"></div>
                                                 <label class="text-danger">{{ state.errors.status }}</label>
                                             </div>
                                         </div>
 
                                         <div class="row mb-2">
+
+                                            <div class="col-md-6">
+                                                <label for="Quantity">الكمية</label>
+                                                <div ref="quantityRef"></div>
+                                                <label class="text-danger">{{ state.errors.quantity }}</label>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="UnitPrice">السعر</label>
+                                                <div ref="unitPriceRef"></div>
+                                                <label class="text-danger">{{ state.errors.unitPrice }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
                                             <div class="col-md-12">
-                                                <label for="Description">الوصف</label>
-                                                <textarea class="form-control" rows="3" v-model="state.description"></textarea>
-                                                <label class="text-danger">{{ state.errors.description }}</label>
+                                                <label for="CommitteeDecision">رأي اللجنة</label>
+                                                <textarea class="form-control" rows="3" v-model="state.committeeDecision"></textarea>
+                                                <label class="text-danger">{{ state.errors.ommitteeDecision }}</label>
                                             </div>
                                         </div>
                                     </div>
@@ -148,5 +173,5 @@
 </div>
 
 @section scripts {
-    <script src="~/FrontEnd/Pages/GoodsReceives/GoodsReceiveList.cshtml.js"></script>
+    <script src="~/FrontEnd/Pages/ItemReturnRequests/ItemReturnRequestsLists.cshtml.js"></script>
 }
