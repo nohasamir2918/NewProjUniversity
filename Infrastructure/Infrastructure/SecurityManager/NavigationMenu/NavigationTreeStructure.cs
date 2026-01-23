@@ -112,62 +112,38 @@ namespace Infrastructure.SecurityManager.NavigationMenu
             "URL": "/GoodsExamine/GoodsExamineList",
             "Name": "فحص  ",
             "IsModule": false
-        },{
+        },
+        {
             "URL": "/GoodsReceives/GoodsReceiveList",
             "Name": "اذن الاضافة ",
             "IsModule": false
         },
-
+        {
+            "URL": "/GoodsReceives/GoodsReceiveList",
+            "Name": "اذن الاضافة ",
+            "IsModule": false
+        },
          {
-            "URL": "/IssueRequests/IssueRequestsList",
-            "Name": "طلب وإذن الصرف ",
+            "URL": "/ItemReturnRequests/ItemReturnRequestsList",
+            "Name": "طلب مرتجع ",
+            "IsModule": false
+        },
+         {
+            "URL": "/CustodyMonitoring/CustodyMonitoring",
+            "Name": "مراقبة عهدة",
             "IsModule": false
         },
          
-         
-                     
-         
-                    {
-                        "URL": "/PurchaseReturns/PurchaseReturnList",
-                        "Name": "مرتجعات المشتريات",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/TransferOuts/TransferOutList",
-                        "Name": "تحويل صادر",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/TransferIns/TransferInList",
-                        "Name": "تحويل وارد",
-                        "IsModule": false
-                    },
                     {
                         "URL": "/Reports/ScrappingReport",
                         "Name": "دفتر الشطب",
                         "IsModule": false
                     },
                     {
-                        "URL": "/PositiveAdjustments/PositiveAdjustmentList",
-                        "Name": "تسويات موجبة",
+                        "URL": "/StockCounts/StockCountList",
+                        "Name": "جرد المخزون",
                         "IsModule": false
-                    },
-                    {
-                        "URL": "/NegativeAdjustments/NegativeAdjustmentList",
-                        "Name": "تسويات سالبة",
-                        "IsModule": false
-                    },
-                    {
-                        "URL": "/Scrappings/ScrappingList",
-                        "Name": "الإتلاف",
-                        "IsModule": false
-                    },
-          {
-            "URL": "/InventoryStocktaking/InventoryStocktaking",
-            "Name": "جرد المخزون",
-            "IsModule": false
-        }
-                   
+                    }
                 ]
             },
             

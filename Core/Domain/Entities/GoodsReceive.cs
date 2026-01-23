@@ -11,4 +11,8 @@ public class GoodsReceive : BaseEntity
     public string? Description { get; set; }
     public string? PurchaseOrderId { get; set; }
     public PurchaseOrder? PurchaseOrder { get; set; }
+    public string? ReturnRequestId { get; set; }
+
+    public int? TransType { get; set; }
+
 }

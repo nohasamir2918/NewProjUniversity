@@ -1,0 +1,185 @@
+﻿@page
+@{
+    ViewData["Title"] = " طلب ارتجاع أصناف PDF";
+}
+<style>
+    body {
+        direction: rtl;
+        font-family: "Times New Roman", serif;
+        background: #f5fI5F5;
+    }
+
+    #content, #content * {
+        direction: rtl !important;
+        text-align: right;
+        font-size: 19px;
+    }
+
+    .print-area {
+        width: 210mm;
+        min-height: 297mm;
+        background: #fff;
+        padding: 10mm;
+        margin: auto;
+        border: 1px solid #000;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    td, th {
+        border: 1px solid #000;
+        padding: 6px;
+        vertical-align: middle;
+    }
+
+    .no-border td {
+        border: none;
+    }
+
+    .center {
+        text-align: center !important;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .title {
+        font-size: 20px;
+        text-decoration: underline;
+        margin: 5px 0;
+    }
+
+    .section {
+        margin-top: 10px;
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+
+
+    @@media print {
+        .no-print {
+            display: none;
+        }
+    }
+</style>
+<div id="app">
+
+    <div class="no-print text-center mb-3">
+        <!-- زر خارج الطباعة -->
+        <button v-on:click="handler.downloadPDF" class="pdf-btn btn btn-danger">
+            تحميل PDF
+        </button>
+    </div>
+
+    <!-- محتوى الـ PDF فقط -->
+    <div id="content">
+
+        <!-- الصفحة الأولى -->
+        <section class="print-area">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <span style="color:#000;font-weight:bold;">
+                        اسم الجهة: كلية الزراعة - جامعة الزقازيق
+                    </span>
+                    <br />
+                    <span style="color:#000;font-weight:bold;">
+                        مخزن: .................
+                    </span>
+                    <br />
+                    <span style="color:#000;font-weight:bold;">
+                        بتاريخ: ..............
+                    </span>
+                </div>
+                <div class="col-md-4">
+                    <span style="color:#000;font-weight:bold;">
+                        طلب ارتجاع الأصناف
+                    </span>
+                </div>
+                <div class="col-md-4 center">
+                    <span style="color:#000;font-weight:bold;">
+                        نموذج رقم (12)
+                    </span>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-6 ">
+                    <span style="color:#000;font-weight:bold;">
+                        اسم صاحب العهدة:....................
+                    </span>
+                </div>
+            </div>
+
+            <br />
+
+            <table class="inspection-table">
+                <thead>
+                    <tr>
+                        <th>رقم الصنف</th>
+                        <th>اسم الصنف</th>
+                        <th>تاريخ الصرف</th>
+                        <th>   الوحدة</th>
+                        <th>الكمية</th>
+                        <th>حالة الصنف</th>
+                        <th> القيمة المقدرة </th>
+                        <th>  رأي لجنة الفحص </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+            <div class="row">
+                <div class="col-md-2">
+                    <span>توقيع صاحب العهدة</span>
+                </div>
+                <div class="col-md-2">
+                    <span>  توقيع لجنة الفحص</span>
+                </div>
+                <div class="col-md-2">
+                    <span>  مدير المخازن</span>
+                </div>
+                <div class="col-md-2">
+                    <span>  استلمت الإصناف</span>
+                </div>
+                <div class="col-md-2">
+                    <span> أضيفت الاصناف بموجب اذن الاضافة رقم :.... </span>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-4">
+                    <span>  أعضاء اللجنة</span>
+                </div>
+                <div class="col-md-4">  <span>أمين المخزن</span></div>
+                <div class="col-md-4">  <span>   كاتب الشطب</span></div>
+            </div>
+
+        </section>
+        <br />
+
+    </div>
+
+
+
+
+</div>
+

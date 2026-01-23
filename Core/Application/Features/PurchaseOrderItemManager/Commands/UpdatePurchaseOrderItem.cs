@@ -41,12 +41,12 @@ public class UpdatePurchaseOrderItemHandler : IRequestHandler<UpdatePurchaseOrde
 {
     private readonly ICommandRepository<PurchaseOrderItem> _repository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly PurchaseOrderService _purchaseOrderService;
+    private readonly ItemReturnRequestsService _purchaseOrderService;
 
     public UpdatePurchaseOrderItemHandler(
         ICommandRepository<PurchaseOrderItem> repository,
         IUnitOfWork unitOfWork,
-        PurchaseOrderService purchaseOrderService
+        ItemReturnRequestsService purchaseOrderService
         )
     {
         _repository = repository;
