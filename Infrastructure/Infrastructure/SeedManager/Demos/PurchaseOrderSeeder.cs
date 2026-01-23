@@ -9,7 +9,7 @@ namespace Infrastructure.SeedManager.Demos;
 
 public class PurchaseOrderSeeder
 {
-    private readonly PurchaseOrderService _purchaseOrderService;
+    private readonly ItemReturnRequestsService _purchaseOrderService;
     private readonly ICommandRepository<PurchaseOrder> _purchaseOrderRepository;
     private readonly ICommandRepository<PurchaseOrderItem> _purchaseOrderItemRepository;
     private readonly ICommandRepository<Vendor> _vendorRepository;
@@ -19,7 +19,7 @@ public class PurchaseOrderSeeder
     private readonly IUnitOfWork _unitOfWork;
 
     public PurchaseOrderSeeder(
-        PurchaseOrderService purchaseOrderService,
+        ItemReturnRequestsService purchaseOrderService,
         ICommandRepository<PurchaseOrder> purchaseOrderRepository,
         ICommandRepository<PurchaseOrderItem> purchaseOrderItemRepository,
         ICommandRepository<Vendor> vendorRepository,

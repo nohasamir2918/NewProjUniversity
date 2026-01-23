@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.PurchaseOrderManager;
 
-public class PurchaseOrderService
+public class ItemReturnRequestsService
 {
     private readonly ICommandRepository<PurchaseOrder> _purchaseOrderRepository;
     private readonly ICommandRepository<PurchaseOrderItem> _purchaseOrderItemRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public PurchaseOrderService(
+    public ItemReturnRequestsService(
         ICommandRepository<PurchaseOrder> purchaseOrderRepository,
         ICommandRepository<PurchaseOrderItem> purchaseOrderItemRepository,
         IUnitOfWork unitOfWork
