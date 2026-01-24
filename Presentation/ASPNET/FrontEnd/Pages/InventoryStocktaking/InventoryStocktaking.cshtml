@@ -1,0 +1,25 @@
+﻿@page
+@{
+    ViewData["Title"] = "تقرير جرد المخزن";
+}
+
+<div id="app" v-cloak>
+    <div class="row">
+        <div class="col-md-4">
+            <label>المخزن</label>
+            <div ref="warehouseRef"></div>
+            <label class="text-danger">{{ state.errors.warehouseId }}</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="grid-container">
+                <div ref="mainGridRef"></div> <!-- سيملأه Grid باللغة العربية -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/FrontEnd/Pages/InventoryStocktaking/InventoryStocktaking.cshtml.js"></script>
+}
