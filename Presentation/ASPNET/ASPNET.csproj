@@ -17,5 +17,8 @@
     <ProjectReference Include="..\..\Core\Application\Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
 
 </Project>

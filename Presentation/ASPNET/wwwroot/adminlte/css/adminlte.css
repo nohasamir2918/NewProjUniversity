@@ -13056,9 +13056,9 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
   font-size: inherit;
 }
 
-[class*="sidebar-dark"] .brand-link {
+/*[class*="sidebar-dark"] .brand-link {
   border-bottom: 1px solid #4b545c;
-}
+}*/
 
 [class*="sidebar-dark"] .brand-link,
 [class*="sidebar-dark"] .brand-link .pushmenu {
