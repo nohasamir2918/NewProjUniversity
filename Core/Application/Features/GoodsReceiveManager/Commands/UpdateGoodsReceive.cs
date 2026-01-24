@@ -19,6 +19,8 @@ public class UpdateGoodsReceiveRequest : IRequest<UpdateGoodsReceiveResult>
     public string? Status { get; init; }
     public string? Description { get; init; }
     public string? PurchaseOrderId { get; init; }
+    public string? ReturnRequestId { get; init; }   // new
+    public int? TransType { get; init; }            // new
     public string? UpdatedById { get; init; }
     public string? WarehouseId { get; init; }
 
@@ -64,11 +66,13 @@ public class UpdateGoodsReceiveHandler : IRequestHandler<UpdateGoodsReceiveReque
         }
 
         entity.UpdatedById = request.UpdatedById;
-       
+
         entity.ReceiveDate = request.ReceiveDate;
         entity.Status = (GoodsReceiveStatus)int.Parse(request.Status!);
         entity.Description = request.Description;
         entity.PurchaseOrderId = request.PurchaseOrderId;
+        entity.ReturnRequestId = request.ReturnRequestId; // persist
+        entity.TransType = request.TransType;
 
         _repository.Update(entity);
         await _unitOfWork.SaveAsync(cancellationToken);
@@ -82,7 +86,7 @@ public class UpdateGoodsReceiveHandler : IRequestHandler<UpdateGoodsReceiveReque
             entity.UpdatedById,
             request.WarehouseId,
             request.ProductId,
-              cancellationToken
+            cancellationToken
             );
 
         return new UpdateGoodsReceiveResult
