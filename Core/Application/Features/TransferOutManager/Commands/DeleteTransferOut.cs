@@ -66,7 +66,7 @@ public class DeleteTransferOutHandler : IRequestHandler<DeleteTransferOutRequest
             entity.IsDeleted,
             entity.UpdatedById,
             null,
-            cancellationToken
+            null, cancellationToken
             );
 
         return new DeleteTransferOutResult

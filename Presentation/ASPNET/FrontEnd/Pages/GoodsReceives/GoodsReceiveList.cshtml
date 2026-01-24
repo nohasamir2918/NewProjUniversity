@@ -45,18 +45,23 @@
                                         </div>
 
                                         <div class="row mb-2">
-                                            <div class="col-md-6">
-                                                <label for="PurchaseOrderId">أمر التوريد</label>
+                                            <div class="col-md-4">
+                                                <label>أمر التوريد</label>
                                                 <div ref="purchaseOrderIdRef"></div>
-                                                <label class="text-danger">{{ state.errors.purchaseOrderId }}</label>
                                             </div>
 
-                                            <div class="col-md-6">
-                                                <label for="Status">الحالة</label>
+                                            <div class="col-md-4">
+                                                <label>الحالة</label>
                                                 <div ref="statusRef"></div>
-                                                <label class="text-danger">{{ state.errors.status }}</label>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label>المخزن</label>
+                                                <div ref="warehouseRef"></div>
+                                                <label class="text-danger">{{ state.errors.warehouseId }}</label>
                                             </div>
                                         </div>
+                                      
 
                                         <div class="row mb-2">
                                             <div class="col-md-12">

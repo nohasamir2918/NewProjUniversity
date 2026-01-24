@@ -97,13 +97,18 @@ public class GetGoodsExamineSingleHandler
         {
             Id = entity.Id,
             Number = entity.Number,
+            ExamineDate = entity.ExamineDate,
             CommiteeDate = entity.CommiteeDate,
             CommitteeDesionNumber = entity.CommitteeDesionNumber,
             PurchaseOrderNumber = entity.PurchaseOrder?.Number,
             PurchaseOrderDate = entity.PurchaseOrder?.OrderDate,
             VendorName = entity.PurchaseOrder?.Vendor?.Name,
-            CommitteeList = _mapper.Map<List<ExamineCommiteeDto>>(entity.Committees)
+            CommitteeList = _mapper
+          .Map<List<ExamineCommiteeDto>>(entity.Committees
+          .Where(c => !c.IsDeleted))  // ✅ هنا فلترة اللجان غير المحذوفة
+          .ToList()
         };
+
 
 
         var PuchaseOrderItemList = await _context

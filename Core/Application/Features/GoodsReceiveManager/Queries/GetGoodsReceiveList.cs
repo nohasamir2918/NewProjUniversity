@@ -19,6 +19,7 @@ public record GetGoodsReceiveListDto
     public string? PurchaseOrderId { get; init; }
     public string? PurchaseOrderNumber { get; init; }
     public DateTime? CreatedAtUtc { get; init; }
+    public string? WarehouseId { get; init; }
 }
 
 public class GetGoodsReceiveListProfile : Profile
@@ -60,25 +61,46 @@ public class GetGoodsReceiveListHandler : IRequestHandler<GetGoodsReceiveListReq
         _context = context;
     }
 
-    public async Task<GetGoodsReceiveListResult> Handle(GetGoodsReceiveListRequest request, CancellationToken cancellationToken)
+    public async Task<GetGoodsReceiveListResult> Handle(
+     GetGoodsReceiveListRequest request,
+     CancellationToken cancellationToken)
     {
-        var query = _context
-            .GoodsReceive
+        var data = await _context.GoodsReceive
             .AsNoTracking()
             .ApplyIsDeletedFilter(request.IsDeleted)
             .Include(x => x.PurchaseOrder)
-            .AsQueryable();
+            .Select(gr => new GetGoodsReceiveListDto
+            {
+                Id = gr.Id,
+                Number = gr.Number,
+                ReceiveDate = gr.ReceiveDate,
+                Status = gr.Status,
+                StatusName = gr.Status.HasValue
+                    ? gr.Status.Value.ToFriendlyName()
+                    : string.Empty,
+                Description = gr.Description,
+                PurchaseOrderId = gr.PurchaseOrderId,
+                PurchaseOrderNumber = gr.PurchaseOrder != null
+                    ? gr.PurchaseOrder.Number
+                    : string.Empty,
+                CreatedAtUtc = gr.CreatedAtUtc,
 
-        var entities = await query.ToListAsync(cancellationToken);
-
-        var dtos = _mapper.Map<List<GetGoodsReceiveListDto>>(entities);
+                // ✅ هنا الحل
+                WarehouseId = _context.InventoryTransaction
+                    .Where(t =>
+                        t.ModuleId == gr.Id &&
+                        t.ModuleName == nameof(GoodsReceive) &&
+                        !t.IsDeleted)
+                    .Select(t => t.WarehouseId)
+                    .FirstOrDefault()
+            })
+            .ToListAsync(cancellationToken);
 
         return new GetGoodsReceiveListResult
         {
-            Data = dtos
+            Data = data
         };
     }
-
 
 }
 

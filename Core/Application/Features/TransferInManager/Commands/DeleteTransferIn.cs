@@ -66,7 +66,7 @@ public class DeleteTransferInHandler : IRequestHandler<DeleteTransferInRequest, 
             entity.IsDeleted,
             entity.UpdatedById,
             null,
-            cancellationToken
+            null, cancellationToken
             );
 
         return new DeleteTransferInResult

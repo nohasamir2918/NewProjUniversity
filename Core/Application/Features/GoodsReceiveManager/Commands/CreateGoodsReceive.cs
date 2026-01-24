@@ -22,6 +22,7 @@ public class CreateGoodsReceiveRequest : IRequest<CreateGoodsReceiveResult>
     public string? Description { get; init; }
     public string? PurchaseOrderId { get; init; }
     public string? CreatedById { get; init; }
+    public string? WarehouseId { get; init; }
 }
 
 public class CreateGoodsReceiveValidator : AbstractValidator<CreateGoodsReceiveRequest>
@@ -83,11 +84,15 @@ public class CreateGoodsReceiveHandler : IRequestHandler<CreateGoodsReceiveReque
         if (defaultWarehouse != null)
         {
             var items = await _purchaseOrderItemRepository
-                .GetQuery()
-                .ApplyIsDeletedFilter(false)
-                .Where(x => x.PurchaseOrderId == entity.PurchaseOrderId)
-                .Include(x => x.Product)
-                .ToListAsync(cancellationToken);
+    .GetQuery()
+    .ApplyIsDeletedFilter(false)
+    .Where(x =>
+        x.PurchaseOrderId == entity.PurchaseOrderId &&
+        x.ItemStatus == true        // ✅ المتوافق عليه فقط
+    )
+    .Include(x => x.Product)
+    .ToListAsync(cancellationToken);
+
 
             foreach (var item in items)
             {

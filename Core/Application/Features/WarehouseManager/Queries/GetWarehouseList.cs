@@ -46,12 +46,15 @@ public class GetWarehouseListHandler : IRequestHandler<GetWarehouseListRequest, 
         _context = context;
     }
 
-    public async Task<GetWarehouseListResult> Handle(GetWarehouseListRequest request, CancellationToken cancellationToken)
+    public async Task<GetWarehouseListResult> Handle(
+       GetWarehouseListRequest request,
+       CancellationToken cancellationToken)
     {
         var query = _context
             .Warehouse
             .AsNoTracking()
-            .ApplyIsDeletedFilter(request.IsDeleted)
+            .ApplyIsDeletedFilter(false)   // isDeleted = 0
+            .Where(x => x.SystemWarehouse == true) // ✅ SystemWarehouse = 1
             .AsQueryable();
 
         var entities = await query.ToListAsync(cancellationToken);

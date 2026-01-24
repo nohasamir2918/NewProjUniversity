@@ -66,7 +66,7 @@ public class DeleteDeliveryOrderHandler : IRequestHandler<DeleteDeliveryOrderReq
             entity.IsDeleted,
             entity.UpdatedById,
             null,
-            cancellationToken
+            null, cancellationToken
             );
 
         return new DeleteDeliveryOrderResult

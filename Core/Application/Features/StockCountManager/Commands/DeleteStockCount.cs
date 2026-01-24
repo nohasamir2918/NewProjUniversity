@@ -65,7 +65,8 @@ public class DeleteStockCountHandler : IRequestHandler<DeleteStockCountRequest, 
             (InventoryTransactionStatus?)entity.Status,
             entity.IsDeleted,
             entity.UpdatedById,
-            null,
+            null
+            ,null,
             cancellationToken
             );
 

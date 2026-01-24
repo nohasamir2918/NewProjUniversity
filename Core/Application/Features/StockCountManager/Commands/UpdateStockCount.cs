@@ -78,7 +78,7 @@ public class UpdateStockCountHandler : IRequestHandler<UpdateStockCountRequest, 
             entity.IsDeleted,
             entity.UpdatedById,
             entity.WarehouseId,
-            cancellationToken
+            null, cancellationToken
             );
 
         return new UpdateStockCountResult

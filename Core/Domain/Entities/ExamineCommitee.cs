@@ -21,6 +21,7 @@ namespace Domain.Entities
         public bool? EmployeeType { get; set; }
         public string? Description { get; set; }
         public string? GoodsExamineId { get; set; }
+        
         public ICollection<ExamineCommitee> Committees { get; set; } = new List<ExamineCommitee>();
 
     }

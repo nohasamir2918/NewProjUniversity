@@ -103,8 +103,9 @@
           
 
             <p style="text-align:right"  class="text">
-                اليوم ..............
-                الموافق....../......./..........
+                اليوم {{ state.examineDayName }}
+                الموافق {{ state.examineDate }}
+                
                
                 اجتمعت لجنة الفحص المشكلة بالقرار رقم
                 (<strong>{{ state.committeeDesionNumber }}</strong>)
@@ -120,16 +121,13 @@
             <br />
             <p style="text-align:right"><strong>وعضوية كل من:</strong></p>
             <br />
-            <div class="row">
-                <div class="col-md-6" v-for="(member,index) in members" :key="index">
-                    <span style="color:#000;font-weight:bold;"> السيد / </span>
-                    {{ member.employeeName }}
-                </div>
-                <div class="col-md-6" v-for="(member,index) in members" :key="index">
-                    <span style="color:#000;font-weight:bold;"> الوظيفة / </span>
-                    {{ member.employeePositionName }}
-                </div>
+            <div class="committee">
+                <p v-for="(member,index) in members" :key="index">
+                    <strong>السيد /</strong> {{ member.employeeName }} —
+                    <strong>الوظيفة /</strong> {{ member.employeePositionName }}
+                </p>
             </div>
+
 
             @* <div class="committee">
                 <p v-for="(member,index) in members" :key="index">

@@ -65,6 +65,7 @@ public class DeleteGoodsExamineHandler : IRequestHandler<DeleteGoodsExamineReque
             entity.IsDeleted,
             entity.UpdatedById,
             null,
+            null,
             cancellationToken
             );
 
