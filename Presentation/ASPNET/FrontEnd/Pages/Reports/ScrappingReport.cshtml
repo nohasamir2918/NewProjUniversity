@@ -38,7 +38,7 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>رقم الشطب</th>
+                <th> الحركة</th>
                 <th>التاريخ</th>
                 <th>المخزن</th>
                 <th>الصنف</th>
@@ -48,9 +48,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="item in pagedData" :key="item.scrappingNumber + item.productCode">
-                <td>{{ item.scrappingNumber }}</td>
-                <td>{{ formatDate(item.scrappingDate) }}</td>
+            <tr v-for="item in pagedData" :key="item.moduleName + item.productCode">
+                <td>
+                    {{
+                    item.moduleName === 'GoodsReceive' ? 'إذن إضافة' :
+                    item.moduleName === 'IssueRequests' ? 'إذن صرف' :
+                    item.moduleName === 'GoodsExamine'? 'إذن فحص' :
+                    item.moduleName === 'PurchaseOrder' ? 'أمر توريد' :
+                    ''
+                    }}
+                </td>
+
+                <td>{{ formatDate(item.transactionDate) }}</td>
                 <td>{{ item.warehouseName }}</td>
                 <td>{{ item.productName }}</td>
                 <td>{{ item.unitName }}</td>
