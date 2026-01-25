@@ -1,5 +1,5 @@
 ﻿@{
-    var userEmail = "Loading...";
+    // var userEmail = "Loading...";
     var avatarUrl = "/logo.png.png";
     var appName = "جامعة الزقازيق";
 }
@@ -7,21 +7,26 @@
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
+   
     <a asp-area="" asp-page="/Dashboards/DefaultDashboard" class="brand-link d-flex justify-content-center align-items-center">
-        <span class="brand-text font-weight-light">@appName</span>
+        <div class="image">
+            <img id="AvatarImageSide" src="@avatarUrl" class="img-circle elevation-2" alt="User Image" style="width: 40px; height: 40px;margin-left:10px;">
+        </div>
+      <span class="brand-text font-weight-light">@appName</span> 
+       
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        @*  <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 <img id="AvatarImageSide" src="@avatarUrl" class="img-circle elevation-2" alt="User Image" style="width: 40px; height: 40px;">
-            </div>
-            <div class="info">
+            </div> *@
+           @*  <div class="info" >
                 <a asp-area="" asp-page="/Profiles/MyProfile" class="d-block" id="userEmail">@userEmail</a>
             </div>
-        </div>
+        </div> *@
 
 
         <!-- Sidebar Menu -->
