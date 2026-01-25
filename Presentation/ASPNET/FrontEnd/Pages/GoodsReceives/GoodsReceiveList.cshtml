@@ -32,24 +32,32 @@
 
                                     <div class="card-body">
                                         <div class="row mb-2">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label for="ReceiveDate">تاريخ طلب الاضافة</label>
                                                 <input ref="receiveDateRef">
                                                 <label class="text-danger">{{ state.errors.receiveDate }}</label>
                                             </div>
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label for="Number">الرقم</label>
                                                 <input ref="numberRef" v-model="state.number" readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label >سند الاضافة
+                                                    </label>
+                                                <div ref="TransTypeRef"></div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-2">
-                                            <div class="col-md-4">
+                                            <div class="col-md-4" id="PurchaseDiv">
                                                 <label>أمر التوريد</label>
                                                 <div ref="purchaseOrderIdRef"></div>
                                             </div>
-
+                                            <div class="col-md-4" id="ReturnDiv">
+                                                <label>اذن ارتجاع</label>
+                                                <div ref="ReturnRequestRef"></div>
+                                            </div>
                                             <div class="col-md-4">
                                                 <label>الحالة</label>
                                                 <div ref="statusRef"></div>
@@ -149,4 +157,8 @@
 
 @section scripts {
     <script src="~/FrontEnd/Pages/GoodsReceives/GoodsReceiveList.cshtml.js"></script>
+    <script>
+
+
+    </script>
 }

@@ -1,4 +1,5 @@
-﻿ej.base.L10n.load({
+﻿/* (unchanged header localization) */
+ej.base.L10n.load({
     'ar': {
         'grid': {
             'EmptyRecord': 'لا توجد بيانات للعرض',
@@ -49,6 +50,9 @@ const App = {
             secondaryData: [],
             productListLookupData: [],
             warehouseListLookupData: [],
+            itemReturnListLookupData: [],
+            warehouseLookupData: [],
+            transType: 1, // default 1 = PurchaseOrder, 2 = ReturnRequest
             mainTitle: null,
             id: '',
             number: '',
@@ -56,6 +60,7 @@ const App = {
             description: '',
             warehouseId: '',
             purchaseOrderId: null,
+            returnRequestId: null,
             status: null,
             errors: {
                 receiveDate: '',
@@ -67,6 +72,8 @@ const App = {
             isSubmitting: false,
             totalMovementFormatted: '0.00'
         });
+        const TransTypeRef = Vue.ref(null);
+        const ReturnRequestRef = Vue.ref(null);
         const warehouseRef = Vue.ref(null);
         const mainGridRef = Vue.ref(null);
         const mainModalRef = Vue.ref(null);
@@ -87,8 +94,13 @@ const App = {
                 state.errors.receiveDate = 'تاريخ الاستلام مطلوب';
                 isValid = false;
             }
-            if (!state.purchaseOrderId) {
+            // validation depends on transType: if PurchaseOrder require purchaseOrderId, else require returnRequestId
+            if (state.transType === 1 && !state.purchaseOrderId) {
                 state.errors.purchaseOrderId = 'امر التوريد مطلوب';
+                isValid = false;
+            }
+            if (state.transType === 2 && !state.returnRequestId) {
+                state.errors.purchaseOrderId = 'اذن الارتجاع مطلوب';
                 isValid = false;
             }
             if (!state.status) {
@@ -109,6 +121,7 @@ const App = {
             state.receiveDate = '';
             state.description = '';
             state.purchaseOrderId = null;
+            state.returnRequestId = null;
             state.status = null;
             state.errors = {
                 receiveDate: '',
@@ -117,6 +130,7 @@ const App = {
                 description: ''
             };
             state.secondaryData = [];
+            methods.refreshSummary();
         };
 
         const receiveDatePicker = {
@@ -198,14 +212,33 @@ const App = {
 
                 if (newVal) {
                     await methods.populateProductListByPurchaseOrder(newVal);
-                    secondaryGrid.refresh();
+
+                    // if creating a new GR (no id yet), prefill UI secondaryData with PO items
+                    if (!state.id) {
+                        state.secondaryData = state.productListLookupData.map(p => ({
+                            id: null,
+                            purchaseOrderItemId: p.purchaseOrderItemId,
+                            productId: p.id,
+                            unitPrice: p.unitPrice ?? 0,
+                            quantity: p.quantity ?? 0,
+                            movement: p.quantity ?? 0, // default movement = available qty
+                            warehouseId: state.warehouseId || null,
+                            createdAtUtc: new Date()
+                        }));
+                        secondaryGrid.refresh();
+                        methods.refreshSummary();
+                    } else {
+                        await methods.populateSecondaryData(state.id);
+                        secondaryGrid.refresh();
+                    }
                 } else {
                     state.productListLookupData = [];
+                    state.secondaryData = [];
+                    secondaryGrid.refresh();
+                    methods.refreshSummary();
                 }
             }
         );
-
-
 
         const goodsReceiveStatusListLookup = {
             obj: null,
@@ -229,6 +262,62 @@ const App = {
                 }
             },
         };
+
+        // TransType simple select control
+        const transTypeControl = {
+            create: () => {
+                const container = TransTypeRef.value;
+                if (!container) return;
+                container.innerHTML = '';
+                const select = document.createElement('select');
+                select.id = 'TransType';
+                select.className = 'form-select';
+                select.innerHTML = `
+                    <option value="1">أمر التوريد</option>
+                    <option value="2">أذن ارتجاع</option>
+                `;
+                select.value = String(state.transType || 1);
+                select.addEventListener('change', () => {
+                    state.transType = parseInt(select.value);
+                });
+                container.appendChild(select);
+            },
+            refresh: () => {
+                const sel = document.getElementById('TransType');
+                if (sel) sel.value = String(state.transType || 1);
+            }
+        };
+
+        // ReturnRequest DropDownList
+        let returnRequestObj = null;
+        const returnRequestLookup = {
+            create: () => {
+                if (!ReturnRequestRef.value) return;
+                returnRequestObj = new ej.dropdowns.DropDownList({
+                    dataSource: state.itemReturnListLookupData,
+                    fields: { value: 'id', text: 'number' },
+                    placeholder: 'اختر اذن الارتجاع',
+                    allowFiltering: true,
+                    change: (e) => {
+                        state.returnRequestId = e.value;
+                    }
+                });
+                returnRequestObj.appendTo(ReturnRequestRef.value);
+            },
+            refresh: () => {
+                if (returnRequestObj) {
+                    returnRequestObj.dataSource = state.itemReturnListLookupData;
+                    returnRequestObj.value = state.returnRequestId;
+                }
+            },
+            destroy: () => {
+                if (returnRequestObj) {
+                    returnRequestObj.destroy();
+                    returnRequestObj = null;
+                }
+            }
+        };
+
         const warehouseLookup = {
             obj: null,
             create: () => {
@@ -239,25 +328,21 @@ const App = {
                     change: (e) => {
                         state.warehouseId = e.value;
                         state.errors.warehouseId = '';
+                        // update any existing secondary rows default warehouse
+                        state.secondaryData.forEach(r => { if (!r.warehouseId) r.warehouseId = e.value; });
+                        secondaryGrid.refresh();
+                        methods.refreshSummary();
                     }
                 });
                 warehouseLookup.obj.appendTo(warehouseRef.value);
             },
             refresh: () => {
                 if (warehouseLookup.obj) {
+                    warehouseLookup.obj.dataSource = state.warehouseListLookupData;
                     warehouseLookup.obj.value = state.warehouseId;
                 }
             }
         };
-        //Vue.watch(
-        //    () => state.warehouseId,
-        //    (val) => {
-        //        if (warehouseLookup.obj && val) {
-        //            warehouseLookup.obj.value = val;
-        //            warehouseLookup.obj.dataBind();
-        //        }
-        //    }
-        //);
 
         Vue.watch(
             () => state.status,
@@ -266,6 +351,15 @@ const App = {
                 state.errors.status = '';
             }
         );
+
+        // show/hide purchase vs return divs when transType changes
+        Vue.watch(() => state.transType, (val) => {
+            const purchaseDiv = document.getElementById('PurchaseDiv');
+            const returnDiv = document.getElementById('ReturnDiv');
+            if (purchaseDiv) purchaseDiv.style.display = val === 1 ? 'block' : 'none';
+            if (returnDiv) returnDiv.style.display = val === 2 ? 'block' : 'none';
+            transTypeControl.refresh();
+        });
 
         const services = {
             getMainData: async () => {
@@ -276,10 +370,10 @@ const App = {
                     throw error;
                 }
             },
-            createMainData: async (receiveDate, description, status, purchaseOrderId, createdById,warehouseId) => {
+            createMainData: async (receiveDate, description, status, purchaseOrderId, createdById, warehouseId, returnRequestId, transType) => {
                 try {
                     const response = await AxiosManager.post('/GoodsReceive/CreateGoodsReceive', {
-                        receiveDate, description, status, purchaseOrderId, createdById, warehouseId
+                        receiveDate, description, status, purchaseOrderId, createdById, warehouseId, returnRequestId, transType
                     });
                     return response;
                 } catch (error) {
@@ -294,7 +388,9 @@ const App = {
                 purchaseOrderId,
                 updatedById,
                 warehouseId,
-                productId
+                productId,
+                returnRequestId,
+                transType
             ) => {
                 try {
                     const payload = {
@@ -304,7 +400,9 @@ const App = {
                         status,
                         purchaseOrderId,
                         updatedById,
-                        warehouseId
+                        warehouseId,
+                        returnRequestId,
+                        transType
                     };
 
                     // ✅ ابعتي productId فقط لو له قيمة
@@ -368,7 +466,7 @@ const App = {
                 }
             },
 
-            createSecondaryData: async(moduleId, warehouseId, productId, movement, createdById,purchaseOrderItemId) => {
+            createSecondaryData: async (moduleId, warehouseId, productId, movement, createdById, purchaseOrderItemId) => {
                 try {
                     const response = await AxiosManager.post('/InventoryTransaction/GoodsReceiveCreateInvenTrans', {
                         moduleId, warehouseId, productId, movement, createdById, purchaseOrderItemId
@@ -409,6 +507,15 @@ const App = {
             getWarehouseListLookupData: async () => {
                 try {
                     const response = await AxiosManager.get('/Warehouse/GetWarehouseList', {});
+                    return response;
+                } catch (error) {
+                    throw error;
+                }
+            },
+            // <-- new: item return lookup
+            getItemReturnRequestsLookup: async () => {
+                try {
+                    const response = await AxiosManager.get('/ItemReturnRequests/GetItemReturnRequestsList', {});
                     return response;
                 } catch (error) {
                     throw error;
@@ -467,8 +574,19 @@ const App = {
                     response?.data?.content?.data
                         .filter(warehouse => warehouse.systemWarehouse === true) || [];
 
-                // 🔥 
-               
+                warehouseLookup.refresh();
+            },
+
+            // <-- new: populate item return lookup
+            populateItemReturnLookup: async () => {
+                try {
+                    const resp = await services.getItemReturnRequestsLookup();
+                    state.itemReturnListLookupData = resp?.data?.content?.data ?? [];
+                    // if return dropdown already created, refresh it
+                    returnRequestLookup.refresh();
+                } catch {
+                    state.itemReturnListLookupData = [];
+                }
             },
 
             populateProductListByPurchaseOrder: async (purchaseOrderId) => {
@@ -481,16 +599,13 @@ const App = {
                         id: x.productId,
                         purchaseOrderItemId: x.id,
                         unitPrice: x.unitPrice ?? 0,
-                        quantity:x.quantity ?? 0,
+                        quantity: x.quantity ?? 0,
                         numberName: `${x.productNumber} - ${x.productName}`
                     }));
                 purchaseOrderListLookup.refresh();
                 goodsReceiveStatusListLookup.refresh();
-                warehouseLookup.refresh(); 
+                warehouseLookup.refresh();
             },
-
-     
-
 
             populateSecondaryData: async (goodsReceiveId) => {
                 try {
@@ -519,13 +634,18 @@ const App = {
                     methods.refreshSummary();
                 } catch {
                     state.secondaryData = [];
+                    methods.refreshSummary();
                 }
             },
 
 
             refreshSummary: () => {
-                const totalMovement = state.secondaryData.reduce((sum, record) => sum + (record.movement ?? 0), 0);
-                state.totalMovementFormatted = NumberFormatManager.formatToLocale(totalMovement);
+                // sum of movement * unitPrice
+                const totalAmount = state.secondaryData.reduce((sum, record) => {
+                    const amt = (Number(record.unitPrice) || 0) * (Number(record.movement) || 0);
+                    return sum + amt;
+                }, 0);
+                state.totalMovementFormatted = NumberFormatManager.formatToLocale(totalAmount);
             },
             onMainModalHidden: () => {
                 state.errors.receiveDate = '';
@@ -543,25 +663,35 @@ const App = {
                     if (!validateForm()) {
                         return;
                     }
-                    
+
                     const selectedRow = secondaryGrid.obj.getSelectedRecords()[0]; // أو حسب اختيارك
                     const productId = selectedRow?.productId ?? null;
-                    await services.updateMainData(
-                        state.id,
-                        state.receiveDate,
-                        state.description,
-                        state.status,
-                        state.purchaseOrderId,
-                        StorageManager.getUserId(),
-                        state.warehouseId,
-                        productId // لازم يبقى موجود هنا
-                    );
 
                     const response = state.id === ''
-                        ? await services.createMainData(state.receiveDate, state.description, state.status, state.purchaseOrderId, StorageManager.getUserId(), state.warehouseId)
+                        ? await services.createMainData(
+                            state.receiveDate,
+                            state.description,
+                            state.status,
+                            state.transType === 1 ? state.purchaseOrderId : null,
+                            StorageManager.getUserId(),
+                            state.warehouseId,
+                            state.returnRequestId,
+                            state.transType
+                        )
                         : state.deleteMode
                             ? await services.deleteMainData(state.id, StorageManager.getUserId())
-                            : await services.updateMainData(state.id, state.receiveDate, state.description, state.status, state.purchaseOrderId, StorageManager.getUserId(), state.warehouseId, state.productId);
+                            : await services.updateMainData(
+                                state.id,
+                                state.receiveDate,
+                                state.description,
+                                state.status,
+                                state.transType === 1 ? state.purchaseOrderId : null,
+                                StorageManager.getUserId(),
+                                state.warehouseId,
+                                productId,
+                                state.returnRequestId,
+                                state.transType
+                            );
 
                     if (response.data.code === 200) {
                         await methods.populateMainData();
@@ -599,8 +729,8 @@ const App = {
                     } else {
                         Swal.fire({
                             icon: 'error',
-    title: state.deleteMode ? 'فشل الحذف' : 'فشل الحفظ',
-                                text: response.data.message ?? 'يرجى التحقق من البيانات.',
+                            title: state.deleteMode ? 'فشل الحذف' : 'فشل الحفظ',
+                            text: response.data.message ?? 'يرجى التحقق من البيانات.',
                             confirmButtonText: 'حاول مرة أخرى'
                         });
                     }
@@ -638,17 +768,29 @@ const App = {
                 await secondaryGrid.create(state.secondaryData);
                 await methods.populateWarehouseListLookupData();
                 warehouseLookup.create();
-              
+
+                // load item return lookup and create control
+                await methods.populateItemReturnLookup();
+                transTypeControl.create();
+                returnRequestLookup.create();
+
+                // initial hide/show
+                const purchaseDiv = document.getElementById('PurchaseDiv');
+                const returnDiv = document.getElementById('ReturnDiv');
+                if (purchaseDiv) purchaseDiv.style.display = state.transType === 1 ? 'block' : 'none';
+                if (returnDiv) returnDiv.style.display = state.transType === 2 ? 'block' : 'none';
 
             } catch (e) {
                 console.error('page init error:', e);
             } finally {
-                
+
             }
         });
 
         Vue.onUnmounted(() => {
             mainModalRef.value?.removeEventListener('hidden.bs.modal', methods.onMainModalHidden);
+            // destroy dropdown instances
+            if (returnRequestLookup) returnRequestLookup.destroy?.();
         });
 
         const mainGrid = {
@@ -750,10 +892,17 @@ const App = {
                                     : null;
                                 state.description = selectedRecord.description ?? '';
                                 state.purchaseOrderId = selectedRecord.purchaseOrderId ?? '';
+                                state.returnRequestId = selectedRecord.returnRequestId ?? null;
                                 state.status = String(selectedRecord.status ?? '');
 
                                 await methods.populateProductListByPurchaseOrder(state.purchaseOrderId);
                                 await methods.populateSecondaryData(state.id);
+
+                                // refresh lookups to reflect loaded values
+                                purchaseOrderListLookup.refresh();
+                                returnRequestLookup.refresh();
+                                warehouseLookup.refresh();
+                                goodsReceiveStatusListLookup.refresh();
 
                                 secondaryGrid.refresh();
                                 state.showComplexDiv = true;
@@ -833,7 +982,7 @@ const App = {
                             field: 'warehouseId',
                             headerText: 'المخزن',
                             width: 200,
-                            visible:false,
+                            visible: false,
                             editType: 'dropdownedit',
                             validationRules: { required: true },
                             edit: {
@@ -859,7 +1008,7 @@ const App = {
                             }
                         },
 
-                        
+
                         {
                             field: 'productId',
                             headerText: 'المنتج',
@@ -886,33 +1035,35 @@ const App = {
                                     productObj.destroy();
                                 },
                                 write: function (args) {
-    productObj = new ej.dropdowns.DropDownList({
-        dataSource: state.productListLookupData.filter(p =>
-            p.purchaseOrderItemId !== null // المقبول فقط
-        ),
-        fields: { value: 'id', text: 'numberName' },
-        value: args.rowData.productId,
-        change: function (e) {
-            const selected = state.productListLookupData.find(
-                p => p.id === e.value
-            );
+                                    productObj = new ej.dropdowns.DropDownList({
+                                        dataSource: state.productListLookupData.filter(p =>
+                                            p.purchaseOrderItemId !== null // المقبول فقط
+                                        ),
+                                        fields: { value: 'id', text: 'numberName' },
+                                        value: args.rowData.productId,
+                                        change: function (e) {
+                                            const selected = state.productListLookupData.find(
+                                                p => p.id === e.value
+                                            );
 
-            if (selected) {
-                args.rowData.purchaseOrderItemId = selected.purchaseOrderItemId;
-                args.rowData.unitPrice = selected.unitPrice;
-                args.rowData.quantity = selected.quantity;
-            }
+                                            if (selected) {
+                                                args.rowData.purchaseOrderItemId = selected.purchaseOrderItemId;
+                                                args.rowData.unitPrice = selected.unitPrice;
+                                                args.rowData.quantity = selected.quantity;
+                                            }
 
-            if (movementObj) {
-                movementObj.value = 1;
-            }
-        },
-        placeholder: 'اختر المنتج',
-        floatLabelType: 'Never'
-    });
+                                            if (movementObj) {
+                                                movementObj.value = 1;
+                                            }
+                                            // refresh summary live
+                                            methods.refreshSummary();
+                                        },
+                                        placeholder: 'اختر المنتج',
+                                        floatLabelType: 'Never'
+                                    });
 
-    productObj.appendTo(args.element);
-}
+                                    productObj.appendTo(args.element);
+                                }
 
 
                             }
@@ -943,6 +1094,9 @@ const App = {
                                                 totalObj.value = total;
 
                                             }
+                                            // update model and summary when price changes (if ever)
+                                            args.rowData.unitPrice = e.value;
+                                            methods.refreshSummary();
                                         }
                                     });
                                     priceObj.appendTo(args.element);
@@ -951,7 +1105,7 @@ const App = {
                         },
                         {
                             field: 'quantity',
-                            headerText: 'الكمية',
+                            headerText: ' الكمية امر التوريد',
                             width: 200,
                             type: 'number',
                             format: 'N2',
@@ -961,7 +1115,7 @@ const App = {
 
                         {
                             field: 'movement',
-                            headerText: 'الحركة',
+                            headerText: 'الكمية المدخلة',
                             width: 200,
                             type: 'number',
                             format: 'N2',
@@ -975,23 +1129,36 @@ const App = {
                                 destroy: () => movementObj.destroy(),
                                 write: (args) => {
                                     movementObj = new ej.inputs.NumericTextBox({
-                                        value: args.rowData.movement ?? 0
+                                        value: args.rowData.movement ?? 0,
+                                        change: (e) => {
+                                            // keep the row model updated while editing so amount and summary update live
+                                            args.rowData.movement = e.value;
+                                            methods.refreshSummary();
+                                        }
                                     });
                                     movementObj.appendTo(args.element);
                                 }
                             }
                         },
 
-
-
-
+                        // NEW amount column (movement * unitPrice)
+                        {
+                            field: 'amount',
+                            headerText: 'القيمة',
+                            width: 200,
+                            textAlign: 'Right',
+                            valueAccessor: (field, data) => {
+                                const amt = (Number(data.unitPrice) || 0) * (Number(data.movement) || 0);
+                                return NumberFormatManager.formatToLocale(amt);
+                            }
+                        },
 
                     ],
                     toolbar: [
                         { text: 'تصدير إكسل', tooltipText: 'تصدير إلى Excel', prefixIcon: 'e-excelexport', id: 'SecondaryGrid_excelexport' },
 
                         { type: 'Separator' },
-                         'Edit', 'Delete', 'Update', 'Cancel',
+                        'Edit', 'Delete', 'Update', 'Cancel',
                     ],
                     actionBegin: (args) => {
                         if (args.requestType === 'add') {
@@ -1072,7 +1239,6 @@ const App = {
                                     StorageManager.getUserId(),
                                     args.data.purchaseOrderItemId
                                 );
-
                                 await methods.populateSecondaryData(state.id);
                                 secondaryGrid.refresh();
                                 if (response.data.code === 200) {
@@ -1086,7 +1252,7 @@ const App = {
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'فشل الحفظ',
-                                            text: response.data.message ?? 'يرجى التحقق من البيانات.',
+                                        text: response.data.message ?? 'يرجى التحقق من البيانات.',
                                         confirmButtonText: 'حاول مرة أخرى'
                                     });
                                 }
@@ -1125,7 +1291,7 @@ const App = {
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Update Failed',
-                                            text: response.data.message ?? 'يرجى التحقق من البيانات.',
+                                        text: response.data.message ?? 'يرجى التحقق من البيانات.',
                                         confirmButtonText: 'حاول مرة أخرى'
                                     });
                                 }
@@ -1154,7 +1320,7 @@ const App = {
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Delete Failed',
-                                            text: response.data.message ?? 'يرجى التحقق من البيانات.',
+                                        text: response.data.message ?? 'يرجى التحقق من البيانات.',
                                         confirmButtonText: 'حاول مرة أخرى'
                                     });
                                 }
@@ -1196,9 +1362,11 @@ const App = {
             receiveDateRef,
             purchaseOrderIdRef,
             statusRef,
-            state,
-            handler,
+            TransTypeRef,
+            ReturnRequestRef,
             warehouseRef,
+            state,
+            handler
         };
     }
 };

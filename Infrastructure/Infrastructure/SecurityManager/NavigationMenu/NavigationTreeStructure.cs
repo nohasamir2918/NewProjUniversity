@@ -118,9 +118,10 @@ namespace Infrastructure.SecurityManager.NavigationMenu
             "Name": "اذن الاضافة ",
             "IsModule": false
         },
-        {
-            "URL": "/GoodsReceives/GoodsReceiveList",
-            "Name": "اذن الاضافة ",
+
+         {
+            "URL": "/IssueRequests/IssueRequestsList",
+            "Name": "طلب وإذن الصرف ",
             "IsModule": false
         },
          {
@@ -140,7 +141,7 @@ namespace Infrastructure.SecurityManager.NavigationMenu
                         "IsModule": false
                     },
                     {
-                        "URL": "/StockCounts/StockCountList",
+                        "URL": "/InventoryStocktaking/InventoryStocktaking",
                         "Name": "جرد المخزون",
                         "IsModule": false
                     }
