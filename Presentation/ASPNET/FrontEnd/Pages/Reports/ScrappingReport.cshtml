@@ -3,16 +3,12 @@
     ViewData["Title"] = "تقرير دفتر الشطب";
 }
 
-<style>
-    [v-cloak] {
-        display: none;
-    }
-</style>
-<h3 class="title"> تقرير دفتر الشطب</h3>
+<h3 class="title">تقرير دفتر الشطب</h3>
+
 <div id="scrappingReportApp" v-cloak>
 
     <!-- الفلاتر -->
-    <div class="mb-3 d-flex align-items-end gap-2">
+    <div class="mb-3 d-flex gap-2">
         <div>
             <label>من تاريخ</label>
             <input type="date" v-model="filters.fromDate" class="form-control" />
@@ -20,6 +16,20 @@
         <div>
             <label>إلى تاريخ</label>
             <input type="date" v-model="filters.toDate" class="form-control" />
+        </div>
+        <div>
+            <label>المخزن</label>
+            <select v-model="filters.warehouseId" class="form-control">
+                <option value="">الكل</option>
+                <option v-for="wh in warehouses" :key="wh.id" :value="wh.id">{{ wh.name }}</option>
+            </select>
+        </div>
+        <div>
+            <label>الصنف</label>
+            <select v-model="filters.productId" class="form-control">
+                <option value="">الكل</option>
+                <option v-for="p in products" :key="p.id" :value="p.id">{{ p.name }}</option>
+            </select>
         </div>
         <button class="btn btn-primary" v-on:click="loadReport">بحث</button>
     </div>
@@ -39,15 +49,14 @@
         </thead>
         <tbody>
             <tr v-for="item in pagedData" :key="item.scrappingNumber + item.productCode">
-                <td v-text="item.scrappingNumber"></td>
-                <td v-text="formatDate(item.scrappingDate)"></td>
-                <td v-text="item.warehouseName"></td>
-                <td v-text="item.productName"></td>
-                <td v-text="item.unitName"></td>
-                <td v-text="item.quantity"></td>
-                <td v-text="item.notes"></td>
+                <td>{{ item.scrappingNumber }}</td>
+                <td>{{ formatDate(item.scrappingDate) }}</td>
+                <td>{{ item.warehouseName }}</td>
+                <td>{{ item.productName }}</td>
+                <td>{{ item.unitName }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.notes }}</td>
             </tr>
-
             <tr v-if="pagedData.length === 0">
                 <td colspan="7" class="text-center">لا توجد بيانات</td>
             </tr>
@@ -55,22 +64,11 @@
     </table>
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            الصفحة {{ currentPage }} من {{ totalPages }}
-        </div>
+    <div class="d-flex justify-content-between align-items-center mt-2">
+        <div>الصفحة {{ currentPage }} من {{ totalPages }}</div>
         <div class="btn-group">
-            <button class="btn btn-outline-primary"
-                    :disabled="currentPage === 1"
-                    v-on:click="prevPage">
-                السابق
-            </button>
-
-            <button class="btn btn-outline-primary"
-                    :disabled="currentPage === totalPages"
-                    v-on:click="nextPage">
-                التالي
-            </button>
+            <button class="btn btn-outline-primary" :disabled="currentPage===1" v-on:click="prevPage">السابق</button>
+            <button class="btn btn-outline-primary" :disabled="currentPage===totalPages" v-on:click="nextPage">التالي</button>
         </div>
     </div>
 </div>
@@ -80,86 +78,98 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
-        const { ref, computed } = Vue;
+        const { ref, computed, onMounted } = Vue;
 
         Vue.createApp({
             setup() {
 
                 const filters = ref({
                     fromDate: '',
-                    toDate: ''
+                    toDate: '',
+                    warehouseId: '',
+                    productId: ''
                 });
 
                 const report = ref([]);
+                
+              
 
-                // Pagination
                 const pageSize = ref(5);
                 const currentPage = ref(1);
 
-                const totalPages = computed(() => {
-                    return Math.ceil(report.value.length / pageSize.value) || 1;
+                const totalPages = computed(() => Math.ceil(report.value.length / pageSize.value) || 1);
+                const pagedData = computed(() => {
+                    const start = (currentPage.value - 1) * pageSize.value;
+                    return report.value.slice(start, start + pageSize.value);
                 });
-
-                    const pagedData = computed(() => {
-            if (!Array.isArray(report.value)) return [];
-            const start = (currentPage.value - 1) * pageSize.value;
-            return report.value.slice(start, start + pageSize.value);
-        });
 
                 const loadReport = async () => {
-            try {
-                const response = await axios.get('/api/Scrapping/scrapping', {
-                    params: {
-                        fromDate: filters.value.fromDate,
-                        toDate: filters.value.toDate
+                    try {
+                        const response = await axios.get('/api/Scrapping/scrapping', {
+                            params: {
+                                fromDate: filters.value.fromDate,
+                                toDate: filters.value.toDate,
+                                warehouseId: filters.value.warehouseId,
+                                productId: filters.value.productId
+                            }
+                        });
+
+                        const list =
+                            response.data?.data?.content?.data ??
+                            response.data?.data?.data ??
+                            response.data?.data ??
+                            [];
+
+                        report.value = Array.isArray(list) ? list : [];
+                        currentPage.value = 1;
+                    } catch (e) {
+                        console.error(e);
+                        report.value = [];
                     }
+                };
+
+                const warehouses = Vue.ref([]);
+
+                const loadWarehouses = async () => {
+                    try {
+                        const res = await axios.get('/api/Warehouse/GetWarehouseList');
+                        console.log('RAW RESPONSE:', res.data);
+
+                        // فك التغليف للوصول للقائمة الفعلية
+                        warehouses.value = res.data?.content?.data ?? [];
+
+                        
+                    } catch (e) {
+                        console.error('Error loading warehouses:', e);
+                    }
+                };
+
+                const products = ref([]);
+                const loadProducts = async () => {
+                    try {
+                        const res = await axios.get('/api/Product/GetProductList');
+                       // products.value = res.data?.data?.content?.data ?? res.data?.data ?? [];
+                        products.value = res.data?.content?.data ?? [];
+                        //products.value = res.data?.data ?? [];
+                    } catch (e) {
+                        console.error('Error loading products', e);
+                    }
+                };
+
+                const formatDate = (date) => date ? new Date(date).toLocaleDateString() : '';
+
+                const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++; };
+                const prevPage = () => { if (currentPage.value > 1) currentPage.value--; };
+
+                onMounted(() => {
+                    loadWarehouses();
+                    loadProducts();
                 });
 
-                console.log("RAW RESPONSE", response.data);
-
-                // 👇 فكّ التغليف الصح
-                const list =
-                    response.data?.data?.content?.data ??   // ApiSuccessResult
-                    response.data?.data?.data ??             // wrapper تاني
-                    response.data?.data ??                   // wrapper واحد
-                    [];
-
-                console.log("FINAL LIST", list, Array.isArray(list));
-
-                report.value = Array.isArray(list) ? list : [];
-                currentPage.value = 1;
-
-            } catch (e) {
-                console.error(e);
-                report.value = [];
-            }
-        };
-
-
-                const formatDate = (date) => {
-                    if (!date) return '';
-                    return new Date(date).toLocaleDateString();
-                };
-
-                const nextPage = () => {
-                    if (currentPage.value < totalPages.value)
-                        currentPage.value++;
-                };
-
-                const prevPage = () => {
-                    if (currentPage.value > 1)
-                        currentPage.value--;
-                };
-
                 return {
-                    filters,
-                    loadReport,
-                    pagedData,
-                    currentPage,
-                    totalPages,
-                    formatDate,
-                    nextPage,
-                    prevPage
+                    filters, report, warehouses, products,
+                    pagedData, currentPage, totalPages,
+                    formatDate, nextPage, prevPage, loadReport
                 };
             }
         }).mount('#scrappingReportApp');

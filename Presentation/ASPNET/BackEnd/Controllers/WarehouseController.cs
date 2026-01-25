@@ -57,7 +57,7 @@ public class WarehouseController : BaseApiController
         });
     }
 
-    [Authorize]
+    
     [HttpGet("GetWarehouseList")]
     public async Task<ActionResult<ApiSuccessResult<GetWarehouseListResult>>> GetWarehouseListAsync(
         CancellationToken cancellationToken,

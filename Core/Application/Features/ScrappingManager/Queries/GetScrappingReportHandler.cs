@@ -1,6 +1,7 @@
 ﻿using Application.Common.CQS.Queries;
 using Application.Common.Services;
 using Application.Features.ScrappingManager.Queries;
+using Application.Features.ScrappingManager.Queries.Application.Features.ScrappingManager.Queries;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -25,8 +26,8 @@ namespace Application.Features.ScrappingManager.Queries
         }
 
         public async Task<GetScrappingReportResult> Handle(
-            GetScrappingReportRequest request,
-            CancellationToken cancellationToken)
+     GetScrappingReportRequest request,
+     CancellationToken cancellationToken)
         {
             var query =
                 from s in _context.Scrapping.AsNoTracking()
@@ -40,14 +41,7 @@ namespace Application.Features.ScrappingManager.Queries
                     on p.UnitMeasureId equals u.Id into unit
                 from u in unit.DefaultIfEmpty()
                 where it.ModuleName == "Scrapping"
-                select new
-                {
-                    s,
-                    it,
-                    p,
-                    w,
-                    u
-                };
+                select new { s, it, p, w, u };
 
             // IsDeleted
             if (request.IsDeleted.HasValue)
@@ -62,13 +56,14 @@ namespace Application.Features.ScrappingManager.Queries
 
             // Warehouse Filter
             if (!string.IsNullOrEmpty(request.WarehouseId))
-            {
                 query = query.Where(x => x.s.WarehouseId == request.WarehouseId);
-            }
 
+            // Product Filter
+            if (!string.IsNullOrEmpty(request.ProductId))
+                query = query.Where(x => x.p.Id == request.ProductId);
 
             var entities = await query
-                .Select(x => new Application.Features.ScrappingManager.Queries.ScrappingReportDto
+                .Select(x => new ScrappingReportDto
                 {
                     ScrappingNumber = x.s.Number,
                     ScrappingDate = x.s.ScrappingDate.Value,
@@ -87,5 +82,6 @@ namespace Application.Features.ScrappingManager.Queries
                 Data = entities
             };
         }
+
     }
 }

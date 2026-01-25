@@ -93,7 +93,10 @@
             <div class="col-md-6">
                 <span style="color:#000;font-weight:bold;">اسم الجهة: {{ state.company.name }}</span>
                 <br />
-                <span style="color:#000;font-weight:bold;">مخزن: ..............</span>
+                <span style="color:#000;font-weight:bold;">
+                    مخزن: {{ state.warehouseName || '—' }}
+                </span>
+
                 <br />
                 <span style="color:#000;font-weight:bold;">التاريخ: {{ state.date }}</span>
             </div>
@@ -101,8 +104,14 @@
                 <br />
                 <span style="color:#000;font-weight:bold;">وارد من: {{ state.vendor.name }}</span>
                 <br />
-                <span style="color:#000;font-weight:bold;">سند الاضافة: ...........</span>
-                <span style="color:#000;font-weight:bold;">بتاريخ: ...........</span>
+                <span style="font-weight:bold;">
+                    سند الاضافة: {{ state.number }}
+                </span>
+                <br />
+                <span style="font-weight:bold;">
+                    بتاريخ: {{ state.date }}
+                </span>
+
                 </div>
             
 
@@ -159,18 +168,20 @@
                 <div class="tafqeet" style="text-align:right">
                     <strong>فقط مبلغ :</strong>
                     {{ state.amountInWords }}
+
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="tafqeet" style="text-align:right">
                     <strong>الاجمالي :</strong>
-                    ...............
+                    {{ state.movementTotal }}
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="tafqeet" style="text-align:right">
-                    <strong> كاتب الشطب :</strong>
-                    ..............
+                    <strong>كاتب الشطب :</strong>
+                    {{ state.createdBy || '—' }}
+
                 </div>
             </div>
         </div>
@@ -183,7 +194,7 @@
                 <span style="color:#000;font-weight:bold;">    .استلمت الأصناف المبينة أعلاه بحالة جيدة وتم اضافتها في دفتر عهدة المخزن</span>
           </div>
           <div class="col-md-3">
-                <span style="color:#000;font-weight:bold;">أمين المخزن/....... </span>
+                <span style="color:#000;font-weight:bold;">أمين المخزن/{{ state.createdBy || '—' }} </span>
             </div>
       </div>
       <br />

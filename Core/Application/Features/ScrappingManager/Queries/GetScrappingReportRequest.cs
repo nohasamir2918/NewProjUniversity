@@ -8,7 +8,7 @@ namespace Application.Features.ScrappingManager.Queries
     {
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
-        
+        public string ProductId { get; set; }
         public bool? IsDeleted { get; set; }
         public string WarehouseId { get; set; }
 
