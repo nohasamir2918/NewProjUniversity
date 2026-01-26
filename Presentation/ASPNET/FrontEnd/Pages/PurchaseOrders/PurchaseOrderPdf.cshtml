@@ -4,11 +4,7 @@
 }
 
 <style>
-    body {
-        direction: rtl;
-        font-family: "Times New Roman", serif;
-        background: #f5fI5F5;
-    }
+   
 
     #content, #content * {
         direction: rtl !important;
@@ -84,15 +80,25 @@
             float: right;
             margin-left: 6px;
         }
-</style>
+        /**/
+   
 
+</style>
+<div class="row">
+    <div class="col-md-6">
+        <h3 style="font-size: 1.75rem !important;text-decoration:none !important;text-align:right !important;margin-bottom:20px !important;">أمر توريد</h3>
+    </div>
+    <div class="col-md-6">
+        <div class="no-print text-center mb-3">
+            <button class="btn btn-danger" v-on:click="handler.downloadPDF">
+                🖨️     تحميل PDF
+            </button>
+        </div>
+    </div>
+</div>
 <div id="app">
 
-    <div class="no-print text-center mb-3">
-        <button class="btn btn-danger" v-on:click="handler.downloadPDF">
-            تحميل PDF
-        </button>
-    </div>
+  
 
     <div id="content" class="print-area">
 
@@ -159,24 +165,36 @@
             </thead>
             <tbody>
                 <tr v-for="(item,index) in state.items" :key="index">
-                    <td class="center">{{ index + 1 }}</td>
+                   
                     <td>{{ item.product.name }}</td>
-                    <td class="center">{{ item.quantity }}</td>
-                    <td class="center">{{ item.unitPrice }}</td>
-                    <td class="center">{{ item.total }}</td>
+                    <td class="center">{{ toArabicNumber(index + 1) }}</td>
+                    <td class="center">{{ toArabicNumber(item.quantity) }}</td>
+                    <td class="center">{{ toArabicNumber(item.unitPrice) }}</td>
+                    <td class="center">{{ toArabicNumber(item.total) }}</td>
+
                 </tr>
                 <tr>
                     <td colspan="4">الجملة</td>
-                    <td>{{ state.subTotal }}</td>
+                    <td>{{toArabicNumber( state.subTotal) }}</td>
                 </tr>
-                 <tr>
+                <tr v-if="hasTax">
                     <td colspan="4">ضريبة القيمة المضافة 14%</td>
-                    <td>{{ state.tax }}</td>
+                    <td>{{ toArabicNumber(state.tax) }}</td>
                 </tr>
+
+                <tr v-else>
+                    <td colspan="4">ضريبة القيمة المضافة</td>
+                    <td>غير شامل</td>
+                </tr>
+
+
                 <tr>
-                    <td colspan="4">اجمالي شامل الضريبة</td>
-                    <td>{{ state.totalAmount }}</td>
+                    <td colspan="4">
+                        {{ state.tax > 0 ? 'اجمالي شامل الضريبة' : 'اجمالي غير شامل الضريبة' }}
+                    </td>
+                    <td>{{ toArabicNumber(state.totalAmount) }}</td>
                 </tr>
+
             </tbody>
         </table>
 
@@ -198,22 +216,25 @@
 
         <div class="section bold">
             ووفقًا للعرض المقدم منكم والمقبول فنيًا بإجمالي مبلغ
-            ({{ totalAmountInWords }} جنيه مصري فقط لا غير)
-            والأسعار شاملة ضريبة القيمة المضافة
+            {{ toArabicNumber(state.totalAmount) }} جنيهًا مصريًا فقط لا غير
+            ({{ totalAmountInWords }} فقط لا غير)
+            <span v-if="hasTax">
+                والأسعار شاملة ضريبة القيمة المضافة
+            </span>
+            <span v-else>
+                والأسعار غير شاملة ضريبة القيمة المضافة
+            </span>
         </div>
+
+
 
 
         <!-- ===== الشروط (ثابتة مثل الصورة) ===== -->
         <div class="section">
             <span class="bold">وذلك بالشروط التالية:</span>
             <ol>
-                <li>التوريد خلال أسبوع من تاريخ استلام أمر التوريد.</li>
-                <li>الأسعار شاملة جميع الضرائب.</li>
-                <li>السداد بعد الفحص والاستلام.</li>
-                <li>الدفع إلكتروني لحساب / الخزينة الموحدة.</li>
-                <li>الاستلام بمخازن الجامعة.</li>
-                <li>خصم 0.5% تأمين نهائي.</li>
-            </ul>
+                <li>{{ state.description }}</li>
+            </ol>
         </div>
         <div class="row">
             <div class="col-md-12 center">

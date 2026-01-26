@@ -14,6 +14,8 @@ namespace Application.Features.ScrappingManager.Queries
         {
             public string ScrappingNumber { get; set; }
             public DateTime ScrappingDate { get; set; }
+            public DateTime TransactionDate { get; set; }
+            public string ModuleName { get; set; }
             public string WarehouseName { get; set; }
             public string ProductCode { get; set; }
             public string ProductName { get; set; }

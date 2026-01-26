@@ -842,7 +842,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ReturnRequestId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
@@ -857,11 +857,18 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("WarehouseToId")
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Number");
 
                     b.HasIndex("PurchaseOrderId");
+
+                    b.HasIndex("ReturnRequestId");
+
+                    b.HasIndex("WarehouseToId");
 
                     b.ToTable("GoodsReceive");
                 });
@@ -2821,7 +2828,19 @@ namespace Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("PurchaseOrderId");
 
+                    b.HasOne("Domain.Entities.ItemReturnRequests", "ItemReturnRequests")
+                        .WithMany()
+                        .HasForeignKey("ReturnRequestId");
+
+                    b.HasOne("Domain.Entities.Warehouse", "WarehouseTo")
+                        .WithMany()
+                        .HasForeignKey("WarehouseToId");
+
+                    b.Navigation("ItemReturnRequests");
+
                     b.Navigation("PurchaseOrder");
+
+                    b.Navigation("WarehouseTo");
                 });
 
             modelBuilder.Entity("Domain.Entities.InventoryTransaction", b =>

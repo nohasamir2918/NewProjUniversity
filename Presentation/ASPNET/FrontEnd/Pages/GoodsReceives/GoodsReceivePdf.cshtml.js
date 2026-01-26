@@ -1,9 +1,14 @@
 ﻿function numberToArabicWordsWithPiasters(amount) {
 
+    if (amount === null || amount === undefined || isNaN(amount))
+        return "صفر جنيه مصري فقط لا غير";
+
     const ones = ["", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة"];
     const tens = ["", "عشرة", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون"];
-    const teens = ["عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر", "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر"];
-    const hundreds = ["", "مائة", "مائتان", "ثلاثمائة", "أربعمائة", "خمسمائة", "ستمائة", "سبعمائة", "ثمانمائة", "تسعمائة"];
+    const teens = ["عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر",
+        "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر"];
+    const hundreds = ["", "مائة", "مائتان", "ثلاثمائة", "أربعمائة",
+        "خمسمائة", "ستمائة", "سبعمائة", "ثمانمائة", "تسعمائة"];
 
     function convert(n) {
         let result = "";
@@ -26,36 +31,42 @@
         return result;
     }
 
-    if (!amount) return "صفر جنيه مصري";
-
-    let parts = amount.toString().split('.');
+    let parts = Number(amount).toFixed(2).split('.');
     let pounds = parseInt(parts[0]);
-    let piasters = parts[1] ? parseInt(parts[1].substring(0, 2)) : 0;
+    let piasters = parseInt(parts[1]);
 
     let words = "";
 
-    // الجنيهات
+    // ===== الجنيهات =====
     if (pounds > 0) {
         if (pounds < 1000) {
             words = convert(pounds);
         } else {
             let thousands = Math.floor(pounds / 1000);
             let remainder = pounds % 1000;
-            words = convert(thousands) + " ألف";
-            if (remainder > 0) {
+
+            if (thousands === 1) words = "ألف";
+            else if (thousands === 2) words = "ألفان";
+            else if (thousands <= 10) words = convert(thousands) + " آلاف";
+            else words = convert(thousands) + " ألف";
+
+            if (remainder > 0)
                 words += " و " + convert(remainder);
-            }
         }
+
         words += " جنيهًا مصريًا";
+    } else {
+        words = "صفر جنيه مصري";
     }
 
-    // القروش
+    // ===== القروش =====
     if (piasters > 0) {
         words += " و " + convert(piasters) + " قرشًا";
     }
 
-    return words;
+    return words + " فقط لا غير";
 }
+
 
 const App = {
  
@@ -125,72 +136,61 @@ const App = {
                     country: company.country
                 };
 
-                state.companyAddress = [
-                    company.street,
-                    company.city,
-                    company.state,
-                    company.zipCode,
-                    company.country
-                ].filter(Boolean).join(', ');
-
                 /* ===== بيانات المستند ===== */
                 const pdfData = state.pdfData;
+                //state.createdBy = SecurityManager.getUser()?.fullName || '';
+
                 state.vendor = pdfData.purchaseOrder?.vendor || {};
-                state.vendorAddress = [
-                    state.vendor.street,
-                    state.vendor.city,
-                    state.vendor.state,
-                    state.vendor.zipCode,
-                    state.vendor.country
-                ].filter(Boolean).join(', ');
-
-                state.number = pdfData?.number || '';
                 state.date = DateFormatManager.formatToLocale(pdfData?.receiveDate) || '';
-                state.reference = pdfData?.purchaseOrder?.number || '';
+                state.number = pdfData?.number || '';
 
-                /* ===== 1️⃣ Mapping الأصناف (من PO Item + Transaction) ===== */
-                const poItems = state.pdfData?.purchaseOrder?.purchaseOrderItemList || [];
+                /* ✅ اسم المخزن (هنا 👇) */
+                state.warehouseName =
+                    state.pdfTransactionList?.[0]?.warehouse?.name || '';
 
-                state.mappedItems = (state.pdfTransactionList || []).map(trx => {
+                /* ===== Mapping الأصناف ===== */
+                /* ===== Mapping الأصناف (المقبولة فقط) ===== */
+                const poItems = pdfData?.purchaseOrder?.purchaseOrderItemList || [];
+                console.log('Transactions:', state.pdfTransactionList);
+                console.log('PO Items:', poItems);
 
-                    const poItem = poItems.find(
-                        x => x.productId === trx.productId
-                    ) || {};
+                state.mappedItems = state.pdfTransactionList
+                    .map(trx => {
+                        const poItem = poItems.find(
+                            x => x.productId === trx.productId
+                        );
 
-                    const qty = trx.movement || 0;
-                    const price = poItem.unitPrice || 0;
-                    const amount = qty * price;
+                        // ✅ عرض الأصناف المقبولة فقط
+                        if (!poItem || poItem.itemStatus !== true) return null;
 
-                    return {
-                        product: `${trx.product?.number || ''} ${trx.product?.name || ''}`,
-                        unit: trx.product?.unit?.name || '',
-                        movement: qty,
+                        const qty = trx.movement ?? 0;
+                        const price = poItem.unitPrice ?? 0;
+                        const amount = qty * price;
 
-                        // ✔ جاية من PurchaseOrderItem
-                        unitPrice: price,
-                        status:
-                            poItem.status === true ? 'مقبول' :
-                                poItem.status === false ? 'مرفوض' : '',
-                        notes: poItem.reasons || '',
+                        return {
+                            product: `${trx.product?.number || ''} ${trx.product?.name || ''}`,
+                            unit: trx.product?.unitMeasure?.name || '',
+                            movement: qty,
+                            unitPrice: price,
+                            value: amount,
+                            amount: amount,
+                            status: 'مقبول',
+                            notes: poItem.reasons || ''
+                        };
+                    })
+                    .filter(Boolean);
 
-                        value: amount,
-                        amount: amount
-                    };
-                });
 
-               
-
-                /* ===== 2️⃣ حساب الإجمالي ===== */
+                /* ===== الإجمالي ===== */
                 const total = state.mappedItems.reduce(
-                    (sum, item) => sum + (item.amount || 0),
+                    (sum, item) => sum + item.amount,
                     0
                 );
 
                 state.movementTotal = NumberFormatManager.formatToLocale(total);
-
-                /* ===== 3️⃣ التفقيط ===== */
                 state.amountInWords = numberToArabicWordsWithPiasters(total);
             }
+
 
 
         };

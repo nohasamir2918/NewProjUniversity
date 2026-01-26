@@ -113,24 +113,34 @@ const App = {
         
 
         const emptyCommitteeMember = () => ({
-            id: null,                     // DB Id
-            tempId: crypto.randomUUID(),  // ✅ ID مؤقت
+            id: null,
+            tempId: crypto.randomUUID(), // 🔥 مهم
             goodsExamineId: '',
             employeeName: '',
             employeePositionName: '',
             employeeType: true,
-            description: ''
+            description: '',
+            isDeleted: false   // ✅ جديد
         });
+
 
         const addCommitteeMember = () => {
             state.committeeList.push(emptyCommitteeMember());
         };
 
         const removeCommitteeMember = (index) => {
-            if (state.committeeList.length > 1) {
+            const member = state.committeeList[index];
+
+            // 🟢 لو موجود في DB
+            if (member.id) {
+                member.isDeleted = true;   // ✅ علّميه محذوف
+            } else {
+                // 🟢 لسه جديد → احذفيه من الواجهة
                 state.committeeList.splice(index, 1);
             }
         };
+
+
 
         const validateForm = function () {
             state.errors.ExamineDate = '';
@@ -489,17 +499,7 @@ const App = {
         };
 
         const methods = {
-            emptyCommitteeMember() {
-                return {
-                    employeeName: '',
-                    employeePositionName: '',
-                    employeeType: null,
-                    description: ''
-                };
-            },
-            addCommitteeMember() {
-                this.state.committeeList.push(this.emptyCommitteeMember());
-            },
+           
             populateMainData: async () => {
                 const response = await services.getMainData();
                 state.mainData = response?.data?.content?.data.map(item => ({
@@ -612,8 +612,10 @@ const App = {
                         employeeName: member.employeeName,
                         employeePositionName: member.employeePositionName,
                         employeeType: member.employeeType,
-                        description: member.description
+                        description: member.description,
+                        isDeleted: member.isDeleted === true
                     }));
+
 
                     const response = state.id === ''
                         ? await services.createMainData(

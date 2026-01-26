@@ -118,9 +118,10 @@ namespace Infrastructure.SecurityManager.NavigationMenu
             "Name": "اذن الاضافة ",
             "IsModule": false
         },
-        {
+
+         {
             "URL": "/IssueRequests/IssueRequestsList",
-            "Name": "طلب و اذن صرف ",
+            "Name": "طلب وإذن الصرف ",
             "IsModule": false
         },
          {
@@ -140,7 +141,7 @@ namespace Infrastructure.SecurityManager.NavigationMenu
                         "IsModule": false
                     },
                     {
-                        "URL": "/StockCounts/StockCountList",
+                        "URL": "/InventoryStocktaking/InventoryStocktaking",
                         "Name": "جرد المخزون",
                         "IsModule": false
                     }
@@ -162,7 +163,11 @@ namespace Infrastructure.SecurityManager.NavigationMenu
             
         ]
         """;
-
+        //, {
+        //    "URL": "/StockCounts/StockCountList",
+        //    "Name": "جرد المخزون",
+        //    "IsModule": false
+        //}
         public static List<MenuNavigationTreeNodeDto> GetCompleteMenuNavigationTreeNode()
         {
             var json = JsonStructure;

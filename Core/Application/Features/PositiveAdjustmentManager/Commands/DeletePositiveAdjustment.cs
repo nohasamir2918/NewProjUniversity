@@ -66,7 +66,7 @@ public class DeletePositiveAdjustmentHandler : IRequestHandler<DeletePositiveAdj
             entity.IsDeleted,
             entity.UpdatedById,
             null,
-            cancellationToken
+            null,   cancellationToken
             );
 
         return new DeletePositiveAdjustmentResult

@@ -66,7 +66,7 @@ public class DeleteSalesReturnHandler : IRequestHandler<DeleteSalesReturnRequest
             entity.IsDeleted,
             entity.UpdatedById,
             null,
-            cancellationToken
+            null, cancellationToken
             );
 
         return new DeleteSalesReturnResult

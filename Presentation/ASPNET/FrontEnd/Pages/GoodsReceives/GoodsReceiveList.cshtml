@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "قائمة استلام البضائع";
 }
-
+<h3 class="title"> استلام البضائع</h3>
 <div id="app" v-cloak>
     <div class="row">
         <div class="col-12">
@@ -32,31 +32,44 @@
 
                                     <div class="card-body">
                                         <div class="row mb-2">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label for="ReceiveDate">تاريخ طلب الاضافة</label>
                                                 <input ref="receiveDateRef">
                                                 <label class="text-danger">{{ state.errors.receiveDate }}</label>
                                             </div>
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label for="Number">الرقم</label>
                                                 <input ref="numberRef" v-model="state.number" readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label >سند الاضافة
+                                                    </label>
+                                                <div ref="TransTypeRef"></div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-2">
-                                            <div class="col-md-6">
-                                                <label for="PurchaseOrderId">أمر التوريد</label>
+                                            <div class="col-md-4" id="PurchaseDiv">
+                                                <label>أمر التوريد</label>
                                                 <div ref="purchaseOrderIdRef"></div>
-                                                <label class="text-danger">{{ state.errors.purchaseOrderId }}</label>
+                                            </div>
+                                            <div class="col-md-4" id="ReturnDiv">
+                                                <label>اذن ارتجاع</label>
+                                                <div ref="ReturnRequestRef"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>الحالة</label>
+                                                <div ref="statusRef"></div>
                                             </div>
 
-                                            <div class="col-md-6">
-                                                <label for="Status">الحالة</label>
-                                                <div ref="statusRef"></div>
-                                                <label class="text-danger">{{ state.errors.status }}</label>
+                                            <div class="col-md-4">
+                                                <label>المخزن</label>
+                                                <div ref="warehouseRef"></div>
+                                                <label class="text-danger">{{ state.errors.warehouseId }}</label>
                                             </div>
                                         </div>
+                                      
 
                                         <div class="row mb-2">
                                             <div class="col-md-12">
@@ -144,4 +157,8 @@
 
 @section scripts {
     <script src="~/FrontEnd/Pages/GoodsReceives/GoodsReceiveList.cshtml.js"></script>
+    <script>
+
+
+    </script>
 }

@@ -301,6 +301,7 @@ public class SecurityService : ISecurityService
         var registeredToken = await _context.Token.SingleOrDefaultAsync(x => x.RefreshToken == refreshToken, cancellationToken);
         if (registeredToken == null)
         {
+            
             throw new Exception("Refresh token invalid, please re-login");
         }
         var user = await _userManager.FindByIdAsync(registeredToken?.UserId ?? "");

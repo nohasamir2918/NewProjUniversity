@@ -81,6 +81,7 @@ public class UpdateTransferOutHandler : IRequestHandler<UpdateTransferOutRequest
             entity.IsDeleted,
             entity.UpdatedById,
             entity.WarehouseFromId,
+            null,
             cancellationToken
             );
 

@@ -79,36 +79,53 @@ public class UpdateGoodsExamineHandler : IRequestHandler<UpdateGoodsExamineReque
         entity.CommitteeDesionNumber=request.CommitteeDesionNumber;
         _repository.Update(entity);
 
-       
-        // 🧹 حذف اللجان القديمة
-        var existingCommittees = await _committeeRepository
-      .GetQuery()
-      .Where(x => x.GoodsExamineId == entity.Id)
-      .ToListAsync(cancellationToken);
 
-        foreach (var dto in request.committeeList)
+        // 🧹 حذف اللجان القديمة
+        // 🧹 احصل على كل اللجان القديمة
+        var existingCommittees = await _committeeRepository
+            .GetQuery()
+            .Where(x => x.GoodsExamineId == entity.Id)
+            .ToListAsync(cancellationToken);
+
+        // 🟢 علامة حذف مؤقتة لكل عضو موجود
+        foreach (var oldMember in existingCommittees)
         {
-            if (string.IsNullOrEmpty(dto.Id))
+            var dto = request.committeeList?.FirstOrDefault(c => c.Id == oldMember.Id);
+            if (dto == null)
             {
-                await _committeeRepository.CreateAsync(new ExamineCommitee
-                {
-                    GoodsExamineId = entity.Id,
-                    EmployeeName = dto.EmployeeName,
-                    EmployeePositionName = dto.EmployeePositionName,
-                    EmployeeType = dto.EmployeeType,
-                    Description = dto.Description,
-                    CreatedById = request.UpdatedById
-                }, cancellationToken);
+                // لو العضو مش موجود في request => اعتبره محذوف
+                oldMember.IsDeleted = true;
             }
             else
             {
-                var old = existingCommittees.First(x => x.Id == dto.Id);
-                old.EmployeeName = dto.EmployeeName;
-                old.EmployeePositionName = dto.EmployeePositionName;
-                old.EmployeeType = dto.EmployeeType;
-                old.Description = dto.Description;
+                oldMember.EmployeeName = dto.EmployeeName;
+                oldMember.EmployeePositionName = dto.EmployeePositionName;
+                oldMember.EmployeeType = dto.EmployeeType;
+                oldMember.Description = dto.Description;
+                oldMember.IsDeleted = dto.IsDeleted;
             }
         }
+
+        // 🟢 إضافة أعضاء جدد
+        if (request.committeeList != null)
+        {
+            foreach (var dto in request.committeeList)
+            {
+                if (string.IsNullOrEmpty(dto.Id))
+                {
+                    await _committeeRepository.CreateAsync(new ExamineCommitee
+                    {
+                        GoodsExamineId = entity.Id,
+                        EmployeeName = dto.EmployeeName,
+                        EmployeePositionName = dto.EmployeePositionName,
+                        EmployeeType = dto.EmployeeType,
+                        Description = dto.Description,
+                        CreatedById = request.UpdatedById
+                    }, cancellationToken);
+                }
+            }
+        }
+
 
 
         await _unitOfWork.SaveAsync(cancellationToken);
@@ -120,6 +137,7 @@ public class UpdateGoodsExamineHandler : IRequestHandler<UpdateGoodsExamineReque
             (InventoryTransactionStatus?)entity.Status,
             entity.IsDeleted,
             entity.UpdatedById,
+            null,   
             null,
             cancellationToken
             );

@@ -75,7 +75,7 @@ public class UpdatePositiveAdjustmentHandler : IRequestHandler<UpdatePositiveAdj
             entity.IsDeleted,
             entity.UpdatedById,
             null,
-            cancellationToken
+            null, cancellationToken
             );
 
         return new UpdatePositiveAdjustmentResult

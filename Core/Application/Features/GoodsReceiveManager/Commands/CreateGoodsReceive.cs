@@ -21,6 +21,9 @@ public class CreateGoodsReceiveRequest : IRequest<CreateGoodsReceiveResult>
     public string? Status { get; init; }
     public string? Description { get; init; }
     public string? PurchaseOrderId { get; init; }
+    public string? ReturnRequestId { get; init; }   // new
+    public int? TransType { get; init; }            // new: 1 = PurchaseOrder, 2 = ReturnRequest
+    public string? WarehouseId { get; init; }       // optionally choose warehouse
     public string? CreatedById { get; init; }
 }
 
@@ -30,7 +33,7 @@ public class CreateGoodsReceiveValidator : AbstractValidator<CreateGoodsReceiveR
     {
         RuleFor(x => x.ReceiveDate).NotEmpty();
         RuleFor(x => x.Status).NotEmpty();
-        RuleFor(x => x.PurchaseOrderId).NotEmpty();
+        // either PurchaseOrderId or ReturnRequestId must be provided depending on TransType
     }
 }
 
@@ -38,6 +41,7 @@ public class CreateGoodsReceiveHandler : IRequestHandler<CreateGoodsReceiveReque
 {
     private readonly ICommandRepository<GoodsReceive> _deliveryOrderRepository;
     private readonly ICommandRepository<PurchaseOrderItem> _purchaseOrderItemRepository;
+    private readonly ICommandRepository<ItemReturnRequests> _itemReturnRequestRepository; // new repo
     private readonly ICommandRepository<Warehouse> _warehouseRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly NumberSequenceService _numberSequenceService;
@@ -46,6 +50,7 @@ public class CreateGoodsReceiveHandler : IRequestHandler<CreateGoodsReceiveReque
     public CreateGoodsReceiveHandler(
         ICommandRepository<GoodsReceive> deliveryOrderRepository,
         ICommandRepository<PurchaseOrderItem> purchaseOrderItemRepository,
+        ICommandRepository<ItemReturnRequests> itemReturnRequestRepository,
         ICommandRepository<Warehouse> warehouseRepository,
         IUnitOfWork unitOfWork,
         NumberSequenceService numberSequenceService,
@@ -54,6 +59,7 @@ public class CreateGoodsReceiveHandler : IRequestHandler<CreateGoodsReceiveReque
     {
         _deliveryOrderRepository = deliveryOrderRepository;
         _purchaseOrderItemRepository = purchaseOrderItemRepository;
+        _itemReturnRequestRepository = itemReturnRequestRepository;
         _warehouseRepository = warehouseRepository;
         _unitOfWork = unitOfWork;
         _numberSequenceService = numberSequenceService;
@@ -70,39 +76,81 @@ public class CreateGoodsReceiveHandler : IRequestHandler<CreateGoodsReceiveReque
         entity.Status = (GoodsReceiveStatus)int.Parse(request.Status!);
         entity.Description = request.Description;
         entity.PurchaseOrderId = request.PurchaseOrderId;
+        entity.ReturnRequestId = request.ReturnRequestId;   // persist
+        entity.TransType = request.TransType;               // persist (nullable int)
 
         await _deliveryOrderRepository.CreateAsync(entity, cancellationToken);
         await _unitOfWork.SaveAsync(cancellationToken);
 
-        var defaultWarehouse = await _warehouseRepository
-            .GetQuery()
-            .ApplyIsDeletedFilter(false)
-            .Where(x => x.SystemWarehouse == false)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (defaultWarehouse != null)
+        // choose warehouse: prefer provided WarehouseId, otherwise fallback to first non-system warehouse
+        string? warehouseIdToUse = request.WarehouseId;
+        if (string.IsNullOrEmpty(warehouseIdToUse))
         {
-            var items = await _purchaseOrderItemRepository
+            var defaultWarehouse = await _warehouseRepository
                 .GetQuery()
                 .ApplyIsDeletedFilter(false)
-                .Where(x => x.PurchaseOrderId == entity.PurchaseOrderId)
-                .Include(x => x.Product)
-                .ToListAsync(cancellationToken);
+                .Where(x => x.SystemWarehouse == true)
+                .FirstOrDefaultAsync(cancellationToken);
 
-            foreach (var item in items)
+            warehouseIdToUse = defaultWarehouse?.Id;
+        }
+        else
+        {
+            // validate provided id exists
+            var wh = await _warehouseRepository.GetAsync(warehouseIdToUse, cancellationToken);
+            if (wh == null) warehouseIdToUse = null;
+        }
+
+        if (!string.IsNullOrEmpty(warehouseIdToUse))
+        {
+            if (request.TransType == 2 && !string.IsNullOrEmpty(request.ReturnRequestId))
             {
-                if (item?.Product?.Physical ?? false)
+                // Return request path: create inventory trans for the return request item(s)
+                var returnReq = await _itemReturnRequestRepository.GetAsync(request.ReturnRequestId ?? string.Empty, cancellationToken);
+                if (returnReq != null && !string.IsNullOrEmpty(returnReq.ProductId) && (returnReq.Quantity ?? 0) > 0)
                 {
-                    await _inventoryTransactionService.GoodsReceiveCreateInvenTrans(
-                        entity.Id,
-                        defaultWarehouse.Id,
-                        item.ProductId,
-                        item.Quantity,
-                        entity.CreatedById,
-                        item.Id,
-                        cancellationToken
+                    if (returnReq.ProductId != null)
+                    {
+                        // Movement should be positive (adding to stock)
+                        await _inventoryTransactionService.GoodsReceiveCreateInvenTrans(
+                            entity.Id,
+                            warehouseIdToUse,
+                            returnReq.ProductId,
+                            returnReq.Quantity,
+                            entity.CreatedById,
+                            returnReq.Id,
+                            cancellationToken
                         );
+                    }
+                }
+            }
+            else if (!string.IsNullOrEmpty(entity.PurchaseOrderId))
+            {
+                // Purchase order path: existing logic (only approved items)
+                var items = await _purchaseOrderItemRepository
+                    .GetQuery()
+                    .ApplyIsDeletedFilter(false)
+                    .Where(x =>
+                        x.PurchaseOrderId == entity.PurchaseOrderId &&
+                        x.ItemStatus == true        // only approved items
+                    )
+                    .Include(x => x.Product)
+                    .ToListAsync(cancellationToken);
 
+                foreach (var item in items)
+                {
+                    if (item?.Product?.Physical ?? false)
+                    {
+                        await _inventoryTransactionService.GoodsReceiveCreateInvenTrans(
+                            entity.Id,
+                            warehouseIdToUse,
+                            item.ProductId,
+                            item.Quantity,
+                            entity.CreatedById,
+                            item.Id,
+                            cancellationToken
+                        );
+                    }
                 }
             }
         }

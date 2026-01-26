@@ -78,7 +78,7 @@ public class UpdatePurchaseReturnHandler : IRequestHandler<UpdatePurchaseReturnR
             entity.IsDeleted,
             entity.UpdatedById,
             null,
-            cancellationToken
+            null, cancellationToken
             );
 
         return new UpdatePurchaseReturnResult

@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "قائمة فحص البضائع";
 }
-
+<h3 class="title"> فحص البضائع</h3>
 <div id="app" v-cloak>
     <div class="row">
         <div class="col-12">
@@ -83,8 +83,12 @@
                                             </div>
                                         </div>
                                         <div class="card-body">
-                                            <div v-for="(member, index) in state.committeeList" :key="member.id || index"
+
+                                            <div v-for="(member, index) in state.committeeList.filter(m => !m.isDeleted)"
+                                                 :key="member.tempId"
                                                  class="border p-3 mb-3">
+
+
                                                 <input type="hidden" v-model="member.id"  />
                                                 <div class="row mb-2">
                                                     <div class="col-md-6">
