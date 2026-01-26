@@ -61,7 +61,7 @@ public class CreateItemReturnRequestsHandler : IRequestHandler<CreateItemReturnR
         var entity = new ItemReturnRequests();
         entity.CreatedById = request.CreatedById;
 
-        entity.Number = _numberSequenceService.GenerateNumber(nameof(ItemReturnRequests), "", "PO");
+        entity.Number = _numberSequenceService.GenerateNumber(nameof(ItemReturnRequests), "", "ITR");
         entity.OrderDate = request.OrderDate;
         entity.OrderStatus = (SalesOrderStatus)int.Parse(request.OrderStatus!);
         entity.CommitteeDecision = request.CommitteeDecision;

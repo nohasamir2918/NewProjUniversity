@@ -62,7 +62,7 @@ public class CreateIssueRequestsHandler : IRequestHandler<CreateIssueRequests, C
         var entity = new IssueRequests();
         entity.CreatedById = request.CreatedById;
 
-        entity.Number = _numberSequenceService.GenerateNumber(nameof(IssueRequests), "", "SO");
+        entity.Number = _numberSequenceService.GenerateNumber(nameof(IssueRequests), "", "IR");
         entity.OrderDate = request.OrderDate;
     
         entity.OrderStatus = (SalesOrderStatus)int.Parse(request.OrderStatus!);

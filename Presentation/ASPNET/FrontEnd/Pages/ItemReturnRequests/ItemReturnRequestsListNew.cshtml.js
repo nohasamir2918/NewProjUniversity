@@ -52,7 +52,7 @@ const App = {
             employeeListLookupData: [],
             productListLookupData: [],
             ItemReturnRequestsStatusListLookupData: [],
-
+       
             mainTitle: null,
             id: '',
             number: '',
@@ -77,7 +77,7 @@ const App = {
             showComplexDiv: false,
             isSubmitting: false,
             subTotalAmount: '0.00',
-
+          
             totalAmount: '0.00'
         });
 
@@ -152,7 +152,7 @@ const App = {
                 orderStatus: '',
                 committeeDecision: ''
             };
-
+     
         };
 
         const services = {
@@ -164,7 +164,7 @@ const App = {
                     throw error;
                 }
             },
-            createMainData: async (orderDate, committeeDecision, orderStatus, productId, productStatus, employeeId, unitPrice, quantity, createdById) => {
+            createMainData: async (orderDate, committeeDecision, orderStatus, productId, productStatus,employeeId, unitPrice, quantity, createdById) => {
                 try {
                     const response = await AxiosManager.post('/ItemReturnRequests/CreateItemReturnRequests', {
                         orderDate, committeeDecision, orderStatus, productId, productStatus, employeeId, unitPrice, quantity, createdById
@@ -224,16 +224,16 @@ const App = {
             },
             getProductsByEmployee: async (employeeId) => {
                 try {
-
+                   
                     const response = await AxiosManager.get('/ItemReturnRequests/GetProductsByEmployee?employeeId=' + employeeId, {});
-
+                    
                     return response;
                 } catch (error) {
                     throw error;
                 }
             }
 
-
+        
         };
 
         const methods = {
@@ -241,7 +241,7 @@ const App = {
                 const response = await services.getemployeeListLookupData();
                 state.employeeListLookupData = response?.data?.content?.data;
             },
-
+      
             populateproductListLookupData: async () => {
                 const response = await services.getproductListLookupData();
                 state.productListLookupData = response?.data?.content?.data;
@@ -261,7 +261,7 @@ const App = {
 
                 state.productListLookupData = response.data.content.products ?? [];
                 console.log('Filtered products:', state.productListLookupData);
-
+                
                 if (productListLookup.obj) {
                     productListLookup.obj.destroy();
                 }
@@ -282,13 +282,13 @@ const App = {
                     createdAtUtc: new Date(item.createdAtUtc)
                 }));
             },
-
-
+            
+         
             refreshPaymentSummary: async (id) => {
                 const record = state.mainData.find(item => item.id === id);
                 if (record) {
                     state.subTotalAmount = NumberFormatManager.formatToLocale(record.beforeproductAmount ?? 0);
-
+              
                     state.totalAmount = NumberFormatManager.formatToLocale(record.afterproductAmount ?? 0);
                 }
             },
@@ -303,7 +303,7 @@ const App = {
 
                 try {
                     const response = state.id === ''
-
+                  
                         ? await services.createMainData(state.orderDate, state.committeeDecision, state.orderStatus, state.productId, state.productStatus, state.employeeId, state.unitPrice, state.quantity, StorageManager.getUserId())
                         : state.deleteMode
                             ? await services.deleteMainData(state.id, StorageManager.getUserId())
@@ -352,8 +352,8 @@ const App = {
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: state.deleteMode ? 'فشل الحذف' : 'فشل الحفظ',
-                            text: response.data.message ?? 'يرجى التحقق من البيانات.',
+    title: state.deleteMode ? 'فشل الحذف' : 'فشل الحفظ',
+                                text: response.data.message ?? 'يرجى التحقق من البيانات.',
                             confirmButtonText: 'حاول مرة أخرى'
                         });
                     }
@@ -417,12 +417,12 @@ const App = {
                 employeeListLookup.refresh();
                 state.errors.employeeId = '';
 
-
+               
                 await methods.populateProductsByEmployee(newVal);
 
-
+           
                 state.productId = null;
-                productStatusLookup.refresh();
+                productStatusLookup.refresh(); 
             }
         );
         const productListLookup = {
@@ -615,7 +615,7 @@ const App = {
                     beforeDataBound: () => { },
                     dataBound: function () {
                         mainGrid.obj.toolbarModule.enableItems(['EditCustom', 'DeleteCustom', 'PrintPDFCustom'], false);
-                        mainGrid.obj.autoFitColumns(['number', 'orderDate', 'employeeName', 'orderStatusName', 'productName', 'productStatusName', 'unitPriceName', 'quantityName', 'afterproductAmount', 'createdAtUtc']);
+                        mainGrid.obj.autoFitColumns(['number', 'orderDate', 'employeeName', 'orderStatusName', 'productName', 'productStatusName','unitPriceName','quantityName', 'afterproductAmount', 'createdAtUtc']);
                     },
                     excelExportComplete: () => { },
                     rowSelected: () => {
@@ -646,7 +646,7 @@ const App = {
                             state.deleteMode = false;
                             state.mainTitle = 'اضافة إذن مرتجع';
                             resetFormState();
-
+                       
                             state.showComplexDiv = false;
                             mainModal.obj.show();
                         }
@@ -669,8 +669,8 @@ const App = {
                                 state.orderStatus = String(selectedRecord.orderStatus ?? '');
                                 state.showComplexDiv = true;
 
-
-
+                            
+                         
 
                                 mainModal.obj.show();
                             }
@@ -693,8 +693,8 @@ const App = {
                                 state.orderStatus = String(selectedRecord.orderStatus ?? '');
                                 state.showComplexDiv = false;
 
-
-
+                   
+                       
 
                                 mainModal.obj.show();
                             }
@@ -716,7 +716,7 @@ const App = {
             }
         };
 
-
+     
 
         const mainModal = {
             obj: null,
@@ -749,12 +749,12 @@ const App = {
                 numberText.create();
                 //quantityInput.create();
                 //unitPriceInput.create();
-
-
+          
+        
             } catch (e) {
                 console.error('page init error:', e);
             } finally {
-
+                
             }
         });
 

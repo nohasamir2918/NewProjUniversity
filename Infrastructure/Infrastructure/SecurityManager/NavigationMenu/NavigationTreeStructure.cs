@@ -119,12 +119,12 @@ namespace Infrastructure.SecurityManager.NavigationMenu
             "IsModule": false
         },
         {
-            "URL": "/GoodsReceives/GoodsReceiveList",
-            "Name": "اذن الاضافة ",
+            "URL": "/IssueRequests/IssueRequestsList",
+            "Name": "طلب و اذن صرف ",
             "IsModule": false
         },
          {
-            "URL": "/ItemReturnRequests/ItemReturnRequestsList",
+            "URL": "/ItemReturnRequests/ItemReturnRequestsLists",
             "Name": "طلب مرتجع ",
             "IsModule": false
         },
