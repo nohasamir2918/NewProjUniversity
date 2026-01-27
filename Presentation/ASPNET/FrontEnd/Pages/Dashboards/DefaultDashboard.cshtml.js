@@ -64,6 +64,7 @@
             populateCardsData: async () => {
                 const response = await services.getCardsData();
                 state.cardsData = response?.data?.content?.data;
+                console.log('Cards Data:', state.cardsData);
                 methods.populateCards();
             },
             populateSalesData: async () => {
