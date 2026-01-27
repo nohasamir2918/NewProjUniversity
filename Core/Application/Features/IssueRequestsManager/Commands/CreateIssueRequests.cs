@@ -20,6 +20,7 @@ public class CreateIssueRequests : IRequest<CreateIssueRequestsResult>
     public string? OrderStatus { get; init; }
     public string? Description { get; init; }
     public string? EmployeeId { get; init; }
+    public string? WarehouseId { get; init; }
     public string? TaxId { get; init; }
     public string? CreatedById { get; init; }
 }
@@ -31,6 +32,7 @@ public class CreateIssueRequestsValidator : AbstractValidator<CreateIssueRequest
         RuleFor(x => x.OrderDate).NotEmpty();
         RuleFor(x => x.OrderStatus).NotEmpty();
         RuleFor(x => x.EmployeeId).NotEmpty();
+        RuleFor(x => x.WarehouseId).NotEmpty();
         //RuleFor(x => x.TaxId).NotEmpty();
     }
 }
@@ -68,6 +70,7 @@ public class CreateIssueRequestsHandler : IRequestHandler<CreateIssueRequests, C
         entity.OrderStatus = (SalesOrderStatus)int.Parse(request.OrderStatus!);
         entity.Description = request.Description;
         entity.EmployeeId = request.EmployeeId;
+        entity.WarehouseId = request.WarehouseId;
         entity.TaxId = request.TaxId;
         entity.BeforeTaxAmount = 0;
         entity.TaxAmount = 0;
