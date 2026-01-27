@@ -125,7 +125,7 @@ namespace Infrastructure.SecurityManager.NavigationMenu
             "IsModule": false
         },
          {
-            "URL": "/ItemReturnRequests/ItemReturnRequestsList",
+            "URL": "/ItemReturnRequests/ItemReturnRequestsLists",
             "Name": "طلب مرتجع ",
             "IsModule": false
         },

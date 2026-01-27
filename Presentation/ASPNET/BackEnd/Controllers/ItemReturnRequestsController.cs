@@ -1,4 +1,5 @@
-﻿using Application.Features.ItemReturnRequestsManager.Commands;
+﻿using Application.Features.IssueRequestsManager.Queries;
+using Application.Features.ItemReturnRequestsManager.Commands;
 using Application.Features.ItemReturnRequestsManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
@@ -17,7 +18,8 @@ public class ItemReturnRequestsController : BaseApiController
 
     [Authorize]
     [HttpPost("CreateItemReturnRequests")]
-    public async Task<ActionResult<ApiSuccessResult<CreateItemReturnRequestsResult>>> CreateItemReturnRequestsAsync(CreateItemReturnRequestsRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiSuccessResult<CreateItemReturnRequestsResult>>> CreateItemReturnRequestsAsync(
+      CreateItemReturnRequestsRequest request, CancellationToken cancellationToken)
     {
         var response = await _sender.Send(request, cancellationToken);
 
@@ -111,7 +113,27 @@ public class ItemReturnRequestsController : BaseApiController
         });
     }
 
+    [Authorize]
+    [HttpGet("GetProductsByEmployee")]
+    public async Task<ActionResult<ApiSuccessResult<GetProductsByEmployeeForItemReturnRequestResult>>>
+GetProductsByEmployeeAsync(
+     string employeeId,
+    CancellationToken cancellationToken)
+    {
+        var request = new GetProductsByEmployeeForItemReturnRequestQuery
+        {
+            EmployeeId = employeeId
+        };
 
+        var response = await _sender.Send(request, cancellationToken);
+
+        return Ok(new ApiSuccessResult<GetProductsByEmployeeForItemReturnRequestResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = "Success executing GetProductsByEmployee",
+            Content = response
+        });
+    }
 }
 
 

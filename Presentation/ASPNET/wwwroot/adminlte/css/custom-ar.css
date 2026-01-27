@@ -252,11 +252,7 @@ i.fas.fa-lock.mr-2 {
         font-weight: 500;
     }
 
-/* Excel button highlight */
-#ExcelExport {
-    background-color: #9f9f9f;
-    color: #2867ed;
-}
+
 
 /* Search box */
 .e-search-wrapper .e-input-group {
@@ -540,11 +536,25 @@ i.fas.fa-lock.mr-2 {
     left: auto;
     width: 260px;
     background: #222d32;
-    background-size: cover;
+    background-image: url('../img/sidebar.jpg');
     color: #ffffff;
     overflow-y: auto;
-}
 
+
+}
+    .main-sidebar, .main-sidebar::before {
+        width: 260px;
+    }
+    .main-sidebar:before {
+        opacity: .6;
+        background: #000;
+    }
+/*.main-sidebar:after {
+    background: #292929;
+    background: -webkit-gradient(linear, left top, left bottom, from(#292929), to(#0e0e0e));
+    background: linear-gradient(180deg, #292929 0, #0e0e0e);
+    background-size: 150% 150%;
+}*/
     /* Overlay (Material Dashboard) */
     .main-sidebar::before {
         content: "";
@@ -757,6 +767,62 @@ i.fas.fa-lock.mr-2 {
 .e-treeview .e-list-item div.e-icons.interaction {
     margin-top: 20px;
     animation: rotatePulse 2s linear infinite;
+}
+
+/**/
+
+.title{
+    text-align:right;
+    margin-bottom:20px;
+}
+.btn.btn-danger {
+    position: relative;
+    overflow: hidden;
+    padding: 14px 30px;
+    font-weight: 600;
+    transition: all 0.35s ease;
+    box-shadow: 0 10px 30px rgb(249 115 22 / 35%);
+}
+
+button.btn.btn-danger {
+    background: #fff;
+    color: #f97316;
+    border-bottom-left-radius: 15px;
+    border: 1px solid;
+    border-top-right-radius: 15px;
+}
+/* Hover lift + glow */
+.btn.btn-danger:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 18px 45px rgba(220, 53, 69, 0.55);
+}
+
+/* Icon animation */
+.btn.btn-danger i {
+    transition: transform 0.35s ease;
+}
+
+.btn.btn-danger:hover i {
+    transform: rotate(-10deg) scale(1.15);
+}
+
+/* Shine effect */
+.btn.btn-danger::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( 120deg, transparent, rgba(255,255,255,0.4), transparent );
+    transform: translateX(-120%);
+    transition: transform 0.6s ease;
+}
+
+.btn.btn-danger:hover::before {
+    transform: translateX(120%);
+}
+
+/* Click feedback */
+.btn.btn-danger:active {
+    transform: scale(0.96);
 }
 
   

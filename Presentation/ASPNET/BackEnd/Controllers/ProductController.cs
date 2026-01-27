@@ -57,7 +57,7 @@ public class ProductController : BaseApiController
         });
     }
 
-    [Authorize]
+    
     [HttpGet("GetProductList")]
     public async Task<ActionResult<ApiSuccessResult<GetProductListResult>>> GetProductListAsync(
         CancellationToken cancellationToken,

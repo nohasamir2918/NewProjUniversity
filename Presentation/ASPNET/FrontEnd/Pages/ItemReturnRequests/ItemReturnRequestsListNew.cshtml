@@ -1,8 +1,8 @@
 ﻿@page
 @{
-    ViewData["Title"] = "قائمة أوامر التوريد";
+    ViewData["Title"] = "قائمة إذن المرتجع";
 }
-<h3 class="title">أوامر التوريد </h3>
+
 <div id="app" v-cloak>
     <div class="row">
         <div class="col-12">
@@ -41,16 +41,53 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-md-6">
-                                                <label for="VendorId">المورّد</label>
-                                                <div ref="vendorIdRef"></div>
-                                                <label class="text-danger">{{ state.errors.vendorId }}</label>
+                                            <div class="col-md-4">
+                                                <label for="EmployeeId">الموظف</label>
+                                                <div ref="employeeIdRef"></div>
+                                                <label class="text-danger">{{ state.errors.employeeId }}</label>
                                             </div>
-                                            <div class="col-md-6">
-                                                <label for="TaxId">الضريبة</label>
-                                                <div ref="taxIdRef"></div>
-                                                <label class="text-danger">{{ state.errors.taxId }}</label>
+                                            <div class="col-md-4">
+                                                <label for="ProductId">المنتج</label>
+                                                <div ref="productIdRef"></div>
+                                                <label class="text-danger">{{ state.errors.productId }}</label>
                                             </div>
+                                            <div class="col-md-4">
+                                                <label for="ProductStatus">حالة المنتج</label>
+                                                <div ref="productStatusRef"></div>
+                                                <label class="text-danger">{{ state.errors.productStatus }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-6">
+                                                <label>الكمية</label>
+                                                <input type="number"
+                                                       class="form-control"
+                                                       min="1"
+                                                       v-model.number="state.quantity" />
+                                                <label class="text-danger">{{ state.errors.quantity }}</label>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label>السعر</label>
+                                                <input type="number"
+                                                       class="form-control"
+                                                       min="1"
+                                                       step="0.01"
+                                                       v-model.number="state.unitPrice" />
+                                                <label class="text-danger">{{ state.errors.unitPrice }}</label>
+                                            </div>
+
+                                     @*        <div class="col-md-6">
+                                                <label for="Quantity">الكمية</label>
+                                                <div ref="quantityRef"></div>
+                                                <label class="text-danger">{{ state.errors.quantity }}</label>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="UnitPrice">السعر</label>
+                                                <div ref="unitPriceRef"></div>
+                                                <label class="text-danger">{{ state.errors.unitPrice }}</label>
+                                            </div> *@
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-md-6">
@@ -61,9 +98,9 @@
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-md-12">
-                                                <label for="Description">الشروط</label>
-                                                <textarea class="form-control" rows="3" v-model="state.description"></textarea>
-                                                <label class="text-danger">{{ state.errors.description }}</label>
+                                                <label for="CommitteeDecision">رأي اللجنة</label>
+                                                <textarea class="form-control" rows="3" v-model="state.committeeDecision"></textarea>
+                                                <label class="text-danger">{{ state.errors.committeeDecision }}</label>
                                             </div>
                                         </div>
                                     </div>
@@ -72,54 +109,7 @@
                         </div>
                     </form>
 
-                    <div id="ComplexDiv" :style="{ display: state.showComplexDiv ? 'block' : 'none' }">
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>عناصر أمر التوريد</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="grid-container">
-                                                    <div ref="secondaryGridRef"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col-md-12">
-                                <div class="card shadow-sm">
-                                    <div class="card-header text-white">
-                                        <h5 class="mb-0">ملخص الدفع</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row justify-content-end">
-                                            <div class="col-md-6">
-                                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                                    <span class="fw-bold">الإجمالي قبل الضريبة</span>
-                                                    <span id="SubTotalAmount">{{ state.subTotalAmount }}</span>
-                                                </div>
-                                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                                    <span class="fw-bold">الضريبة</span>
-                                                    <span id="TaxAmount">{{ state.taxAmount }}</span>
-                                                </div>
-                                                <div class="d-flex justify-content-between py-2">
-                                                    <span class="fw-bold">الإجمالي الكلي</span>
-                                                    <span id="TotalAmount" class="fw-bold text-success">{{ state.totalAmount }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
@@ -146,5 +136,5 @@
 </div>
 
 @section scripts {
-    <script src="~/FrontEnd/Pages/PurchaseOrders/PurchaseOrderList.cshtml.js"></script>
+    <script src="~/FrontEnd/Pages/ItemReturnRequests/ItemReturnRequestsListNew.cshtml.js"></script>
 }
