@@ -10,6 +10,7 @@ public class IssueRequests : BaseEntity
     public SalesOrderStatus? OrderStatus { get; set; }
     public string? Description { get; set; }
     public string? EmployeeId { get; set; }
+    public string? WarehouseId { get; set; }
     public Employee? Employee { get; set; }
     public string? TaxId { get; set; }
     public Tax? Tax { get; set; }

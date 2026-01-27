@@ -16,6 +16,7 @@ public class IssueRequestsConfiguration : BaseEntityConfiguration<IssueRequests>
         builder.Property(x => x.OrderStatus).IsRequired(false);
         builder.Property(x => x.Description).HasMaxLength(DescriptionConsts.MaxLength).IsRequired(false);
         builder.Property(x => x.EmployeeId).HasMaxLength(IdConsts.MaxLength).IsRequired(false);
+        builder.Property(x => x.WarehouseId).IsRequired(false);
         builder.Property(x => x.TaxId).HasMaxLength(IdConsts.MaxLength).IsRequired(false);
         builder.Property(x => x.BeforeTaxAmount).IsRequired(false);
         builder.Property(x => x.TaxAmount).IsRequired(false);

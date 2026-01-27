@@ -89,8 +89,7 @@ const App = {
         const productIdRef = Vue.ref(null);
         const productStatusRef = Vue.ref(null);
         const orderStatusRef = Vue.ref(null);
-        //const quantityRef = Vue.ref(null);
-        //const unitPriceRef = Vue.ref(null);
+
 
 
         const validateForm = function () {
@@ -747,8 +746,7 @@ const App = {
                 ItemReturnRequestsStatusListLookup.create();
                 orderDatePicker.create();
                 numberText.create();
-                //quantityInput.create();
-                //unitPriceInput.create();
+             
 
 
             } catch (e) {
