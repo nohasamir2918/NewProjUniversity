@@ -1,4 +1,5 @@
 ﻿using Application.Common.Repositories;
+using Application.Features.InventoryTransactionManager;
 using Application.Features.NumberSequenceManager;
 using Domain.Entities;
 using Domain.Enums;
@@ -42,18 +43,24 @@ public class CreateItemReturnRequestsHandler : IRequestHandler<CreateItemReturnR
     private readonly IUnitOfWork _unitOfWork;
     private readonly NumberSequenceService _numberSequenceService;
     private readonly ItemReturnRequestsService _ItemReturnRequestsService;
+    private readonly InventoryTransactionService _inventoryTransactionService;
+    private readonly ICommandRepository<GoodsReceive> _goodsReceiveRepository;
 
     public CreateItemReturnRequestsHandler(
         ICommandRepository<ItemReturnRequests> repository,
         IUnitOfWork unitOfWork,
         NumberSequenceService numberSequenceService,
-        ItemReturnRequestsService ItemReturnRequestsService
+        ItemReturnRequestsService ItemReturnRequestsService,
+        InventoryTransactionService inventoryTransactionService,
+        ICommandRepository<GoodsReceive> goodsReceiveRepository
         )
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
         _numberSequenceService = numberSequenceService;
         _ItemReturnRequestsService = ItemReturnRequestsService;
+        _inventoryTransactionService = inventoryTransactionService;
+        _goodsReceiveRepository = goodsReceiveRepository;
     }
 
     public async Task<CreateItemReturnRequestsResult> Handle(CreateItemReturnRequestsRequest request, CancellationToken cancellationToken = default)
@@ -75,6 +82,39 @@ public class CreateItemReturnRequestsHandler : IRequestHandler<CreateItemReturnR
         await _unitOfWork.SaveAsync(cancellationToken);
 
         _ItemReturnRequestsService.Recalculate(entity.Id);
+
+
+        // --- create corresponding GoodsReceive (as a return) and inventory trans ---
+       
+            var gr = new GoodsReceive();
+            gr.CreatedById = request.CreatedById;
+            gr.Number = _numberSequenceService.GenerateNumber(nameof(ItemReturnRequests), "", "IRR");
+            gr.ReceiveDate = request.OrderDate ?? DateTime.UtcNow;
+            gr.Status = GoodsReceiveStatus.Confirmed;
+            gr.Description = $"Return from ItemReturnRequest {entity.Number}";
+            gr.PurchaseOrderId = null;
+            gr.ReturnRequestId = entity.Id;
+            gr.TransType = 2; // 2 = ReturnRequest
+
+            await _goodsReceiveRepository.CreateAsync(gr, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+
+            // create a single inventory transaction for this ItemReturnRequests (module = "IRR")
+           
+                if (!string.IsNullOrEmpty(entity.ProductId) && (entity.Quantity ?? 0) > 0)
+                {
+                    await _inventoryTransactionService.ItemReturnRequestCreateInvenTrans(
+                        entity.Id,                
+                        entity.ProductId,
+                        entity.Quantity,
+                        entity.CreatedById,
+                        cancellationToken
+                    );
+                }
+          
+        
+     
+
 
         return new CreateItemReturnRequestsResult
         {
