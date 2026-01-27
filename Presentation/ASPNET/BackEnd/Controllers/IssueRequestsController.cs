@@ -19,7 +19,8 @@ public class IssueRequestsController : BaseApiController
 
     [Authorize]
     [HttpPost("CreateIssueRequests")]
-    public async Task<ActionResult<ApiSuccessResult<CreateIssueRequestsResult>>> CreateIssueRequestsAsync(CreateIssueRequests request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiSuccessResult<CreateIssueRequestsResult>>> CreateIssueRequestsAsync([FromBody] CreateIssueRequests request, CancellationToken cancellationToken)
+    
     {
         var response = await _sender.Send(request, cancellationToken);
 

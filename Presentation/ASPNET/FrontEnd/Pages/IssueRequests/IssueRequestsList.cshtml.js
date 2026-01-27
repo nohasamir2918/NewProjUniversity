@@ -95,21 +95,21 @@ const App = {
         const validateForm = function () {
             state.errors.orderDate = '';
             state.errors.employeeId = '';
-            state.errors.taxId = '';
             state.errors.orderStatus = '';
 
             let isValid = true;
 
-            if (!state.orderDate) {
+           
+            if (state.orderDate == null || state.orderDate === '') {
                 state.errors.orderDate = 'Order date is required.';
                 isValid = false;
             }
-            if (!state.employeeId) {
+            if (state.employeeId == null || state.employeeId === '') {
                 state.errors.employeeId = 'employee is required.';
                 isValid = false;
             }
-        
-            if (!state.orderStatus) {
+
+            if (state.orderStatus == null || state.orderStatus === '') {
                 state.errors.orderStatus = 'Order status is required.';
                 isValid = false;
             }
@@ -148,16 +148,47 @@ const App = {
                     throw error;
                 }
             },
-            createMainData: async (orderDate, description, orderStatus,departmentId, employeeId, createdById) => {
+            // Replace services.createMainData with this implementation
+            createMainData: async (orderDate, description, orderStatus, departmentId, employeeId, createdById) => {
                 try {
-                    const response = await AxiosManager.post('/IssueRequests/CreateIssueRequests', {
-                        orderDate, description, orderStatus, departmentId,  employeeId, createdById
+                    const payload = {
+                        orderDate: orderDate ? new Date(orderDate).toISOString() : null,
+                        description: description ?? '',
+                        // backend expects string for OrderStatus -> send as string to avoid type coercion issues
+                        orderStatus: String(orderStatus ?? ''),
+                        departmentId: departmentId ?? null,
+                        employeeId: employeeId ?? null,
+                        createdById: createdById ?? null
+                    };
+
+                    console.debug('CreateIssueRequests payload (client):', payload);
+
+                    // Ensure we send raw JSON and explicit content-type
+                    const response = await AxiosManager.post('/IssueRequests/CreateIssueRequests', JSON.stringify(payload), {
+                        headers: { 'Content-Type': 'application/json' }
                     });
+
+                    console.debug('CreateIssueRequests response:', response?.data);
                     return response;
                 } catch (error) {
+                    console.error('CreateIssueRequests error:', error?.response?.data ?? error);
                     throw error;
                 }
             },
+            //createMainData: async (orderDate, description, orderStatus,departmentId, employeeId, createdById) => {
+            //    try {
+            //        const response = await AxiosManager.post('/IssueRequests/CreateIssueRequests', {
+            //            orderDate, description, orderStatus, departmentId,  employeeId, createdById
+            //        }, {
+            //            headers: {
+            //                'Content-Type': 'application/json'
+            //            }
+            //        });
+            //        return response;
+            //    } catch (error) {
+            //        throw error;
+            //    }
+            //},
             updateMainData: async (id, orderDate, description, orderStatus, departmentId, employeeId, updatedById) => {
                 try {
                     const response = await AxiosManager.post('/IssueRequests/UpdateIssueRequests', {
@@ -456,9 +487,9 @@ const App = {
                     dataSource: state.issueRequestsStatusListLookupData,
                     fields: { value: 'id', text: 'name' },
                     placeholder: 'اختر الحالة',
-                    value: state.orderStatus ?? null, // <-- ensure initial value is set
+                    value: state.orderStatus ?? null, 
                     change: (e) => {
-                        state.orderStatus = Number(e.value); // always numeric
+                        state.orderStatus = Number(e.value); 
                         state.errors.orderStatus = '';
 
                         // Disable secondary grid if "مؤكد"
@@ -480,7 +511,7 @@ const App = {
             },
             refresh: () => {
                 if (IssueRequestsStatusListLookup.obj) {
-                    IssueRequestsStatusListLookup.obj.value = Number(state.orderStatus ?? 0); // <-- force numeric
+                    IssueRequestsStatusListLookup.obj.value = Number(state.orderStatus ?? 0); 
                 }
             }
         };
@@ -488,7 +519,7 @@ const App = {
 
 
 
-h
+
 
         const orderDatePicker = {
             obj: null,
@@ -555,10 +586,10 @@ h
                 .filter(e => e.departmentId === departmentId)
                 .map(e => ({
                     ...e,
-                    id: String(e.id) // 🔥 FORCE STRING
+                    id: String(e.id) 
                 }));
 
-            employeeListLookup.obj.value = null; // 🔥 reset
+            employeeListLookup.obj.value = null; 
             employeeListLookup.obj.dataSource = filtered;
             employeeListLookup.obj.dataBind();
 
@@ -1154,9 +1185,9 @@ h
                 mainModal.create();
                 mainModalRef.value?.addEventListener('hidden.bs.modal', methods.onMainModalHidden);
 
-                // Populate Departments first
+                
                 await methods.populateDepartmentListLookupData();
-                departmentListLookup.create(); // <-- CREATE dropdown after data is ready
+                departmentListLookup.create(); 
 
                 await methods.populateemployeeListLookupData();
                 employeeListLookup.create();
