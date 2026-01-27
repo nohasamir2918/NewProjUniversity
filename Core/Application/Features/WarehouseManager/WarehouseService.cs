@@ -17,7 +17,7 @@ public class WarehouseService
 
     public Warehouse? GetCustomerWarehouse()
     {
-        return _queryContext.Set<Warehouse>().Where(x => x.Name == "Customer").FirstOrDefault();
+        return _queryContext.Set<Warehouse>().Where(x => x.Name == "العهده").FirstOrDefault();
     }
 
     public Warehouse? GetVendorWarehouse()
