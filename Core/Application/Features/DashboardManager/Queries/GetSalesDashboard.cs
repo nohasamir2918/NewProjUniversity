@@ -10,7 +10,7 @@ namespace Application.Features.DashboardManager.Queries;
 
 public class GetSalesDashboardDto
 {
-    public List<SalesOrderItem>? SalesOrderDashboard { get; init; }
+    public List<IssueRequestsItem>? SalesOrderDashboard { get; init; }
     public List<BarSeries>? SalesByCustomerGroupDashboard { get; init; }
     public List<BarSeries>? SalesByCustomerCategoryDashboard { get; init; }
 }
@@ -36,29 +36,29 @@ public class GetSalesDashboardHandler : IRequestHandler<GetSalesDashboardRequest
     public async Task<GetSalesDashboardResult> Handle(GetSalesDashboardRequest request, CancellationToken cancellationToken)
     {
 
-        var salesOrderItemData = await _context.SalesOrderItem
+        var IssueRequestsItemData = await _context.IssueRequestsItem
             .AsNoTracking()
             .ApplyIsDeletedFilter(false)
-            .Include(x => x.SalesOrder)
+            .Include(x => x.IssueRequests)
             .Include(x => x.Product)
-            .Where(x => x.SalesOrder!.OrderStatus == SalesOrderStatus.Confirmed)
-            .OrderByDescending(x => x.SalesOrder!.OrderDate)
+            .Where(x => x.IssueRequests!.OrderStatus == SalesOrderStatus.Confirmed)
+            .OrderByDescending(x => x.IssueRequests!.OrderDate)
             .Take(30)
             .ToListAsync(cancellationToken);
 
-        var salesByCustomerGroupData = _context.SalesOrderItem
+        var salesByCustomerGroupData = _context.IssueRequestsItem
             .AsNoTracking()
             .ApplyIsDeletedFilter(false)
-                .Include(x => x.SalesOrder)
-                    .ThenInclude(x => x!.Customer)
-                        .ThenInclude(x => x!.CustomerGroup)
+                .Include(x => x.IssueRequests)
+                    .ThenInclude(x => x!.Employee)
+                        .ThenInclude(x => x!.Department)
                 .Include(x => x.Product)
                 .Where(x => x.Product!.Physical == true)
             .Select(x => new
             {
-                Status = x.SalesOrder!.OrderStatus,
-                CustomerGroupName = x.SalesOrder!.Customer!.CustomerGroup!.Name,
-                Quantity = x.Quantity
+                Status = x.IssueRequests!.OrderStatus,
+                CustomerGroupName = x.IssueRequests!.Employee!.Department!.Name,
+                Quantity = x.RequestedQuantity
             })
             .GroupBy(x => new { x.Status, x.CustomerGroupName })
             .Select(g => new
@@ -69,19 +69,19 @@ public class GetSalesDashboardHandler : IRequestHandler<GetSalesDashboardRequest
             })
             .ToList();
 
-        var salesByCustomerCategoryData = _context.SalesOrderItem
+        var salesByCustomerCategoryData = _context.IssueRequestsItem
             .AsNoTracking()
             .ApplyIsDeletedFilter(false)
-            .Include(x => x.SalesOrder)
-                .ThenInclude(x => x!.Customer)
-                    .ThenInclude(x => x!.CustomerCategory)
+            .Include(x => x.IssueRequests)
+                .ThenInclude(x => x!.Employee)
+                    .ThenInclude(x => x!.Department)
             .Include(x => x.Product)
             .Where(x => x.Product!.Physical == true)
             .Select(x => new
             {
-                Status = x.SalesOrder!.OrderStatus,
-                CustomerCategoryName = x.SalesOrder!.Customer!.CustomerCategory!.Name,
-                Quantity = x.Quantity
+                Status = x.IssueRequests!.OrderStatus,
+                CustomerCategoryName = x.IssueRequests!.Employee!.Department!.Name,
+                Quantity = x.RequestedQuantity
             })
             .GroupBy(x => new { x.Status, x.CustomerCategoryName })
             .Select(g => new
@@ -97,7 +97,7 @@ public class GetSalesDashboardHandler : IRequestHandler<GetSalesDashboardRequest
         {
             Data = new GetSalesDashboardDto
             {
-                SalesOrderDashboard = salesOrderItemData,
+                SalesOrderDashboard = IssueRequestsItemData,
                 SalesByCustomerGroupDashboard =
                     Enum.GetValues(typeof(SalesOrderStatus))
                     .Cast<SalesOrderStatus>()

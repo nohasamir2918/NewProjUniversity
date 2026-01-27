@@ -16,80 +16,86 @@
 <div id="app" v-cloak>
     <div class="form-card" id="formcard">
         <div class="container-fluid pt-4 px-4">
+            <h6 class="mb-0 text-end" style="display:none"><span ref="cardPurchaseReturnQtyRef"></span> كمية.</h6>
             <div class="row g-4">
-                <div class="col-sm-6 col-xl-3">
-                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
-                        <i class="fas fa-chart-line fa-3x" style="color: #E94649;"></i>
-                        <div class="ms-3">
-                            <p class="mb-2">أذونات الصرف</p>
-                            <h6 class="mb-0 text-end"><span ref="cardSalesQtyRef"></span> كمية.</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-xl-3">
-                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
-                        <i class="fas fa-undo-alt fa-3x" style="color: #F6B53F;"></i>
-                        <div class="ms-3">
-                            <p class="mb-2">مرتجع أذونات الصرف.</p>
-                            <h6 class="mb-0 text-end"><span ref="cardSalesReturnQtyRef"></span> كمية.</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-xl-3">
-                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
-                        <i class="fas fa-shopping-cart fa-3x text-primary"></i>
-                        <div class="ms-3">
-                            <p class="mb-2">شراء</p>
-                            <h6 class="mb-0 text-end"><span ref="cardPurchaseQtyRef"></span> كمية.</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-xl-3">
+             @*    <div class="col-sm-6 col-xl-3">
                     <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
                         <i class="fas fa-undo fa-3x" style="color: #C4C24A;"></i>
                         <div class="ms-3">
-                            <p class="mb-2">مرنجع شراء.</p>
+                            <p class="mb-2">أوامر التوريد</p>
                             <h6 class="mb-0 text-end"><span ref="cardPurchaseReturnQtyRef"></span> كمية.</h6>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid pt-4 px-4">
-            <div class="row g-4">
-                <div class="col-sm-6 col-xl-3">
+                </div> *@
+                <div class="col-sm-6 col-xl-4">
                     <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
-                        <i class="fas fa-truck fa-3x" style="color: #C4C24A;"></i>
+                        <i class="fas fa-sign-in-alt fa-3x" style="color: #E94649"></i>
                         <div class="ms-3">
-                            <p class="mb-2"> أمر تسليم</p>
-                            <h6 class="mb-0 text-end"><span ref="cardDeliveryOrderQtyRef"></span> كمية.</h6>
+                            <p class="mb-2">كمية مرفوض فحص</p>
+                            <h6 class="mb-0 text-end"><span ref="cardTransferInQtyRef"></span> كمية.</h6>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-xl-3">
-                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
-                        <i class="fas fa-boxes fa-3x text-primary"></i>
-                        <div class="ms-3">
-                            <p class="mb-2">تسليم جيد</p>
-                            <h6 class="mb-0 text-end"><span ref="cardGoodsReceiveQtyRef"></span> كمية.</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-xl-3">
+                <div class="col-sm-6 col-xl-4">
                     <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
                         <i class="fas fa-sign-out-alt fa-3x" style="color: #F6B53F;"></i>
                         <div class="ms-3">
-                            <p class="mb-2">نقل للخارج</p>
+                            <p class="mb-2">كمية مقبول فحص</p>
                             <h6 class="mb-0 text-end"><span ref="cardTransferOutQtyRef"></span> كمية.</h6>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-xl-3">
+               
+                <div class="col-sm-6 col-xl-4">
                     <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
-                        <i class="fas fa-sign-in-alt fa-3x" style="color: #E94649"></i>
+                        <i class="fas fa-shopping-cart fa-3x text-primary"></i>
                         <div class="ms-3">
-                            <p class="mb-2">نقل للداخل</p>
-                            <h6 class="mb-0 text-end"><span ref="cardTransferInQtyRef"></span> كمية.</h6>
+                            <p class="mb-2">كميات أوامر التوريد</p>
+                            <h6 class="mb-0 text-end"><span ref="cardPurchaseQtyRef"></span> كمية.</h6>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+        <div class="container-fluid pt-4 px-4">
+            <h6 class="mb-0 text-end" style="display:none"><span ref="cardDeliveryOrderQtyRef"></span> كمية.</h6>
+            <div class="row g-4">
+               @*  <div class="col-sm-6 col-xl-3">
+                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fas fa-truck fa-3x" style="color: #C4C24A;"></i>
+                        <div class="ms-3">
+                            <p class="mb-2"> إذن الاضافة</p>
+                            <h6 class="mb-0 text-end"><span ref="cardDeliveryOrderQtyRef"></span> كمية.</h6>
+                        </div>
+                    </div>
+                </div> *@
+               
+                <div class="col-sm-6 col-xl-4">
+                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fas fa-undo-alt fa-3x" style="color: #F6B53F;"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">كمية المرتجع</p>
+                            <h6 class="mb-0 text-end"><span ref="cardSalesReturnQtyRef"></span> كمية.</h6>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-4">
+                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fas fa-chart-line fa-3x" style="color: #E94649;"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">الكميات المنصرفة</p>
+                            <h6 class="mb-0 text-end"><span ref="cardSalesQtyRef"></span> كمية.</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-4">
+                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fas fa-boxes fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">كميات المضافة</p>
+                            <h6 class="mb-0 text-end"><span ref="cardGoodsReceiveQtyRef"></span> كمية.</h6>
                         </div>
                     </div>
                 </div>
@@ -161,7 +167,7 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid pt-4 px-4">
+        <div class="container-fluid pt-4 px-4" style="display:none">
             <div class="row g-4">
                 <div class="col-sm-12 col-xl-12">
                     <div class="bg-white text-center rounded p-4">
@@ -174,7 +180,7 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid pt-4 px-4">
+        <div class="container-fluid pt-4 px-4" style="display:none">
             <div class="row g-4 mb-4">
                 <div class="col-sm-12 col-xl-12">
                     <div class="bg-white text-center rounded p-4">
