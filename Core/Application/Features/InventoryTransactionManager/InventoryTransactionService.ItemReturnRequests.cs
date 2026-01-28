@@ -43,7 +43,7 @@ public partial class InventoryTransactionService
 
         child.Number = _numberSequenceService.GenerateNumber(nameof(InventoryTransaction), "", "IVT");
         child.ModuleId = parent.Id;
-        child.ModuleName = "IRR";          // as requested
+        child.ModuleName = "ItemReturnRequests";          // as requested
         child.ModuleCode = "IRR";
         child.ModuleNumber = parent.Number;
         child.MovementDate = parent.OrderDate ?? DateTime.UtcNow;
