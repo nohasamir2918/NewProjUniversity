@@ -33,16 +33,17 @@ public class GetCardsDashboardHandler : IRequestHandler<GetCardsDashboardRequest
 
     public async Task<GetCardsDashboardResult> Handle(GetCardsDashboardRequest request, CancellationToken cancellationToken)
     {
-        var salesTotal = await _context.SalesOrderItem
+        var salesTotal = await _context.InventoryTransaction
             .AsNoTracking()
             .ApplyIsDeletedFilter(false)
-            .SumAsync(x => (double?)x.Quantity, cancellationToken);
+            .Where(x => x.ModuleName == nameof(IssueRequests))
+            .SumAsync(x => (double?)x.Movement, cancellationToken);
 
         var salesReturnTotal = await _context.InventoryTransaction
             .AsNoTracking()
             .ApplyIsDeletedFilter(false)
             //.Where(x => x.ModuleName == nameof(SalesReturn) && x.Status == InventoryTransactionStatus.Confirmed && x.Warehouse!.SystemWarehouse == false)
-            .Where(x => x.ModuleName == nameof(SalesReturn) )
+            .Where(x => x.ModuleName == "IRR")
             .SumAsync(x => (double?)x.Movement, cancellationToken);
 
         var purchaseTotal = await _context.PurchaseOrderItem
