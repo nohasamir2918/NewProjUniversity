@@ -83,14 +83,22 @@ public class GetProductByEmployeeHandler : IRequestHandler<GetProductByEmployeeL
             );
         }
 
-        var entities = await query
-            .Select(x => new GetProductByEmployeeListDto
-            {
-                Id = x.p.Id,
-                Name = x.p.Name,
+        //var entities = await query
+        //    .Select(x => new GetProductByEmployeeListDto
+        //    {
+        //        Id = x.p.Id,
+        //        Name = x.p.Name,
 
-            })
-            .ToListAsync(cancellationToken);
+        //    })
+        //    .ToListAsync(cancellationToken);
+        var entities = await query
+    .GroupBy(x => new { x.p.Id, x.p.Name })
+    .Select(g => new GetProductByEmployeeListDto
+    {
+        Id = g.Key.Id,
+        Name = g.Key.Name
+    })
+    .ToListAsync(cancellationToken);
 
         return new GetProductByEmployeeListResult
         {

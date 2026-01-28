@@ -20,6 +20,7 @@ public class UpdateIssueRequestsRequest : IRequest<UpdateIssueRequestsResult>
 
     public string? Description { get; set; }
     public string? EmployeeId { get; set; }
+    public string? WarehouseId { get; init; }
     public string? TaxId { get; set; }
     public string? UpdatedById { get; set; }
 }
@@ -32,6 +33,7 @@ public class UpdateIssueRequestsValidator : AbstractValidator<UpdateIssueRequest
         RuleFor(x => x.OrderDate).NotEmpty();
         RuleFor(x => x.OrderStatus).NotEmpty();
         RuleFor(x => x.EmployeeId).NotEmpty();
+        RuleFor(x => x.WarehouseId).NotEmpty();
         //RuleFor(x => x.TaxId).NotEmpty();
     }
 }
@@ -71,6 +73,7 @@ public class UpdateIssueRequestsHandler : IRequestHandler<UpdateIssueRequestsReq
         entity.OrderStatus = request.OrderStatus;
         entity.Description = request.Description;
         entity.EmployeeId = request.EmployeeId;
+        entity.WarehouseId = request.WarehouseId;
         entity.TaxId = request.TaxId;
 
         _repository.Update(entity);

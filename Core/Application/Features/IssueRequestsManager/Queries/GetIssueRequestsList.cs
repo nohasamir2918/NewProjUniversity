@@ -18,7 +18,8 @@ public record GetIssueRequestsListDto
     public string? Description { get; init; }
     public string? EmployeeId { get; init; }
     public string? EmployeeName { get; init; }
-
+    public string? WarehouseId { get; init; }
+    public string? WarehouseName { get; init; }
     public string? DepartmentId { get; init; }
     public string? DepartmentName { get; init; }
     public string? TaxId { get; init; }
@@ -52,6 +53,13 @@ public class GetIssueRequestsListProfile : Profile
                 src.Employee != null && src.Employee.Department != null
                     ? src.Employee.Department.Name
                     : string.Empty))
+
+         .ForMember(dest => dest.WarehouseId,
+            opt => opt.MapFrom(src => src.WarehouseId))
+
+        //.ForMember(dest => dest.WarehouseName,
+        //    opt => opt.MapFrom(src =>
+        //        src.Warehouse != null ? src.Warehouse.Name : string.Empty))
 
         .ForMember(dest => dest.OrderStatusName,
             opt => opt.MapFrom(src =>
