@@ -430,7 +430,7 @@ i.fas.fa-lock.mr-2 {
     }
 }
 .modal-header {
-    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    background: linear-gradient(135deg, #1d2037, #1d2037);
     color: #fff;
     padding: 16px 20px;
     border-bottom: none;
@@ -440,7 +440,9 @@ i.fas.fa-lock.mr-2 {
     font-size: 16px;
     font-weight: 600;
 }
-
+.modal-open .modal {
+    z-index: 9999;
+}
 .modal-header .btn-close {
     filter: invert(1);
     opacity: .9;
@@ -546,7 +548,7 @@ i.fas.fa-lock.mr-2 {
     }
         .main-sidebar:before {
             /* opacity: .6;*/
-            background: #f4f4f5;
+            background: #fff;
         }
 [class*=sidebar-dark] .brand-link {
     background: #3a416f;
@@ -603,9 +605,8 @@ i.fas.fa-lock.mr-2 {
     font-weight: 900;
     font-size: 35px;
     white-space: nowrap;
-    text-transform: uppercase;
-    text-shadow: 1px 4px 6px lch(90 2.22 62.5), 0 0 0 lch(28 26.21 12.27), 1px 4px 6px lch(90 2.22 62.5);
-}
+   }
+    
 
  
 /* ================================= */
@@ -656,25 +657,39 @@ i.fas.fa-lock.mr-2 {
         border-radius: 4px;
         transition: background 0.2s ease;
     }
-    .e-treeview .e-list-item.e-active, .e-treeview .e-list-item.e-hover {
-        background: #f4f4f5;
+    .e-treeview .e-list-item.e-active, .e-treeview .e-list-item.e-list-text.e-hover {
+      
         color: #3a416f;
     }
-
-    /* Text */
-    .e-treeview .e-list-text {
-        color: #3a416f;
+        .e-treeview .e-list-item.e-active.e-hover > .e-text-content {
+            color: #3a416f;
+        }
+        /* Text */
+        .e-treeview .e-list-text {
+            /*color: #3a416f;
+            opacity: 0.85;*/
+            font-size: 16px;
+            font-weight: 500;
+        }
+    .e-treeview .e-list-text :hover{
+        color: #fff;
         opacity: 0.85;
         font-size: 16px;
         font-weight: 500;
     }
-
     /* Hover */
     .e-treeview .e-list-item:hover > .e-text-content {
-        background: rgba(255,255,255,0.1);
+        background: #3a416f;
+        border-radius: 20px;
     }
+e-list-item e-level-1:hover{
+    color:#fff;
 
- 
+}
+
+[class*=sidebar-dark-] .sidebar a {
+    color: #3a416f;
+}
 
     .e-treeview .e-active .e-list-text {
         color: #ffffff;
@@ -693,11 +708,11 @@ i.fas.fa-lock.mr-2 {
         color: #f97316 !important;
         font-size: 15px;
         font-weight: bold;
-        border-radius:50%;
-        background: #fff;
+        border-radius: 50%;
+        background: #3a416f;
         border: none;
     }
-
+   
     /* Rotate arrow when expanded */
     .e-treeview .e-icon-expandable::before {
         content: "◀";
@@ -837,4 +852,73 @@ button.btn.btn-danger {
     box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
 }
 
-  
+button.btn.btn-primary {
+    background: #fff;
+    color: blue;
+    border-bottom-left-radius: 15px;
+    border: 1px solid;
+    border-top-right-radius: 15px;
+    
+    padding: 10px 30px;
+}
+a {
+    color: #3a416f;
+    font-weight: bold;
+}
+/**/
+/* لون النص الافتراضي */
+.e-list-item .e-list-text,
+.e-list-item .e-list-url {
+    color: #3a416f; /* أزرق */
+}
+
+
+
+.e-list-item:hover .e-list-text,
+.e-list-item:hover .e-list-url {
+    color: #ffffff; /* أبيض */
+}
+
+/* العنصر النشط (active) */
+.e-list-item.e-active > .e-text-content,
+.e-list-item.e-active > .e-fullrow {
+    background-color: #007bff;
+}
+
+.e-list-item.e-active .e-list-text,
+.e-list-item.e-active .e-list-url {
+    color: #ffffff;
+}
+.e-list-item .e-list-text,
+.e-list-item .e-list-url,
+.e-list-item .e-anchor-wrap {
+    color: #3a416f;
+}
+/* الحالة العادية: النص أزرق */
+.e-list-item.e-level-2 .e-list-text,
+.e-list-item.e-level-2 .e-list-url,
+.e-list-item.e-level-2 .e-anchor-wrap {
+    color: #3a416f;
+}
+
+/* الحالة النشطة (active): خلفية زرقاء */
+.e-list-item.e-level-2.e-active > .e-fullrow,
+.e-list-item.e-level-2.e-active > .e-text-content {
+    background-color: #3a416f;
+    border-radius:20px;
+}
+
+/* الحالة النشطة (active): النص أبيض */
+.e-list-item.e-level-2.e-active .e-list-text,
+.e-list-item.e-level-2.e-active .e-list-url,
+.e-list-item.e-level-2.e-active .e-anchor-wrap {
+    color: #ffffff;
+}
+.e-list-item.e-level-2:hover .e-list-text,
+.e-list-item.e-level-2:hover .e-list-url,
+.e-list-item.e-level-2:hover .e-anchor-wrap {
+    color: #ffffff;
+}
+
+
+
