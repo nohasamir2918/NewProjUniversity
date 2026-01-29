@@ -2,37 +2,79 @@
 @{
     ViewData["Title"] = "تقرير دفتر الشطب";
 }
+<style>
+    a.btn.btn-danger {
+        background: #fff;
+        color: #f97316;
+        border-bottom-left-radius: 15px;
+        border: 1px solid;
+        border-top-right-radius: 15px;
+    }
 
+    button.btn.btn-primary {
+        background: #fff;
+        color: blue;
+        border-bottom-left-radius: 15px;
+        border: 1px solid;
+        border-top-right-radius: 15px;
+        width:100%;
+        padding: 10px 30px;
+        box-shadow: 0 2px 15px rgb(22 42 249 / 35%);
+    }
+
+    .btn.btn-danger {
+        padding: 10px 30px;
+        box-shadow: 0 2px 15px rgb(249 115 22 / 35%);
+    }
+</style>
 <h3 class="title">تقرير دفتر الشطب</h3>
 
-<div id="scrappingReportApp" v-cloak>
-
-    <!-- الفلاتر -->
-    <div class="mb-3 d-flex gap-2" style="text-align: right;">
-        <div style="margin:10px">
+<div id="scrappingReportApp" v-cloak class="bg-white rounded align-items-center justify-content-between p-4">
+    <div class="row">
+        <div class="col-md-3">
             <label>من تاريخ</label>
             <input type="date" v-model="filters.fromDate" class="form-control" />
         </div>
-        <div style="margin:10px">
+        <div class="col-md-3">
             <label>إلى تاريخ</label>
             <input type="date" v-model="filters.toDate" class="form-control" />
         </div>
-        <div style="margin:10px">
+        <div class="col-md-3">
             <label>المخزن</label>
             <select v-model="filters.warehouseId" class="form-control">
                 <option value="">الكل</option>
                 <option v-for="wh in warehouses" :key="wh.id" :value="wh.id">{{ wh.name }}</option>
             </select>
         </div>
-        <div style="margin:10px">
+        <div class="col-md-3">
             <label>الصنف</label>
             <select v-model="filters.productId" class="form-control">
                 <option value="">الكل</option>
                 <option v-for="p in products" :key="p.id" :value="p.id">{{ p.name }}</option>
             </select>
         </div>
-        <button class="btn btn-primary" style="margin-right: 10px;margin-top: 40px;height: 40px;" v-on:click="loadReport">بحث</button>
     </div>
+    <br />
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-2">
+            <button class="btn btn-primary" v-on:click="loadReport">
+                🔍
+                بحث</button>
+        </div>
+        <div class="col-md-2">
+            <a href="~/Write_off/Index" class="pdf-btn btn btn-danger">
+                🖨️     طباعة
+            </a>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+        
+      <br />
+      <br />
+       
+       
+ 
 
     <!-- جدول التقرير -->
     <table class="table table-bordered table-striped">
@@ -76,6 +118,7 @@
     <div class="d-flex justify-content-between align-items-center mt-2">
         <div>الصفحة {{ currentPage }} من {{ totalPages }}</div>
         <div class="btn-group">
+            
             <button class="btn btn-outline-primary" :disabled="currentPage===1" v-on:click="prevPage">السابق</button>
             <button class="btn btn-outline-primary" :disabled="currentPage===totalPages" v-on:click="nextPage">التالي</button>
         </div>

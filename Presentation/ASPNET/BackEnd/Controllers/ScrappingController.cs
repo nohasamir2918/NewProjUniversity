@@ -13,8 +13,8 @@ namespace ASPNET.BackEnd.Controllers;
 [Route("api/[controller]")]
 public class ScrappingController : BaseApiController
 {
-   
 
+   
     private readonly IMediator _mediator;
    
     public ScrappingController(ISender sender, IMediator mediator) : base(sender)
@@ -133,6 +133,9 @@ public class ScrappingController : BaseApiController
             Content = response
         });
     }
+
+
+
 }
 
 

@@ -4,7 +4,19 @@
     var appName = "جامعة الزقازيق";
 }
 
+<style>
+    .e-text-content {
+        cursor: pointer;
+    }
 
+    .sub-menu {
+        display: none;
+    }
+
+        .sub-menu.open {
+            display: block;
+        }
+</style>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
    
@@ -133,3 +145,18 @@
         }
     });
 </script>
+<script>
+    document.querySelectorAll('.e-text-content.e-icon-wrapper').forEach(item => {
+      item.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        const submenu = this.nextElementSibling;
+        if (submenu) {
+          submenu.classList.toggle('open');
+        }
+      });
+    });
+</script>
+
