@@ -72,54 +72,45 @@ const App = {
             }
         });
 
-const mainGridRef = Vue.ref(null);
-const warehouseRef = Vue.ref(null);
+        const mainGridRef = Vue.ref(null);
+        const warehouseRef = Vue.ref(null);
 
+        const services = {
 
-const services = {
-
-            getWarehouseLookupData: async () =>
-            {
-                try
-                {
-                    const response = await AxiosManager.get('/Warehouse/GetWarehouseList', { });
+            getWarehouseLookupData: async () => {
+                try {
+                    const response = await AxiosManager.get('/Warehouse/GetWarehouseList', {});
                     return response;
                 }
-                catch (error)
-                {
+                catch (error) {
                     throw error;
                 }
             },
-            getStockForWarehouseData: async (warehouseId) =>
-            {
-                try
-                {
+            getStockForWarehouseData: async (warehouseId) => {
+                try {
                     const response = await AxiosManager.post('/InventoryStocktaking/GetStockForWarehouseList', { warehouseId });
                     return response;
                 }
-                catch (error)
-                {
+                catch (error) {
                     throw error;
                 }
             },
         };
 
-const methods = {
-            populateWarehouseLookupData: async () =>
-            {
+        const methods = {
+            populateWarehouseLookupData: async () => {
                 const response = await services.getWarehouseLookupData();
                 const list = response?.data?.content?.data && Array.isArray(response.data.content.data)
-                        ? response.data.content.data
-                        : [];
+                    ? response.data.content.data
+                    : [];
                 state.warehouseList = list.filter(w => w.systemWarehouse !== false);
             },
-            
+
         };
 
-const mainGrid = {
+        const mainGrid = {
             obj: null,
-            create: async (dataSource) =>
-            {
+            create: async (dataSource) => {
                 mainGrid.obj = new ej.grids.Grid({
                     locale: "ar",
                     enableRtl: true,
@@ -141,117 +132,123 @@ const mainGrid = {
 
                     // ----- الأعمدة بعد التعريب -----
                     columns:
-                    [
-                        { field: 'number', headerText: 'رقم الصنف', width: 200, minWidth: 200 },
-                        { field: 'name', headerText: 'اسم الصنف', width: 200, minWidth: 200 },
-                        { field: 'quantity', headerText: 'كمية', width: 200, minWidth: 200 },
+                        [
+                            { field: 'number', headerText: 'رقم الصنف', width: 200, minWidth: 200 },
+                            { field: 'name', headerText: 'اسم الصنف', width: 200, minWidth: 200 },
+                            { field: 'unitMeasureName', headerText: 'الوحدة', width: 200, minWidth: 200 },
+                            { field: 'quantity', headerText: 'الرصيد الدفتري', width: 200, minWidth: 200 },
+                            { field: 'unitPrice', headerText: 'سعر الوحدة', width: 200, minWidth: 200 },
+                            {
+                                field: 'total', headerText: 'القيمة', width: 200, minWidth: 200,
+                                valueAccessor: (field, data) => {
+                                    const qty = Number(data.quantity ?? 0);
+                                    const price = Number(data.unitPrice ?? 0);
+                                    return qty * price;
+                                }
+                            },
+                        ],
+                    toolbar: [
+
+                        { text: 'طباعة PDF', tooltipText: 'طباعة PDF', id: 'PrintPDFCustom' },
                     ],
-
-                    dataBound: function() {
-                    mainGrid.obj.autoFitColumns([
-                        'number',
+                    dataBound: function () {
+                        mainGrid.obj.autoFitColumns([
+                            'number',
                             'name',
+                            'unitMeasureName',
                             'quantity',
+                            'unitPrice',
+                            'total'
                         ]);
-                      },
+                    },
 
-                    rowSelecting: () =>
-                    {
-                        if (mainGrid.obj.getSelectedRecords().length)
-                        {
+                    rowSelecting: () => {
+                        if (mainGrid.obj.getSelectedRecords().length) {
                             mainGrid.obj.clearSelection();
                         }
                     },
+                    toolbarClick: async (args) => {
+
+                        if (args.item.id === 'PrintPDFCustom') {
+                            if (mainGrid.obj.getSelectedRecords().length) {
+                                const selectedRecord = mainGrid.obj.getSelectedRecords()[0];
+                                window.open('/GoodsReceives/GoodsReceivePdf?id=' + (selectedRecord.id ?? ''), '_blank');
+                            }
+                        }
+                    }
                 });
 
-            mainGrid.obj.appendTo(mainGridRef.value);
+                mainGrid.obj.appendTo(mainGridRef.value);
             },
 
-            refresh: () =>
-            {
+            refresh: () => {
                 mainGrid.obj.setProperties({ dataSource: state.mainData });
             }
         };
 
-const warehouseLookup = {
+        const warehouseLookup = {
             obj: null,
-            create: () =>
-            {
-                if (Array.isArray(state.warehouseList))
-                {
+            create: () => {
+                if (Array.isArray(state.warehouseList)) {
                     warehouseLookup.obj = new ej.dropdowns.DropDownList({
                         dataSource: state.warehouseList,
                         fields: { value: 'id', text: 'name' },
                         placeholder: 'اختار المخزن',
                         allowFiltering: true,
-                        filtering: (e) =>
-                        {
+                        filtering: (e) => {
                             e.preventDefaultAction = true;
                             let query = new ej.data.Query();
-                            if (e.text)
-                            {
+                            if (e.text) {
                                 query = query.where('name', 'startsWith', e.text, true);
                             }
                             e.updateData(state.warehouseList, query);
                         },
-                        change: (e) =>
-                        {
+                        change: (e) => {
                             state.warehouseId = e.value;
                         }
                     });
-                warehouseLookup.obj.appendTo(warehouseRef.value);
-              }
+                    warehouseLookup.obj.appendTo(warehouseRef.value);
+                }
             }
         };
 
+        Vue.watch(() => state.warehouseId, async (newWarehouseId) => {
+            if (!newWarehouseId) {
+                state.mainData = []; // لو مسح الاختيار
+                return;
+            }
 
+            try {
+                console.log(newWarehouseId);
 
-Vue.watch(() => state.warehouseId, async (newWarehouseId) =>
-{
-    if (!newWarehouseId)
-    {
-        state.mainData = []; // لو مسح الاختيار
-        return;
-    }
+                const res = await services.getStockForWarehouseData(
 
-    try
-    {
-        console.log(newWarehouseId);
+                    newWarehouseId
+                );
+                state.mainData = res?.data?.content?.data ?? [];
+                mainGrid.refresh();
+            }
+            catch (e) {
+                console.error(e);
+                state.mainData = [];
+            }
+        });
 
-        const res = await services.getStockForWarehouseData(
+        Vue.onMounted(async () => {
+            try {
+                await SecurityManager.authorizePage(['InventoryStocktaking']);
+                await SecurityManager.validateToken();
+                await methods.populateWarehouseLookupData();
+                await mainGrid.create(state.mainData);
+                warehouseLookup.create();
+            }
+            catch (e) {
+                console.error('خطأ في تحميل الصفحة:', e);
+            }
+        });
 
-            newWarehouseId
-        );
-        state.mainData = res?.data?.content?.data ?? [];
-        mainGrid.refresh();
-    }
-    catch (e)
-    {
-        console.error(e);
-        state.mainData = [];
-    }
-});
-
-
-
-Vue.onMounted(async () =>
-{
-    try
-    {
-        await SecurityManager.authorizePage(['InventoryStocktaking']);
-        await SecurityManager.validateToken();
-        await methods.populateWarehouseLookupData();
-        await mainGrid.create(state.mainData);
-        warehouseLookup.create();
-    }
-    catch (e)
-    {
-        console.error('خطأ في تحميل الصفحة:', e);
-    }
-});
-
-return {
-    mainGridRef,
+        return {
+            mainGridRef,
             state,
             warehouseRef,
         }
