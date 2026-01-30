@@ -66,7 +66,7 @@ const App = {
             warehouseList: [],
 
             warehouseId: null,
-
+            warehouseName: '',
             errors: {
                 warehouseId: '',
             }
@@ -170,9 +170,8 @@ const App = {
                     toolbarClick: async (args) => {
 
                         if (args.item.id === 'PrintPDFCustom') {
-                            if (mainGrid.obj.getSelectedRecords().length) {
-                                const selectedRecord = mainGrid.obj.getSelectedRecords()[0];
-                                window.open('/GoodsReceives/GoodsReceivePdf?id=' + (selectedRecord.id ?? ''), '_blank');
+                            if (state.warehouseId != null && state.warehouseId != 0) {
+                                printStocktaking();
                             }
                         }
                     }
@@ -205,12 +204,98 @@ const App = {
                         },
                         change: (e) => {
                             state.warehouseId = e.value;
+                            state.warehouseName = e.itemData?.name
+                                ?? (state.warehouseList.find(w => String(w.id) === String(e.value))?.name ?? '');
+                           
                         }
                     });
                     warehouseLookup.obj.appendTo(warehouseRef.value);
                 }
             }
         };
+
+
+        const mappedItems = Vue.computed(() =>
+            state.mainData.map(x => ({
+                ...x,
+                total: (Number(x.quantity ?? 0) * Number(x.unitPrice ?? 0))
+            }))
+        );
+
+        const printStocktaking = () => {
+            const printSection = document.getElementById('print-section');
+
+            // لازم يظهر علشان Vue يخلص render
+            printSection.style.display = 'block';
+            console.log(state.warehouseName);
+            Vue.nextTick(() => {
+                const content = printSection.outerHTML;
+
+                const printWindow = window.open('', '', 'width=1200,height=800');
+
+                printWindow.document.write(`
+            <html>
+            <head>
+            <title>محضر جرد الأصناف</title>
+                <style>
+                   @page {
+                        size: A4 portrait;
+                        margin: 15mm;
+                        }
+                    body { direction: rtl; font-family: "Times New Roman"; }
+                .print-area {
+                 box-sizing: border-box;
+                        }
+
+                table {
+                 page-break-inside: auto;
+                        }
+
+                tr {
+                page-break-inside: avoid;
+               page-break-after: auto;
+                    }
+                th, td {
+                border: 1px solid #000;
+                padding: 6px;
+                font-size: 13px;
+                word-break: break-word;
+                    }
+.print-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10mm;
+}
+
+.print-header .right,
+.print-header .left {
+    width: 48%;
+    font-size: 14px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+
+                    
+                </style>
+            </head>
+            <body onload="window.print(); window.close();">
+                ${content}
+            </body>
+            </html>
+        `);
+
+                printWindow.document.close();
+
+                setTimeout(() => {
+                    printSection.style.display = 'none';
+                }, 300);
+            });
+        };
+
 
         Vue.watch(() => state.warehouseId, async (newWarehouseId) => {
             if (!newWarehouseId) {
@@ -251,6 +336,7 @@ const App = {
             mainGridRef,
             state,
             warehouseRef,
+            mappedItems
         }
     }
 };
