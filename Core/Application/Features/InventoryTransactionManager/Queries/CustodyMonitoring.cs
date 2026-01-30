@@ -11,7 +11,11 @@ public record CustodyMonitoringDto
 {
     public string? ModuleName { get; init; }
     public string? ModuleNumber { get; set; }
+
+    public DateTime? MovementDate { get; set; }
     public double? Movement { get; init; }
+
+    public string? WarehouseName { get; set; }
 
 }
 
@@ -47,31 +51,7 @@ public class CustodyMonitoringHandler : IRequestHandler<CustodyMonitoringRequest
         _context = context;
     }
 
-    //public async Task<CustodyMonitoringResult> Handle(CustodyMonitoringRequest request, CancellationToken cancellationToken)
-    //{
-    //    var query = _context
-    //        .InventoryTransaction
-    //        .AsNoTracking()
-    //        .ApplyIsDeletedFilter(request.IsDeleted)
-    //        .Include(x => x.IssueRequests)
-    //        .Include(x => x.ItemReturnRequest)
-    //        .Where(x =>x.ProductId=request.ProductId)
-    //        .Select(x => new CustodyMonitoringDto
-    //        {
-    //            ModuleName = x.ModuleName,
-    //            ModuleNumber = x.ProductId,
-    //            Movement = x.Movement,
-
-    //        })
-    //        .AsQueryable();
-
-    //    var entities = await query.ToListAsync(cancellationToken);
-
-    //    return new CustodyMonitoringResult
-    //    {
-    //        Data = entities
-    //    };
-    //}
+   
     public async Task<CustodyMonitoringResult> Handle(
      CustodyMonitoringRequest request,
      CancellationToken cancellationToken)
@@ -89,13 +69,23 @@ public class CustodyMonitoringHandler : IRequestHandler<CustodyMonitoringRequest
                 on it.ModuleId equals ret.Id into returnGroup
             from ret in returnGroup.DefaultIfEmpty()
 
+            join warehouseFrom in _context.Warehouse
+                on it.WarehouseFromId equals warehouseFrom.Id into warehouseFromGroup
+            from warehouseFrom in warehouseFromGroup.DefaultIfEmpty()
+
+            join warehouseTo in _context.Warehouse
+                on it.ModuleId equals warehouseTo.Id into warehouseToGroup
+            from warehouseTo in warehouseToGroup.DefaultIfEmpty()
+
             where it.ProductId == request.ProductId
 
             select new
             {
                 it,
                 issue,
-                ret
+                ret,
+                warehouseFrom,
+                warehouseTo
             };
 
         if (request.EmployeeId != null)
@@ -111,8 +101,11 @@ public class CustodyMonitoringHandler : IRequestHandler<CustodyMonitoringRequest
             {
                 ModuleName = (x.it.ModuleName== "IssueRequests" ? "اذن صرف" : "اذن ارتجاع"),
                 ModuleNumber = x.it.ModuleId,
-                Movement = x.it.Movement
+                Movement = x.it.Movement,
+                MovementDate=x.it.MovementDate,
+                WarehouseName=(x.it.ModuleCode=="IR"? x.warehouseFrom.Name : x.warehouseTo.Name)
             })
+            .OrderBy(x=>x.MovementDate)
             .ToListAsync(cancellationToken);
 
         return new CustodyMonitoringResult

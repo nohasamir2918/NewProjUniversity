@@ -117,7 +117,7 @@ const App = {
                     );
                     console.log("response", response);
                     return response;
-                   
+
                 } catch (error) {
                     throw error;
                 }
@@ -174,21 +174,29 @@ const App = {
 
                     // ----- الأعمدة بعد التعريب -----
                     columns: [
-                       
-                        { field: 'moduleName', headerText: 'الحركة', width: 200, minWidth: 200 },
+
+                        { field: 'MovementDate', headerText: 'التاريخ', width: 200, minWidth: 200 },
                         { field: 'moduleNumber', headerText: 'رقم الإذن', width: 200, minWidth: 200 },
-                        { field: 'movement', headerText: 'كمية', width: 200, minWidth: 200 },
-                        
+                        { field: 'moduleName', headerText: 'الحركة', width: 200, minWidth: 200 },
+                        { field: 'warehouseName', headerText: 'وارد من/منصرف الى', width: 200, minWidth: 200 },
+                        { field: 'movement', headerText: 'كمية مضافة/منصرفة', width: 200, minWidth: 200 },
+                        { field: 'total', headerText: 'الرصيد', width: 200, minWidth: 200 },
+
                     ],
 
-                   
+                    toolbar: [
+
+                        { text: 'طباعة PDF', tooltipText: 'طباعة PDF', id: 'PrintPDFCustom' },
+                    ],
 
                     dataBound: function () {
                         mainGrid.obj.autoFitColumns([
                             'moduleName',
                             'moduleNumber',
+                            'warehouseName',
                             'movement',
-                            
+                            'total'
+
                         ]);
                     },
 
@@ -198,7 +206,16 @@ const App = {
                         }
                     },
 
-                    
+                    toolbarClick: async (args) => {
+
+                        if (args.item.id === 'PrintPDFCustom') {
+                            if (mainGrid.obj.getSelectedRecords().length) {
+                                const selectedRecord = mainGrid.obj.getSelectedRecords()[0];
+                                window.open('/GoodsReceives/GoodsReceivePdf?id=' + (selectedRecord.id ?? ''), '_blank');
+                            }
+                        }
+                    }
+
                 });
 
                 mainGrid.obj.appendTo(mainGridRef.value);
@@ -308,7 +325,6 @@ const App = {
             }
         );
 
-
         Vue.watch(
             () => state.employeeId,
             async (newVal) => {
@@ -334,7 +350,6 @@ const App = {
                 }
             }
         );
-
 
         Vue.watch(() => state.productId, async (newProductId) => {
             if (!newProductId) {
@@ -363,21 +378,20 @@ const App = {
             }
         });
 
-        Vue. watch(() => state.employeeId, () => {
+        Vue.watch(() => state.employeeId, () => {
             if (!state.employeeId && state.productId) {
                 state.mainData = [];
                 state.productId = null; // لازم يعيد اختيار المنتج
             }
         });
 
-
         Vue.onMounted(async () => {
             try {
                 await SecurityManager.authorizePage(['CustodyMonitoring']);
                 await SecurityManager.validateToken();
                 await methods.populateDepartmentLookupData();
-               // await methods.populateEmployeeLookupData();
-               // await methods.populateProductLookupData();
+                // await methods.populateEmployeeLookupData();
+                // await methods.populateProductLookupData();
                 await mainGrid.create(state.mainData);
                 departmentLookup.create();
                 employeeLookup.create();

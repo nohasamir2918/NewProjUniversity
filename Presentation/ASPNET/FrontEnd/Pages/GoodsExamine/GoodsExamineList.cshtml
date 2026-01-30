@@ -31,58 +31,53 @@
                                     </div>
 
                                     <div class="card-body">
-                                        <div class="row mb-2">
-                                            <div class="col-md-6">
+                                        <div class="row ">
+                                            <div class="col-md-4">
                                                 <label for="examineDate">تاريخ الفحص</label>
                                                 <input ref="examineDateRef" />
-
-                                                
-
                                                 <label class="text-danger">{{ state.errors.examineDate }}</label>
                                             </div>
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label for="Number">الرقم</label>
                                                 <input ref="numberRef" v-model="state.number" readonly>
                                             </div>
-                                        </div>
-
-                                        <div class="row mb-2">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label for="PurchaseOrderId">أمر التوريد</label>
                                                 <div ref="purchaseOrderIdRef"></div>
                                                 <label class="text-danger">{{ state.errors.purchaseOrderId }}</label>
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-6">
+                                        <div class="row ">
+                                            
+
+                                            <div class="col-md-4">
                                                 <label for="Status">الحالة</label>
                                                 <div ref="statusRef"></div>
                                                 <label class="text-danger">{{ state.errors.status }}</label>
                                             </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label for="CommitteeDesionNumber"> رقم قرار اللجنه</label>
                                                 <input ref="committeeDesionNumberRef" v-model="state.committeeDesionNumber" class="form-control" />
                                                 <label class="text-danger">{{ state.errors.committeeDesionNumber }}</label>
                                             </div>
-
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label for="CommiteeDate">تاريخ اللجنه</label>
                                                 <input ref="commiteeDateRef" type="date" v-model="state.commiteeDate" class="form-control" />
 
-                                                
+
                                                 <label class="text-danger">{{ state.errors.commiteeDate }}</label>
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
-                                            <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
                                                 <label for="Description">الوصف</label>
                                                 <textarea class="form-control" rows="3" v-model="state.description"></textarea>
                                                 <label class="text-danger">{{ state.errors.description }}</label>
                                             </div>
                                         </div>
-                                        <div class="card-body">
+                                       
 
                                             <div v-for="(member, index) in state.committeeList.filter(m => !m.isDeleted)"
                                                  :key="member.tempId"
@@ -90,48 +85,61 @@
 
 
                                                 <input type="hidden" v-model="member.id"  />
-                                                <div class="row mb-2">
-                                                    <div class="col-md-6">
+                                                <div class="row ">
+                                                    <div class="col-md-4">
                                                         <label>اسم الموظف</label>
                                                         <input class="form-control" v-model="member.employeeName">
                                                     </div>
 
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label>الوظيفة</label>
                                                         <input class="form-control" v-model="member.employeePositionName">
                                                     </div>
-                                                </div>
-
-                                                <div class="row mb-2">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label>نوع الموظف</label>
-                                                        <select class="form-select" v-model="member.employeeType">
+                                                        <select class="e-input-group e-control-wrapper e-ddl e-lib e-keyboard" v-model="member.employeeType">
                                                             <option :value="true">رئيس</option>
                                                             <option :value="false">عضو</option>
                                                         </select>
                                                     </div>
+                                                </div>
+
+                                                <div class="row ">
+                                                   
 
                                                     <div class="col-md-6">
                                                         <label>ملاحظات</label>
                                                         <textarea class="form-control" v-model="member.description"></textarea>
                                                     </div>
                                                 </div>
-                                                <button type="button"
-                                                        class="btn btn-danger btn-sm"
-                                                        v-if="state.committeeList.length > 1"
-                                                        v-on:click ="removeCommitteeMember(index)">
-                                                    حذف العضو
-                                                </button>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-4"></div>
+                                                    <div class="col-md-2">
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-sm"
+                                                                v-if="state.committeeList.length > 1"
+                                                                v-on:click="removeCommitteeMember(index)">
+                                                            حذف العضو
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-2">
+
+                                                        <button type="button"
+                                                                class="btn btn-primary btn-sm"
+                                                                v-on:click="addCommitteeMember">
+                                                                +
+                                                            إضافة عضو
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-4"></div>
+                                                </div>
+                                              
 
                                             </div>
 
-                                            <button type="button"
-                                                    class="btn btn-success btn-sm"
-                                                    v-on:click ="addCommitteeMember">
-                                                إضافة عضو
-                                            </button>
 
-                                        </div>
+                                        
 
 
 

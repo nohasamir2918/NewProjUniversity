@@ -4,13 +4,18 @@
 }
 <h3 class="title"> تقرير جرد المخزن</h3>
 <div id="app" v-cloak>
-    <div class="row">
-        <div class="col-md-4">
+    <div class="row back">
+        <div class="col-md-1">
             <label>المخزن</label>
+           
+        </div>
+        <div class="col-md-5">
             <div ref="warehouseRef"></div>
             <label class="text-danger">{{ state.errors.warehouseId }}</label>
         </div>
     </div>
+    <br />
+
     <div class="row">
         <div class="col-12">
             <div class="grid-container">
@@ -18,8 +23,80 @@
             </div>
         </div>
     </div>
+
+    <div id="print-section" style="display:none">
+        <div id="content" class="print-area form-sheet">
+            <h3 class="title text-center"> محضر جرد الأصناف </h3>
+            <div class="print-header">
+                <div class="right">
+                    <span class="bold">اسم الجهة: جامعة الزقازيق</span><br>
+                    <span class="bold">مخزن: {{ state.warehouseName || '—' }}</span><br>
+                    <span class="bold">تاريخ الجرد:</span>
+                </div>
+
+                <div class="left">
+                    <span style="font-weight:normal; font-size:12px;">نموذج 6 مخازن حكومة</span><br><br>
+                    <span class="bold">اسم صاحب العهدة:</span>
+                </div>
+            </div>
+
+            <br />
+            <!-- ===== بيانات ===== -->
+
+            <table class="items-table">
+                <colgroup>
+                    <col style="width:10%">
+                    <col style="width:10%">
+                    <col style="width:8%">
+                    <col style="width:8%">
+                    <col style="width:10%">
+                    <col style="width:10%">
+                    <col style="width:10%">
+                    <col style="width:8%">
+                    <col style="width:8%">
+                    <col style="width:10%">
+                    <col style="width:10%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th >رقم الصنف</th>
+                        <th >اسم الصنف</th>
+                        <th >الوحدة</th>
+                        <th >الموجود في واقع الجرد</th>
+                        <th >حالة الصنف</th>
+                        <th >الرصيد الدفتري</th>
+                        <th >حالة الصنف</th>
+                        <th >الزيادة </th>
+                        <th >العجز</th>
+                        <th >سعر الوحدة</th>
+                        <th >القيمة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in mappedItems" :key="index">
+                        <td class="center">{{ index + 1 }}</td>
+                        <td>{{ item.name }}</td>
+                        <td class="center">{{ item.unitMeasureName }}</td>
+                        <td class="center"></td>
+                        <td class="center"></td>
+                        <td class="center">{{ item.quantity }}</td>
+                        <td class="center"></td>
+                        <td class="center"></td>
+                        <td class="center"></td>
+                        <td class="center">{{ item.unitPrice }}</td>
+                        <td class="center">{{ item.total }}</td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
+
+
+
 @section scripts {
-    <script src="~/FrontEnd/Pages/InventoryStocktaking/InventoryStocktaking.cshtml.js"></script>
+    <script src="~/FrontEnd/Pages/InventoryStocktaking/InventoryStocktaking.cshtml.js?d=10"></script>
 }

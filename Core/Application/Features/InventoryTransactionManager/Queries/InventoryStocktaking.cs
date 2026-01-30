@@ -14,6 +14,9 @@ public record InventoryStocktakingDto
 
     public double? Quantity { get; init; }
 
+    public double? UnitPrice { get; set; }
+    public string? UnitMeasureName { get; set; }
+
 
 }
 
@@ -61,11 +64,17 @@ public class InventoryStocktakingHandler : IRequestHandler<InventoryStocktakingR
             join p in _context.Product
              on it.ProductId equals p.Id
 
+            // left join to UnitMeasure so we can access UnitMeasure.Name in the grouped result
+            join um in _context.UnitMeasure
+                on p.UnitMeasureId equals um.Id into umJoin
+            from um in umJoin.DefaultIfEmpty()
+
+
             select new
             {
                 it,
                 p,
-
+                um,
             };
 
         if (request.WarehouseId != null)
@@ -81,13 +90,17 @@ public class InventoryStocktakingHandler : IRequestHandler<InventoryStocktakingR
             .GroupBy(x => new
             {
                 x.p.Id,
-                x.p.Name
+                x.p.Name,
+                x.p.UnitPrice,
+                UnitMeasureName = x.um != null ? x.um.Name : null
             })
             .Select(g => new InventoryStocktakingDto
             {
                 Number = g.Key.Id,
                 Name = g.Key.Name,
-                Quantity = g.Sum(x => x.it.Stock)
+                Quantity = g.Sum(x => x.it.Stock),
+                UnitPrice = g.Key.UnitPrice,
+                UnitMeasureName = g.Key.UnitMeasureName
             })
             .ToListAsync(cancellationToken);
 

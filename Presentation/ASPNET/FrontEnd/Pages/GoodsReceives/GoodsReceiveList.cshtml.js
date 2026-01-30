@@ -275,6 +275,9 @@ const App = {
                 select.innerHTML = `
                     <option value="1">أمر التوريد</option>
                     <option value="2">أذن ارتجاع</option>
+                     <option value="3">أذن صرف</option>
+                     <option value="4">كشف الزيادة</option>
+                     <option value="5">شهادةإدارية</option>
                 `;
                 select.value = String(state.transType || 1);
                 select.addEventListener('change', () => {
