@@ -171,9 +171,11 @@ const App = {
 
                         if (args.item.id === 'PrintPDFCustom') {
                             if (state.warehouseId != null && state.warehouseId != 0) {
-                                printStocktaking();
+                                const selectedRecord = mainGrid.obj.getSelectedRecords()[0];
+                                window.open('/InventoryStocktaking/InventoryStocktakingPdf?id=' + (selectedRecord.id ?? ''), '_blank');
                             }
                         }
+                
                     }
                 });
 
