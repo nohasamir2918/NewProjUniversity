@@ -2,165 +2,186 @@
 @{
     ViewData["Title"] = "دفتر الشطب PDF";
 }
+
+
+
 <style>
-    body {
-        direction: rtl;
-        font-family: "Times New Roman", serif;
-        background: #f5fI5F5;
+    .card-header {
+        font-size: 20px;
+        font-weight: bold;
+        color: #001a4e;
+        background: #f6f7fb;
     }
 
-    #content, #content * {
-        direction: rtl !important;
-        text-align: right;
+    body {
+        font-family: "Segoe UI", Tahoma, Arial;
+    }
+
+    table, th, td {
+        border: 1px solid #e5e5e5;
+        color: #001a4e;
+        font-weight: bold;
         font-size: 19px;
     }
-
-    .print-area {
-        width: 210mm;
-        min-height: 297mm;
-        background: #fff;
-        padding: 10mm;
-        margin: auto;
-        border: 1px solid #000;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-
-    td, th {
-        border: 1px solid #000;
-        padding: 6px;
-        vertical-align: middle;
-    }
-
-    .no-border td {
-        border: none;
-    }
-
-    .center {
-        text-align: center !important;
-    }
-
-    .bold {
-        font-weight: bold;
-    }
-
-    .title {
-        font-size: 20px;
-        text-decoration: underline;
-        margin: 5px 0;
-    }
-
-    .section {
-        margin-top: 10px;
-        font-size: 14px;
-        line-height: 1.9;
-    }
-
-    .signature td {
-        height: 70px;
-        text-align: center;
-        vertical-align: bottom;
-        font-weight: bold;
-    }
-
-    @@media print {
-        .no-print {
-            display: none;
-        }
-    }
-
-    ol {
-        list-style: none !important;
-        padding-right: 0;
-    }
-
-        ol li::before {
-            content: "• ";
-            float: right;
-            margin-left: 6px;
-        }
 </style>
 
-<div id="app">
+<div class="container-fluid mt-3">
 
-    <div class="no-print text-center mb-3">
-        <button class="btn btn-danger" v-on:click="handler.downloadPDF">
-            تحميل PDF
-        </button>
-    </div>
-
-    <div id="content" class="print-area">
-
-        <!-- ===== Header ===== -->
-        <div class="row">
-            <div class="col-md-4">
-                <span style="color:#000;font-weight:bold;"> اسم الجهة:.................</span>
-                <br />
-                <span style="color:#000;font-weight:bold;">مخزن:....................</span>
-                <br />
-                <span style="color:#000;font-weight:bold;">اسم الصنف:....................</span>
-                <br />
-                <span style="color:#000;font-weight:bold;">رقم الصنف:....................</span>
-            </div>
-            <div class="col-md-4 center">
-
-
-                <span style="color:#000;font-weight:bold;">:دفتر الشطب</span>
-
-
-            </div>
-
-            <div class="col-md-4">
-
-                <span style="color:#000;font-weight:bold;">حالة الصنف:....................</span>
-                <br />
-                <span style="color:#000;font-weight:bold;">الوحدة:....................</span>
-            </div>
+    <div class="row">
+        <div class="col-md-5"></div>
+        <div class="col-md-2">
+            <button class="btn btn-danger" id="PrintResultButton" onclick='printar("certificat")'>
+                <span class="print-icon">🖨️</span>
+                <span class="print-text">طباعة</span>
+            </button>
         </div>
+        <div class="col-md-5"></div>
+    </div>
+    <br />
+    <div class="row justify-content-center">
+        
+        <div class="col-md-12">
+           
+           
+            <div id="certificat" >
+                <center>
+                        <div id="border" style="height:29.7cm;padding-top:.6cm;font-size:12px;width:21cm;background:white;margin:1cm;font-family: 'Arial regular'!important;font-size:10pt;padding:10px;">
+
+                        <div id="content" style="padding: 3px;">
+                            <div class="row"  >
+
+                               
+
+                                <div class="col-md-4" style="text-align:right;">
+
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;"> اسم الجهة:.................</label>
+                                    <br />
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;">مخزن:....................</label>
+                                    <br />
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;">اسم الصنف:....................</label>
+                                    <br />
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;">رقم الصنف:....................</label>
+
+                                </div>
+                                <div class="col-md-4" style="text-align:center;">
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;">دفتر الشطب:</label>
+
+                                </div>
+                                <div class="col-md-4" style="text-align:right;">
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;">حالة الصنف:....................</label>
+                                    <br />
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;">الوحدة:....................</label>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <table style="width:100%;color: #6c757d;">
 
 
-        <!-- ===== جدول الأصناف ===== -->
-        <table>
-            <thead>
-                <tr class="center bold">
-                    <th rowspan="2">التاريخ</th>
-                    <th rowspan="2">رقم الاذن</th>
-                    <th rowspan="2">وارد من / </th>
-                    <th rowspan="2">الكمية المضافة</th>
-                    <th colspan="2">الكمية المنصرفة</th>
-                    <th rowspan="2">الرصيد</th>
-                    <th rowspan="2">سعر الوحدة</th>
-                    <th rowspan="2">القيمة</th>
-                    <th rowspan="2">ملاحظات</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-
-
-                    <td class="center">فعلي</td>
-                    <td class="center">صرفيات أخرى</td>
-
-                </tr>
-
-
-            </tbody>
-        </table>
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="2">التاريخ</th>
+                                                <th rowspan="2">رقم الإذن</th>
+                                                <th rowspan="2">وارد من / صرف إلى</th>
+                                                <th rowspan="2">الكمية المضافة</th>
+                                                <th colspan="2">الكمية المنصرفة</th>
+                                                <th rowspan="2">الرصيد</th>
+                                                <th rowspan="2">سعر الوحدة</th>
+                                                <th rowspan="2">القيمة</th>
+                                                <th rowspan="2">ملاحظات</th>
+                                            </tr>
+                                            <tr>
+                                                <th>فعلي</th>
+                                                <th>صرفيات أخرى</th>
 
 
 
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                </center>
+            </div>
 
 
 
+
+
+         
+        </div>
     </div>
 </div>
 
 
+
+<script>
+
+        function printar(k) {
+
+
+        var restorepage2 = document.body.innerHTML;
+        var printcontent2 = $('#' + k).html();
+
+        document.body.innerHTML = printcontent2;
+
+                    var css = `@@page{margin: 0cm 0cm 0cm 0cm!important;}.hero p { font-size: 20px;}.verticalLine{width:1px !important;margin: 0!important;background: #000!important;}.lab-2 {margin-top: 40px;margin-right: 8px;text-align: center;font-size: 16px}img.img1 {visibility: visible;}.col-md-4 {width: 33.33333333%;}.col-md-8 {width: 66.66666667%;}.col-md-6 {width: 50%;}.col-md-7 {width: 58.33333333%;}.col-md-5 {width: 41.66666667% !important;}.col-md-2{width: 16.66666667% !important;} canvas{display: inline-block !important;vertical-align: baseline!important;top: 10px;position: absolute;}#caption1 {color: #000000;text-align: right;caption-side: top;font-weight: bold;} table,td,th{border:1px solid #d3c8bc;}  .col-md-1 {flex: 0 0 8.33333%;max-width: 8.33333%;} .col-md-3 {flex: 0 0 auto;width: 25%;}`,
+            head = document.head || document.getElementsByTagName('head')[0],
+        style = document.createElement('style');
+        style.type = 'text/css';
+        style.media = 'print';
+        if (style.styleSheet) {
+            style.styleSheet.cssText = css;
+        }
+        else {
+            style.appendChild(document.createTextNode(css));
+        }
+        head.appendChild(style);
+        window.print();
+        history.go(0);
+        window.location.reload();
+        document.body.innerHTML = restorepage2;
+
+
+
+
+    }
+</script>
 @section scripts {
     <script src="~/FrontEnd/Pages/Reports/ScrappingReportPdf.cshtml.js"></script>
 }
