@@ -1,0 +1,166 @@
+﻿@page
+@{
+    ViewData["Title"] = "دفتر الشطب PDF";
+}
+<style>
+    body {
+        direction: rtl;
+        font-family: "Times New Roman", serif;
+        background: #f5fI5F5;
+    }
+
+    #content, #content * {
+        direction: rtl !important;
+        text-align: right;
+        font-size: 19px;
+    }
+
+    .print-area {
+        width: 210mm;
+        min-height: 297mm;
+        background: #fff;
+        padding: 10mm;
+        margin: auto;
+        border: 1px solid #000;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    td, th {
+        border: 1px solid #000;
+        padding: 6px;
+        vertical-align: middle;
+    }
+
+    .no-border td {
+        border: none;
+    }
+
+    .center {
+        text-align: center !important;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .title {
+        font-size: 20px;
+        text-decoration: underline;
+        margin: 5px 0;
+    }
+
+    .section {
+        margin-top: 10px;
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+    .signature td {
+        height: 70px;
+        text-align: center;
+        vertical-align: bottom;
+        font-weight: bold;
+    }
+
+    @@media print {
+        .no-print {
+            display: none;
+        }
+    }
+
+    ol {
+        list-style: none !important;
+        padding-right: 0;
+    }
+
+        ol li::before {
+            content: "• ";
+            float: right;
+            margin-left: 6px;
+        }
+</style>
+
+<div id="app">
+
+    <div class="no-print text-center mb-3">
+        <button class="btn btn-danger" v-on:click="handler.downloadPDF">
+            تحميل PDF
+        </button>
+    </div>
+
+    <div id="content" class="print-area">
+
+        <!-- ===== Header ===== -->
+        <div class="row">
+            <div class="col-md-4">
+                <span style="color:#000;font-weight:bold;"> اسم الجهة:.................</span>
+                <br />
+                <span style="color:#000;font-weight:bold;">مخزن:....................</span>
+                <br />
+                <span style="color:#000;font-weight:bold;">اسم الصنف:....................</span>
+                <br />
+                <span style="color:#000;font-weight:bold;">رقم الصنف:....................</span>
+            </div>
+            <div class="col-md-4 center">
+
+
+                <span style="color:#000;font-weight:bold;">:دفتر الشطب</span>
+
+
+            </div>
+
+            <div class="col-md-4">
+
+                <span style="color:#000;font-weight:bold;">حالة الصنف:....................</span>
+                <br />
+                <span style="color:#000;font-weight:bold;">الوحدة:....................</span>
+            </div>
+        </div>
+
+
+        <!-- ===== جدول الأصناف ===== -->
+        <table>
+            <thead>
+                <tr class="center bold">
+                    <th rowspan="2">التاريخ</th>
+                    <th rowspan="2">رقم الاذن</th>
+                    <th rowspan="2">وارد من / </th>
+                    <th rowspan="2">الكمية المضافة</th>
+                    <th colspan="2">الكمية المنصرفة</th>
+                    <th rowspan="2">الرصيد</th>
+                    <th rowspan="2">سعر الوحدة</th>
+                    <th rowspan="2">القيمة</th>
+                    <th rowspan="2">ملاحظات</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+
+
+                    <td class="center">فعلي</td>
+                    <td class="center">صرفيات أخرى</td>
+
+                </tr>
+
+
+            </tbody>
+        </table>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+@section scripts {
+    <script src="~/FrontEnd/Pages/Reports/ScrappingReportPdf.cshtml.js"></script>
+}

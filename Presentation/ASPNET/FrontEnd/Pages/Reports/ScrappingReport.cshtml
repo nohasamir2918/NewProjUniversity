@@ -63,9 +63,10 @@
                 بحث</button>
         </div>
         <div class="col-md-2">
-            <a href="~/Write_off/Index" class="pdf-btn btn btn-danger">
+            <a href="javascript:void(0)" class="pdf-btn btn btn-danger" v-on:click="openPdf">
                 🖨️     طباعة
             </a>
+           
         </div>
         <div class="col-md-4"></div>
     </div>
@@ -213,15 +214,30 @@
                 const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++; };
                 const prevPage = () => { if (currentPage.value > 1) currentPage.value--; };
 
+                // Generate server-side page URL to avoid hard-coded path issues
+                const pdfUrlBase = '@Url.Page("/Reports/ScrappingReportPdf")';
+
+                const openPdf = () => {
+                    // Build URL with current filters (encode for safety)
+                    const params = new URLSearchParams();
+                    if (filters.value.fromDate) params.append('fromDate', filters.value.fromDate);
+                    if (filters.value.toDate) params.append('toDate', filters.value.toDate);
+                    if (filters.value.warehouseId) params.append('warehouseId', filters.value.warehouseId);
+                    if (filters.value.productId) params.append('productId', filters.value.productId);
+
+                    const url = pdfUrlBase + (params.toString() ? ('?' + params.toString()) : '');
+                    window.open(url, '_blank');
+                };
+
                 onMounted(() => {
-                    loadWarehouses();
+                    loadWarehouses();   
                     loadProducts();
                 });
 
                 return {
                     filters, report, warehouses, products,
                     pagedData, currentPage, totalPages,
-                    formatDate, nextPage, prevPage, loadReport
+                    formatDate, nextPage, prevPage, loadReport, openPdf
                 };
             }
         }).mount('#scrappingReportApp');
