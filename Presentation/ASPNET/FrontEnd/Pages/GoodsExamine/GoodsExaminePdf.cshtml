@@ -7,8 +7,9 @@
     <div class="col-md-6">
         <div class="no-print text-center mb-3">
             <!-- زر خارج الطباعة -->
-            <button v-on:click="handler.downloadPDF" class="pdf-btn btn btn-danger">
-                🖨️     تحميل PDF
+            <button class="btn btn-danger" id="PrintResultButton" onclick='printar("certificat")'>
+                <span class="print-icon">🖨️</span>
+                <span class="print-text">طباعة</span>
             </button>
         </div>
     </div>
@@ -21,10 +22,10 @@
         background: #f5fI5F5;
     }
 
-    #content, #content * {
+    #border, #border * {
         direction: rtl !important;
         text-align: right;
-        font-size: 19px;
+        font-size: 16px;
     }
 
     .print-area {
@@ -80,16 +81,14 @@
         }
     }
 </style>
-<div id="app">
 
-  
-  
-    <!-- محتوى الـ PDF فقط -->
-    <div id="content">
+<div id="certificat">
+   
+        <div id="border" style="height:29.7cm;padding-top:.6cm;font-size:12px;width:21cm;background:white;margin:1cm;font-family: 'Arial regular'!important;font-size:10pt;padding:10px;">
 
-        <!-- الصفحة الأولى -->
-        <section class="print-area">
 
+
+            <div id="content" style="padding: 3px;">
             <div class="row">
                 <div class="col-md-6">
                     <span style="color:#000;font-weight:bold;">
@@ -107,8 +106,9 @@
                     <h2 style="text-align:center;font-size:30px;text-decoration:underline;">محضر لجنة الفحص</h2>
                 </div>
             </div>
-          
-
+          <br />
+            <div class="row">
+                <div class="col-md-12">
             <p style="text-align:right"  class="text">
                 اليوم {{ state.examineDayName }}
                 الموافق {{ state.examineDate }}
@@ -122,9 +122,6 @@
                 {{ chairman.employeeName }}
 
             </p>
-
-          
-
             <br />
             <p style="text-align:right"><strong>وعضوية كل من:</strong></p>
             <br />
@@ -136,20 +133,6 @@
             </div>
 
 
-            @* <div class="committee">
-                <p v-for="(member,index) in members" :key="index">
-                    السيد / {{ member.employeeName }}
-                    — الوظيفة: {{ member.employeePositionName }}
-                </p>
-            </div>
- *@
-
-            
-
-
-          @*   <p class="paragraph">
-                وقد قامت اللجنة بفحص الأصناف المدرجة في ظهره بالنسبة المئوية ووفقا لما أرتائه من القبول او الرفض والاسباب المبينة قرين كل صنف وذلك علي مقتضي امر التوريد الصادر الي ......... برقم () بتاريخ ..... وبالمواصفات المنصوص عليها بكراسة الشروط والمواصفات والعقد المبرم مع المورد وبحضور / وعدم حضور المورد او مندوبه .
-            </p> *@
             <p class="paragraph">
                 وقد قامت اللجنة بفحص الأصناف المدرجة طبقًا
                 لأمر التوريد الصادر إلى
@@ -162,25 +145,12 @@
                 والمواصفات والعقد المبرم مع المورد
                 وبحضور / عدم حضور المورد أو مندوبه.
             </p>
-
-           @*  <div class="signatures">
-                <div>
-                    <strong>رئيس اللجنة</strong><br>
-                    الاسم: .................................<br>
-                    التوقيع: ...............................
                 </div>
-                <div>
-                    <strong>عضو اللجنة</strong><br>
-                    الاسم: .................................<br>
-                    التوقيع: ...............................
-                </div>
-            </div> *@
-
-        </section>
-        <br />
-        <!-- الصفحة الثانية -->
-        <section class="print-area">
-
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-12">
+          
             <table class="inspection-table">
                 <thead>
                     <tr>
@@ -210,7 +180,8 @@
                     </tr>
                 </tbody>
             </table>
-
+            </div>
+            </div>
             <br />
             <div class="row">
                 <div class="col-md-4 center">
@@ -228,17 +199,48 @@
                     <span style="color:#000;font-weight:bold;"> التوقيع:.................</span>
                 </div>
             </div>
-
-        </section>
-
-    </div>
-
-  
-
+        </div>
+       
+      
 
 </div>
 
 
+    
+        </div>
+
+<script>
+
+        function printar(k) {
+
+
+        var restorepage2 = document.body.innerHTML;
+        var printcontent2 = $('#' + k).html();
+
+        document.body.innerHTML = printcontent2;
+
+                    var css = `@@page{margin: 0cm 0cm 0cm 0cm!important;}#border{font-size:16px;}.col-md-4 {width: 33.33333333%;}.col-md-8 {width: 66.66666667%;}.col-md-6 {width: 50%;}.col-md-7 {width: 58.33333333%;}.col-md-5 {width: 41.66666667% !important;}.col-md-2{width: 16.66666667% !important;}  table,td,th{border:1px solid #d3c8bc;} table{width:100%;}  .col-md-1 {flex: 0 0 8.33333%;max-width: 8.33333%;} .col-md-3 {flex: 0 0 auto;width: 25%;} .col-md-12{width:100%;}.col-md-6 {-webkit-flex: 0 0 50%;-ms-flex: 0 0 50%;flex: 0 0 50%; max-width: 50%; }`,
+            head = document.head || document.getElementsByTagName('head')[0],
+        style = document.createElement('style');
+        style.type = 'text/css';
+        style.media = 'print';
+        if (style.styleSheet) {
+            style.styleSheet.cssText = css;
+        }
+        else {
+            style.appendChild(document.createTextNode(css));
+        }
+        head.appendChild(style);
+        window.print();
+        history.go(0);
+        window.location.reload();
+        document.body.innerHTML = restorepage2;
+
+
+
+
+    }
+</script>
 @section scripts {
     <script src="~/FrontEnd/Pages/GoodsExamine/GoodsExaminePdf.cshtml.js"></script>
 }
