@@ -11,10 +11,14 @@
     .d-flex.align-items-center.justify-content-between.mb-4, .e-lib.e-grid.e-control.e-gridhover.e-responsive.e-default.e-droppable.e-horizontallines.e-tooltip.e-keyboard {
         direction: rtl;
     }
+
+
 </style>
 <h3 class="title">لوحات التحكم الافتراضية</h3>
 <div id="app" v-cloak>
     <div class="form-card" id="formcard">
+       
+        <div id="print1">
         <div class="container-fluid pt-4 px-4">
             <h6 class="mb-0 text-end" style="display:none"><span ref="cardPurchaseReturnQtyRef"></span> كمية.</h6>
             <div class="row g-4">
@@ -28,7 +32,7 @@
                     </div>
                 </div> *@
                 <div class="col-sm-6 col-xl-4">
-                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                        <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
                         <i class="fas fa-sign-in-alt fa-3x" style="color: #E94649"></i>
                         <div class="ms-3">
                             <p class="mb-2">كمية مرفوض فحص</p>
@@ -101,6 +105,15 @@
                 </div>
             </div>
         </div>
+        </div>
+        <br />
+        <center>
+        <button class="btn btn-primary" id="PrintResultButton" onclick='printar("print1")'>
+            <span class="print-icon">🖨️</span>
+            <span class="print-text">طباعة</span>
+        </button>
+        </center>
+        <div id="print2">
         <div class="container-fluid pt-4 px-4">
             <div class="row g-4">
                 <div class="col-sm-12 col-xl-6">
@@ -193,9 +206,70 @@
                 </div>
             </div>
         </div>
+          
+        </div>
+        <br />
+        <center>
+            <button class="btn btn-primary" id="PrintResultButton" onclick='printar("print2")'>
+                <span class="print-icon">🖨️</span>
+                <span class="print-text">طباعة</span>
+            </button>
+        </center>
+<br />
     </div>
 </div>
 
+<script>
+
+        function printar(k) {
+
+
+        var restorepage2 = document.body.innerHTML;
+        var printcontent2 = $('#' + k).html();
+
+        document.body.innerHTML = printcontent2;
+
+                         var css = `@@page{margin: 0cm 0cm 0cm 0cm!important;}.hero p { font-size: 20px;}.verticalLine{width:1px !important;margin: 0!important;background: #000!important;}.lab-2 {margin-top: 40px;margin-right: 8px;text-align: center;font-size: 16px}img.img1 {visibility: visible;}.col-md-4 {width: 33.33333333%;}.col-md-8 {width: 66.66666667%;}.col-md-6 {width: 50%;}.col-md-7 {width: 58.33333333%;}.col-md-5 {width: 41.66666667% !important;}.col-md-2{width: 16.66666667% !important;} canvas{display: inline-block !important;vertical-align: baseline!important;top: 10px;position: absolute;}#caption1 {color: #000000;text-align: right;caption-side: top;font-weight: bold;} table,td,th{border:1px solid #d3c8bc;}  .col-md-1 {flex: 0 0 8.33333%;max-width: 8.33333%;} .col-md-3 {flex: 0 0 auto;width: 25%;}  .bg-white {
+         border: 1px solid #f4f4f5;
+         direction: ltr;
+         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px -1px rgba(0, 0, 0, .1);
+         background-color: #fff !important;
+
+
+    }    .col-xl-4 {
+        -webkit-flex: 0 0 33.333333%;
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }    .col-xl-6 {
+        -webkit-flex: 0 0 50%;
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
+        }.pt-4, .py-4 {
+        padding-top:0 !important;
+    }`,
+            head = document.head || document.getElementsByTagName('head')[0],
+        style = document.createElement('style');
+        style.type = 'text/css';
+        style.media = 'print';
+        if (style.styleSheet) {
+            style.styleSheet.cssText = css;
+        }
+        else {
+            style.appendChild(document.createTextNode(css));
+        }
+        head.appendChild(style);
+        window.print();
+        history.go(0);
+        window.location.reload();
+        document.body.innerHTML = restorepage2;
+
+
+
+
+    }
+</script>
 @section scripts {
     <script src="~/FrontEnd/Pages/Dashboards/DefaultDashboard.cshtml.js"></script>
 }
