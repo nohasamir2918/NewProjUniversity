@@ -1,6 +1,195 @@
 ﻿@page
 
 
+
+<style>
+    .card-header {
+        font-size: 20px;
+        font-weight: bold;
+        color: #001a4e;
+        background: #f6f7fb;
+    }
+
+    body {
+        font-family: "Segoe UI", Tahoma, Arial;
+    }
+
+    table, th, td {
+        border: 1px solid #e5e5e5;
+        color: #001a4e;
+        font-weight: bold;
+        font-size: 19px;
+    }
+</style>
+
+<div class="container-fluid mt-3">
+
+    <div class="row">
+        <div class="col-md-5"></div>
+        <div class="col-md-2">
+            <button class="btn btn-danger" id="PrintResultButton" onclick='printar("certificat")'>
+                <span class="print-icon">🖨️</span>
+                <span class="print-text">طباعة</span>
+            </button>
+        </div>
+        <div class="col-md-5"></div>
+    </div>
+    <br />
+    <div class="row justify-content-center">
+
+        <div class="col-md-12">
+
+
+            <div id="certificat">
+                <center>
+                    <div id="border" style="height:29.7cm;padding-top:.6cm;font-size:12px;width:21cm;background:white;margin:1cm;font-family: 'Arial regular'!important;font-size:10pt;padding:10px;">
+
+                        <div id="content" style="padding: 3px;">
+                            <div class="row">
+
+
+
+                                <div class="col-md-4" style="text-align:right;">
+
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;"> اسم الجهة:.................</label>
+                                    <br />
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;">مخزن:....................</label>
+                                    <br />
+                                  
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;"> تاريخ الجرد:....................</label>
+
+                                </div>
+                                <div class="col-md-4" style="text-align:center;">
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;"> محضر جرد الأصناف</label>
+
+                                </div>
+                                <div class="col-md-4" style="text-align:right;">
+                                    <label style="color: #001a4e;font-weight: bold;font-size: 19px;">اسم صاحب العهدة :....................</label>
+                                  </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <table style="width:100%;color: #6c757d;">
+
+
+                                        <thead>
+                                            <tr>
+                                                <th >رقم الصنف</th>
+                                                <th>اسم الصنف</th>
+                                                <th> الوحدة</th>
+                                                <th> الموجود من واقع الجرد</th>
+                                                <th>حالة الصنف</th>
+                                                <th>الزيادة </th>
+                                                <th>العجز </th>
+                                                <th>سعر الوحدة </th>
+                                                <th>القيمة </th>
+                                            </tr>
+                                            
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                
+                                            </tr>
+
+                                            <tr>
+                                               
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+
+
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-2">
+                                    <label>توقيع كاتب الشطب</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>توقيع صاحب العهدة</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>توقيع  لجنة الجرد</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>  مدير المخازن</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>  رئيس المصلحة</label>
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </center>
+            </div>
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+        function printar(k) {
+
+
+        var restorepage2 = document.body.innerHTML;
+        var printcontent2 = $('#' + k).html();
+
+        document.body.innerHTML = printcontent2;
+
+                    var css = `@@page{margin: 0cm 0cm 0cm 0cm!important;}.hero p { font-size: 20px;}.verticalLine{width:1px !important;margin: 0!important;background: #000!important;}.lab-2 {margin-top: 40px;margin-right: 8px;text-align: center;font-size: 16px}img.img1 {visibility: visible;}.col-md-4 {width: 33.33333333%;}.col-md-8 {width: 66.66666667%;}.col-md-6 {width: 50%;}.col-md-7 {width: 58.33333333%;}.col-md-5 {width: 41.66666667% !important;}.col-md-2{width: 16.66666667% !important;} canvas{display: inline-block !important;vertical-align: baseline!important;top: 10px;position: absolute;}#caption1 {color: #000000;text-align: right;caption-side: top;font-weight: bold;} table,td,th{border:1px solid #d3c8bc;}  .col-md-1 {flex: 0 0 8.33333%;max-width: 8.33333%;} .col-md-3 {flex: 0 0 auto;width: 25%;}`,
+            head = document.head || document.getElementsByTagName('head')[0],
+        style = document.createElement('style');
+        style.type = 'text/css';
+        style.media = 'print';
+        if (style.styleSheet) {
+            style.styleSheet.cssText = css;
+        }
+        else {
+            style.appendChild(document.createTextNode(css));
+        }
+        head.appendChild(style);
+        window.print();
+        history.go(0);
+        window.location.reload();
+        document.body.innerHTML = restorepage2;
+
+
+
+
+    }
+</script>
 @section scripts {
     <script src="~/FrontEnd/Pages/InventoryStocktaking/InventoryStocktakingPdf.cshtml.js"></script>
 }
