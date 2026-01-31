@@ -2,6 +2,18 @@
 @{
     ViewData["Title"] = "قائمة فحص البضائع";
 }
+<style>
+    button.btn.btn-primary, button.btn.btn-danger {
+       margin-top:35px;
+        padding: 5px 15px;
+    }
+
+    #MainSaveButton {
+        color: #fff;
+        margin-top: unset;
+        padding: 8px 18px;
+    }
+</style>
 <h3 class="title"> فحص البضائع</h3>
 <div id="app" v-cloak>
     <div class="row">
@@ -86,54 +98,47 @@
 
                                                 <input type="hidden" v-model="member.id"  />
                                                 <div class="row ">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-2">
                                                         <label>اسم الموظف</label>
                                                         <input class="form-control" v-model="member.employeeName">
                                                     </div>
 
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-2">
                                                         <label>الوظيفة</label>
                                                         <input class="form-control" v-model="member.employeePositionName">
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-2">
                                                         <label>نوع الموظف</label>
-                                                        <select class="e-input-group e-control-wrapper e-ddl e-lib e-keyboard" v-model="member.employeeType">
+                                                    <select class="form-control" v-model="member.employeeType">
                                                             <option :value="true">رئيس</option>
                                                             <option :value="false">عضو</option>
                                                         </select>
                                                     </div>
+                                                <div class="col-md-2">
+                                                    <label>ملاحظات</label>
+                                                    <textarea class="form-control" v-model="member.description" style="height:35px;"></textarea>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="button"
+                                                            class="btn btn-danger btn-sm"
+                                                            v-if="state.committeeList.length > 1"
+                                                            v-on:click="removeCommitteeMember(index)">
+                                                        ❌
+                                                        حذف 
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-2">
+
+                                                    <button type="button"
+                                                            class="btn btn-primary btn-sm"
+                                                            v-on:click="addCommitteeMember">
+                                                        +
+                                                        إضافة 
+                                                    </button>
+                                                </div>
                                                 </div>
 
-                                                <div class="row ">
-                                                   
-
-                                                    <div class="col-md-6">
-                                                        <label>ملاحظات</label>
-                                                        <textarea class="form-control" v-model="member.description"></textarea>
-                                                    </div>
-                                                </div>
-                                                <br />
-                                                <div class="row">
-                                                    <div class="col-md-4"></div>
-                                                    <div class="col-md-2">
-                                                        <button type="button"
-                                                                class="btn btn-danger btn-sm"
-                                                                v-if="state.committeeList.length > 1"
-                                                                v-on:click="removeCommitteeMember(index)">
-                                                            حذف العضو
-                                                        </button>
-                                                    </div>
-                                                    <div class="col-md-2">
-
-                                                        <button type="button"
-                                                                class="btn btn-primary btn-sm"
-                                                                v-on:click="addCommitteeMember">
-                                                                +
-                                                            إضافة عضو
-                                                        </button>
-                                                    </div>
-                                                    <div class="col-md-4"></div>
-                                                </div>
+                                               
                                               
 
                                             </div>
