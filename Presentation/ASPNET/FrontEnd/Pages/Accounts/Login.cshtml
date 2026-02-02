@@ -4,88 +4,53 @@
 }
 <link href="~/adminlte/css/login-style.css" rel="stylesheet" />
 
-<div id="app" class="container-fluid" v-cloak>
 
-    <div class="card-body login-card-body">
-       @*  <p class="login-box-msg">@ViewData["Title"]</p> *@
 
+<div id="app" v-cloak>
+    <div class="card1"></div>
+    <div class="card1">
+        <h1 class="title">تسجيل دخول</h1>
         <form v-on:submit.prevent="handleSubmit">
-            <div class="input-group mb-3">
+            <div class="input-container">
                 <input id="Email"
-                       name="Email"
-                       type="email"
-                       class="form-control"
-                       placeholder="name@example.com"
-                       v-model="state.email"
-                       v-on:input="state.errors.email = ''">
-                <div class="input-group-append">
-                    <div class="input-group-text">
-                        <span class="fas fa-envelope"></span>
-                    </div>
-                </div>
+                         name="Email"
+                         type="email"
+                         placeholder="name@example.com"
+                         v-model="state.email"
+                         v-on:input="state.errors.email = ''" />
+                <label v-if="state.errors.email" class="text-danger">{{ state.errors.email }}</label>
+                <div class="bar"></div>
             </div>
-            <label v-if="state.errors.email" class="text-danger">{{ state.errors.email }}</label>
-            <div class="input-group mb-3">
+            <div class="input-container">
                 <input id="Password"
                        name="Password"
                        type="password"
-                       class="form-control"
                        placeholder="Password"
                        v-model="state.password"
-                       v-on:input="state.errors.password = ''">
-                <div class="input-group-append">
-                    <div class="input-group-text">
-                        <span class="fas fa-lock"></span>
-                    </div>
-                </div>
+                       v-on:input="state.errors.password = ''" />
+                <label v-if="state.errors.password" class="text-danger">{{ state.errors.password }}</label>
+                <div class="bar"></div>
             </div>
-            <label v-if="state.errors.password" class="text-danger">{{ state.errors.password }}</label>
-            <div class="row">
-                <!-- /.col -->
-                <div class="col-6">
-                    <button type="submit"
-                            v-bind:disabled="state.isSubmitting"
-                            class="btn btn-primary btn-block">
-                        <span class="spinner-border spinner-border-sm me-2"
-                              v-if="state.isSubmitting"
-                              role="status"
-                              aria-hidden="true"></span>
-                        <span>{{ state.isSubmitting ? '...' : 'تسجيل دخول' }}</span>
-                    </button>
-                </div>
-                <!-- /.col -->
-                <div class="col-6">
-                    <div>
-                   @*  <div class="icheck-primary"> *@
-                        <input type="checkbox">
-                        <label for="remember">
-                           تذكرني
-                        </label>
-                    </div>
-                </div>
-                
+
+            <div class="button-container">
+                <button type="submit"
+                        v-bind:disabled="state.isSubmitting"
+                        class="btn btn-primary btn-block">
+                    <span class="spinner-border spinner-border-sm me-2"
+                          v-if="state.isSubmitting"
+                          role="status"
+                          aria-hidden="true"></span>
+                    <span>{{ state.isSubmitting ? '...' : 'تسجيل دخول' }}</span>
+                </button>
             </div>
+           
         </form>
-
-      @*   <div class="social-auth-links text-center mb-3">
-            <p>- OR -</p>
-            <a href="#" class="btn btn-block btn-primary">
-                <i class="fab fa-facebook mr-2"></i> تسجيل الدخول عن طريق الفيسبوك
-            </a>
-            <a href="#" class="btn btn-block btn-danger">
-                <i class="fab fa-google-plus mr-2"></i>تسجيل الدخول عن طريق جوجل +
-            </a>
-        </div> *@
-        <!-- /.social-auth-links -->
-
-        <p class="mb-1 txt-right">
-            <a asp-page="/Accounts/ForgotPassword">هل نسيت كلمة السر؟</a>
-        </p>
-        <p class="mb-0 txt-right">
-            <a asp-page="/Accounts/Register" class="text-center">تسجيل جديد </a>
-        </p>
     </div>
-
+    <div class="card alt">
+        <div class="toggle"><span class="pencil">✏️</span></div>
+      
+     
+    </div>
 </div>
 
 
