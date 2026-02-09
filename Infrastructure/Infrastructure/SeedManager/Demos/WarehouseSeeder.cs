@@ -21,8 +21,8 @@ namespace Infrastructure.SeedManager.Demos
         {
             var warehouses = new List<Warehouse>
             {
-                new Warehouse { Name = "مخزن الزقازيق" },
-                new Warehouse { Name = "مخزن القاهره" },
+                new Warehouse { Name = "مخزن 1" },
+                new Warehouse { Name = "مخزن 2" },
                 new Warehouse { Name = "مخزن 3" },
                 new Warehouse { Name = "4 مخزن" }
             };

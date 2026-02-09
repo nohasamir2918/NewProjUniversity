@@ -64,7 +64,7 @@ public class FileImageController : BaseApiController
     {
         if (string.IsNullOrEmpty(imageName) || Path.GetExtension(imageName) == string.Empty)
         {
-            imageName = "noimage.png";
+            imageName = "noimage1.png";
         }
 
         var request = new GetImageRequest

@@ -81,7 +81,7 @@ public class FileImageService : IFileImageService
 
         if (!File.Exists(filePath))
         {
-            filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "noimage.png");
+            filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "noimage1.png");
         }
 
         var result = await File.ReadAllBytesAsync(filePath, cancellationToken);
