@@ -87,8 +87,8 @@ public class UpdateGoodsReceiveHandler : IRequestHandler<UpdateGoodsReceiveReque
             entity.UpdatedById,
             request.WarehouseId,
             request.inventoryTransactionId,
-              cancellationToken
-            request.ProductId,
+              cancellationToken,
+           // request.ProductId,
             cancellationToken
             );
 

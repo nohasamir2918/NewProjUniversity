@@ -21,57 +21,65 @@ public static class DI
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         var databaseProvider = configuration["DatabaseProvider"];
 
-        // Register Context
-        switch (databaseProvider)
-        {
-            //case "MySql":
-            //    services.AddDbContext<DataContext>(options =>
-            //        options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)))
-            //        .LogTo(Log.Information, LogLevel.Information)
-            //        .EnableSensitiveDataLogging()
-            //    );
-            //    services.AddDbContext<CommandContext>(options =>
-            //        options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)))
-            //        .LogTo(Log.Information, LogLevel.Information)
-            //        .EnableSensitiveDataLogging()
-            //    );
-            //    services.AddDbContext<QueryContext>(options =>
-            //        options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)))
-            //        .LogTo(Log.Information, LogLevel.Information)
-            //        .EnableSensitiveDataLogging()
-            //    );
-            //    break;
+        // 🔴 Debug step (مهم جدًا لمعرفة القيمة الحقيقية)
+       //throw new Exception($"DatabaseProvider = {databaseProvider} | Connection = {connectionString}");
 
-            case "SqlServer":
-            default:
+        switch (databaseProvider?.ToLower())
+        {
+            case "postgresql":
+            case "postgres":
+
                 services.AddDbContext<DataContext>(options =>
-                    options.UseSqlServer(connectionString)
+                    options.UseNpgsql(connectionString)
                     .LogTo(Log.Information, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                 );
+
                 services.AddDbContext<CommandContext>(options =>
-                    options.UseSqlServer(connectionString)
+                    options.UseNpgsql(connectionString)
                     .LogTo(Log.Information, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                 );
+
                 services.AddDbContext<QueryContext>(options =>
-                    options.UseSqlServer(connectionString)
+                    options.UseNpgsql(connectionString)
                     .LogTo(Log.Information, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                 );
+
+                break;
+
+            case "sqlserver":
+            default:
+
+                services.AddDbContext<DataContext>(options =>
+                    options.UseNpgsql(connectionString)
+                    .LogTo(Log.Information, LogLevel.Information)
+                    .EnableSensitiveDataLogging()
+                );
+
+                services.AddDbContext<CommandContext>(options =>
+                    options.UseNpgsql(connectionString)
+                    .LogTo(Log.Information, LogLevel.Information)
+                    .EnableSensitiveDataLogging()
+                );
+
+                services.AddDbContext<QueryContext>(options =>
+                    options.UseNpgsql(connectionString)
+                    .LogTo(Log.Information, LogLevel.Information)
+                    .EnableSensitiveDataLogging()
+                );
+
                 break;
         }
-
 
         services.AddScoped<ICommandContext, CommandContext>();
         services.AddScoped<IQueryContext, QueryContext>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(ICommandRepository<>), typeof(CommandRepository<>));
 
-
         return services;
     }
-
     public static IHost CreateDatabase(this IHost host)
     {
         using var scope = host.Services.CreateScope();
@@ -79,7 +87,8 @@ public static class DI
 
         // Create database using DataContext
         var dataContext = serviceProvider.GetRequiredService<DataContext>();
-        dataContext.Database.EnsureCreated(); // Ensure database is created (development only)
+        dataContext.Database.Migrate();
+        //dataContext.Database.EnsureCreated(); // Ensure database is created (development only)
 
         return host;
     }

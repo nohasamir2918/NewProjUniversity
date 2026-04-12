@@ -76,7 +76,8 @@ public partial class InventoryTransactionService
         string? warehouseId,
         string? inventoryTransactionId,
         CancellationToken cancellationToken = default
-        )
+,
+        CancellationToken cancellationToken1 = default)
     {
         var query = _inventoryTransactionRepository
     .GetQuery()

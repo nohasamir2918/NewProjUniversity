@@ -9,4 +9,3 @@ public class CommandContext : DataContext, ICommandContext
     {
     }
 }
-
