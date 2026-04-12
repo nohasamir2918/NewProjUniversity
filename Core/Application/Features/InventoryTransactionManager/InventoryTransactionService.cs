@@ -74,14 +74,21 @@ public partial class InventoryTransactionService
         bool? isDeleted,
         string? updatedId,
         string? warehouseId,
-        string? productId,
+        string? inventoryTransactionId,
         CancellationToken cancellationToken = default
         )
     {
-        var childs = await _inventoryTransactionRepository
-            .GetQuery()
-            .Where(x => x.ModuleId == moduleId && x.ModuleName == moduleName && x.ProductId==productId )
-            .ToListAsync(cancellationToken);
+        var query = _inventoryTransactionRepository
+    .GetQuery()
+    .Where(x => x.ModuleId == moduleId && x.ModuleName == moduleName);
+
+        if (!string.IsNullOrEmpty(inventoryTransactionId))
+        {
+            query = query.Where(x => x.Id == inventoryTransactionId);
+        }
+
+        var childs = await query.ToListAsync(cancellationToken);
+
 
         foreach (var item in childs)
         {
@@ -89,14 +96,15 @@ public partial class InventoryTransactionService
             item.Status = status;
             item.IsDeleted = isDeleted ?? false;
             item.UpdatedById = updatedId;
-           
             item.UpdatedAtUtc = DateTime.UtcNow;
+
             if (warehouseId != null)
             {
                 item.WarehouseId = warehouseId;
                 item.WarehouseToId = warehouseId;
             }
         }
+
 
         await _unitOfWork.SaveAsync(cancellationToken);
     }

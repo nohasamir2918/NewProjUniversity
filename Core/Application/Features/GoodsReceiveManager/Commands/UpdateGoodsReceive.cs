@@ -22,9 +22,10 @@ public class UpdateGoodsReceiveRequest : IRequest<UpdateGoodsReceiveResult>
     public string? ReturnRequestId { get; init; }   // new
     public int? TransType { get; init; }            // new
     public string? UpdatedById { get; init; }
+    public string? inventoryTransactionId { get; init; }
     public string? WarehouseId { get; init; }
 
-    public string? ProductId { get; init; }
+
 }
 
 public class UpdateGoodsReceiveValidator : AbstractValidator<UpdateGoodsReceiveRequest>
@@ -85,6 +86,8 @@ public class UpdateGoodsReceiveHandler : IRequestHandler<UpdateGoodsReceiveReque
             entity.IsDeleted,
             entity.UpdatedById,
             request.WarehouseId,
+            request.inventoryTransactionId,
+              cancellationToken
             request.ProductId,
             cancellationToken
             );

@@ -394,6 +394,7 @@ const App = {
                 productId,
                 returnRequestId,
                 transType
+                inventoryTransactionId 
             ) => {
                 try {
                     const payload = {
@@ -409,8 +410,8 @@ const App = {
                     };
 
                     // ✅ ابعتي productId فقط لو له قيمة
-                    if (productId) {
-                        payload.productId = productId;
+                    if (inventoryTransactionId) {
+                        payload.inventoryTransactionId = inventoryTransactionId;
                     }
 
                     const response = await AxiosManager.post(
@@ -666,35 +667,25 @@ const App = {
                     if (!validateForm()) {
                         return;
                     }
-
+                    
                     const selectedRow = secondaryGrid.obj.getSelectedRecords()[0]; // أو حسب اختيارك
                     const productId = selectedRow?.productId ?? null;
+                    await services.updateMainData(
+                        state.id,
+                        state.receiveDate,
+                        state.description,
+                        state.status,
+                        state.purchaseOrderId,
+                        StorageManager.getUserId(),
+                        state.warehouseId,
+                        productId // لازم يبقى موجود هنا
+                    );
 
                     const response = state.id === ''
-                        ? await services.createMainData(
-                            state.receiveDate,
-                            state.description,
-                            state.status,
-                            state.transType === 1 ? state.purchaseOrderId : null,
-                            StorageManager.getUserId(),
-                            state.warehouseId,
-                            state.returnRequestId,
-                            state.transType
-                        )
+                        ? await services.createMainData(state.receiveDate, state.description, state.status, state.purchaseOrderId, StorageManager.getUserId(), state.warehouseId)
                         : state.deleteMode
                             ? await services.deleteMainData(state.id, StorageManager.getUserId())
-                            : await services.updateMainData(
-                                state.id,
-                                state.receiveDate,
-                                state.description,
-                                state.status,
-                                state.transType === 1 ? state.purchaseOrderId : null,
-                                StorageManager.getUserId(),
-                                state.warehouseId,
-                                productId,
-                                state.returnRequestId,
-                                state.transType
-                            );
+                            : await services.updateMainData(state.id, state.receiveDate, state.description, state.status, state.purchaseOrderId, StorageManager.getUserId(), state.warehouseId, state.productId);
 
                     if (response.data.code === 200) {
                         await methods.populateMainData();
@@ -883,13 +874,14 @@ const App = {
 
                             if (mainGrid.obj.getSelectedRecords().length) {
                                 const selectedRecord = mainGrid.obj.getSelectedRecords()[0];
-
+                                
                                 state.warehouseId = selectedRecord.warehouseId ?? '';
                                 warehouseLookup.refresh(); // ✅ الحل هنا
 
                                 state.mainTitle = 'تعديل اذن اضافة';
                                 state.id = selectedRecord.id ?? '';
                                 state.number = selectedRecord.number ?? '';
+                                
                                 state.receiveDate = selectedRecord.receiveDate
                                     ? new Date(selectedRecord.receiveDate)
                                     : null;
@@ -964,6 +956,11 @@ const App = {
                     allowTextWrap: true,
                     allowResizing: true,
                     allowPaging: false,
+                    rowSelected: (args) => {
+                        state.inventoryTransactionId = args.data.id;
+                        console.log('Selected InventoryTransactionId:', state.inventoryTransactionId);
+
+                    },
                     allowExcelExport: true,
                     filterSettings: { type: 'CheckBox' },
                     sortSettings: { columns: [{ field: 'warehouseName', direction: 'Descending' }] },
@@ -972,6 +969,7 @@ const App = {
                     autoFit: false,
                     showColumnMenu: false,
                     gridLines: 'Horizontal',
+
                     columns: [
                         { type: 'checkbox', width: 60 },
                         {
