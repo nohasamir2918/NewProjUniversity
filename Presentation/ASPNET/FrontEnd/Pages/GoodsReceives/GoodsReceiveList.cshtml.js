@@ -393,8 +393,8 @@ const App = {
                 warehouseId,
                 productId,
                 returnRequestId,
-                transType
-                inventoryTransactionId 
+                transType,
+                inventoryTransactionId ,
             ) => {
                 try {
                     const payload = {
@@ -616,33 +616,43 @@ const App = {
                     const response = await services.getSecondaryData(goodsReceiveId);
                     const transactions = response?.data?.content?.data || [];
 
-                    state.secondaryData = transactions
-                        .map(item => {
-                            const product = state.productListLookupData.find(
-                                p => p.id === item.productId
-                            );
+                    state.secondaryData = transactions.map(item => {
 
-                            // ❌ لو المنتج مش مقبول → تجاهليه
-                            if (!product || product.purchaseOrderItemId == null) return null;
+                        const product = state.productListLookupData.find(
+                            p => String(p.id) === String(item.productId)
+                        );
 
+                        // ✅ لو المنتج موجود → خدي منه القيم
+                        if (product) {
                             return {
                                 ...item,
-                                unitPrice: product.unitPrice ?? 0,
-                                quantity: product.quantity ?? 0,
-                                purchaseOrderItemId: product.purchaseOrderItemId,
-                                createdAtUtc: new Date(item.createdAtUtc)
+                                unitPrice: Number(product.unitPrice ?? 0),
+                                quantity: Number(product.quantity ?? 0),
+                                purchaseOrderItemId: product.purchaseOrderItemId ?? null,
+                                createdAtUtc: item.createdAtUtc ? new Date(item.createdAtUtc) : null
                             };
-                        })
-                        .filter(Boolean); // 🔥 دي اللي بتمسح المرفوض نهائيًا
+                        }
 
+                        // ✅ fallback لو مش موجود
+                        return {
+                            ...item,
+                            unitPrice: Number(item.unitPrice ?? 0),
+                            quantity: Number(item.quantity ?? 0),
+                            purchaseOrderItemId: item.purchaseOrderItemId ?? null,
+                            createdAtUtc: item.createdAtUtc ? new Date(item.createdAtUtc) : null
+                        };
+                    });
+
+                    secondaryGrid.refresh(); // 🔥 مهم جداً
                     methods.refreshSummary();
-                } catch {
+
+                } catch (error) {
+                    console.error("❌ populateSecondaryData error:", error);
                     state.secondaryData = [];
+                    secondaryGrid.refresh();
                     methods.refreshSummary();
                 }
             },
-
-
             refreshSummary: () => {
                 // sum of movement * unitPrice
                 const totalAmount = state.secondaryData.reduce((sum, record) => {
@@ -1018,7 +1028,7 @@ const App = {
                             disableHtmlEncode: false,
                             valueAccessor: (field, data) => {
                                 const product = state.productListLookupData.find(
-                                    item => item.id === data.productId
+                                    item => String(item.id) === String(data.productId)
                                 );
                                 return product ? product.numberName : '';
                             },
@@ -1044,7 +1054,7 @@ const App = {
                                         value: args.rowData.productId,
                                         change: function (e) {
                                             const selected = state.productListLookupData.find(
-                                                p => p.id === e.value
+                                                p => String(p.id) === String(e.value)
                                             );
 
                                             if (selected) {
@@ -1192,7 +1202,7 @@ const App = {
                                 return;
                             }
                             const product = state.productListLookupData.find(
-                                p => p.id === args.data.productId
+                                p => String(p.id) === String(args.data.productId)
                             );
 
                             if (product) {

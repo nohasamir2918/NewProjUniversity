@@ -87,12 +87,14 @@ public class CreateGoodsExamineHandler : IRequestHandler<CreateGoodsExamineReque
         entity.CreatedById = request.CreatedById;
 
         entity.Number = _numberSequenceService.GenerateNumber(nameof(GoodsExamine), "", "GE");
-        entity.ExamineDate = request.ExamineDate;
+        
         entity.Status = (GoodsExamineStatus)int.Parse(request.Status!);
         entity.Description = request.Description;
         entity.PurchaseOrderId = request.PurchaseOrderId;
         entity.CommitteeDesionNumber = request.CommitteeDesionNumber;
-        entity.CommiteeDate = request.CommiteeDate;
+        
+        entity.ExamineDate = request.ExamineDate?.ToUniversalTime();
+        entity.CommiteeDate = request.CommiteeDate?.ToUniversalTime();
         await _deliveryOrderRepository.CreateAsync(entity, cancellationToken);
         await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -147,6 +149,7 @@ public class CreateGoodsExamineHandler : IRequestHandler<CreateGoodsExamineReque
                 {
                     GoodsExamineId = entity.Id,
                     EmployeeID = committeeDto.EmployeeID,
+
                     EmployeePositionID = committeeDto.EmployeePositionID,
                     EmployeeName = committeeDto.EmployeeName,
                     EmployeePositionName = committeeDto.EmployeePositionName,

@@ -139,7 +139,7 @@ public class CreateGoodsReceiveHandler : IRequestHandler<CreateGoodsReceiveReque
 
                 foreach (var item in items)
                 {
-                    if (item?.Product?.Physical ?? false)
+                    if (item.Product!=null)
                     {
                         await _inventoryTransactionService.GoodsReceiveCreateInvenTrans(
                             entity.Id,

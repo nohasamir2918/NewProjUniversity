@@ -371,17 +371,18 @@ const App = {
                     throw error;
                 }
             },
-            createMainData: async (examineDate, description, commiteeDate, committeeDesionNumber, status, purchaseOrderId, committeeList, createdById) => {
+            createMainData: async (examineDate, status, description, purchaseOrderId,  createdById,commiteeDate, committeeDesionNumber,  committeeList) => {
                 try {
                     const response = await AxiosManager.post('/GoodsExamine/CreateGoodsExamine', {
                         examineDate,
                         status,
                         description,
+                        purchaseOrderId,
+                        createdById,
                         commiteeDate,
                         committeeDesionNumber,
-                        purchaseOrderId,
                         committeeList,
-                        createdById
+                        
                     });
                     return response;
                 } catch (error) {

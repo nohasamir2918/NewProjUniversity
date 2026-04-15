@@ -724,9 +724,7 @@ const App = {
                                             const selectedProduct = state.productListLookupData.find(item => item.id === e.value);
                                             if (selectedProduct) {
                                                 args.rowData.productId = selectedProduct.id;
-                                                if (numberObj) {
-                                                    numberObj.value = selectedProduct.number;
-                                                }
+                                                
                                                 if (priceObj) {
                                                     priceObj.value = selectedProduct.unitPrice;
                                                 }
@@ -838,52 +836,54 @@ const App = {
                                 }
                             }
                         },
-                        //{
-                        //    field: 'productNumber',
-                        //    headerText: 'اسم المنتج',
-                        //    allowEditing: false,
-                        //    width: 180,
-                        //    edit: {
-                        //        create: () => {
-                        //            let numberElem = document.createElement('input');
-                        //            return numberElem;
-                        //        },
-                        //        read: () => {
-                        //            return numberObj.value;
-                        //        },
-                        //        destroy: () => {
-                        //            numberObj.destroy();
-                        //        },
-                        //        write: (args) => {
-                        //            numberObj = new ej.inputs.TextBox();
-                        //            numberObj.value = args.rowData.productNumber;
-                        //            numberObj.readonly = true;
-                        //            numberObj.appendTo(args.element);
-                        //        }
-                        //    }
-                        //},
-                        //{
-                        //    field: 'summary',
-                        //    headerText: 'الشروط',
-                        //    width: 200,
-                        //    edit: {
-                        //        create: () => {
-                        //            let summaryElem = document.createElement('input');
-                        //            return summaryElem;
-                        //        },
-                        //        read: () => {
-                        //            return summaryObj.value;
-                        //        },
-                        //        destroy: () => {
-                        //            summaryObj.destroy();
-                        //        },
-                        //        write: (args) => {
-                        //            summaryObj = new ej.inputs.TextBox();
-                        //            summaryObj.value = args.rowData.summary;
-                        //            summaryObj.appendTo(args.element);
-                        //        }
-                        //    }
-                        //},
+                        {
+                            field: 'productNumber',
+                            headerText: 'اسم المنتج',
+                            allowEditing: false,
+                            visible: false,
+                            width: 180,
+                            edit: {
+                                create: () => {
+                                    let numberElem = document.createElement('input');
+                                    return numberElem;
+                                },
+                                read: () => {
+                                    return numberObj.value;
+                                },
+                                destroy: () => {
+                                    numberObj.destroy();
+                                },
+                                write: (args) => {
+                                    numberObj = new ej.inputs.TextBox();
+                                    numberObj.value = args.rowData.productNumber;
+                                    numberObj.readonly = true;
+                                    numberObj.appendTo(args.element);
+                                }
+                            }
+                        },
+                        {
+                            field: 'summary',
+                            headerText: 'الشروط',
+                            width: 200,
+                            visible:false,             
+                            edit: {
+                                create: () => {
+                                    let summaryElem = document.createElement('input');
+                                    return summaryElem;
+                                },
+                                read: () => {
+                                    return summaryObj.value;
+                                },
+                                destroy: () => {
+                                    summaryObj.destroy();
+                                },
+                                write: (args) => {
+                                    summaryObj = new ej.inputs.TextBox();
+                                    summaryObj.value = args.rowData.summary;
+                                    summaryObj.appendTo(args.element);
+                                }
+                            }
+                        },
                     ],
                     toolbar: [
                         { text: 'تصدير إكسل', tooltipText: 'تصدير إلى Excel', prefixIcon: 'e-excelexport', id: 'secondaryGrid_excelexport' },

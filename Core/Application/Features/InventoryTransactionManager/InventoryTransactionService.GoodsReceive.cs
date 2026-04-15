@@ -41,7 +41,7 @@ public partial class InventoryTransactionService
         child.WarehouseId = warehouseId;
         child.ProductId = productId;
         child.Movement = movement;
-
+       
         CalculateInvenTrans(child);
 
         await _inventoryTransactionRepository.CreateAsync(child, cancellationToken);
