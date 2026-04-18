@@ -19,7 +19,7 @@ namespace ASPNET.BackEnd.Controllers
 
         [Authorize]
         [HttpPost("CreateGoodsExamine")]
-        public async Task<ActionResult<ApiSuccessResult<CreateGoodsExamineResult>>> CreateGoodsExamineAsync(CreateGoodsExamineRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<CreateGoodsExamineResult>>> CreateGoodsExamineAsync([FromBody] CreateGoodsExamineRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 

@@ -276,7 +276,7 @@ const App = {
                 numberText.obj.appendTo(numberRef.value);
             }
         };
-
+        debugger;
         const purchaseOrderListLookup = {
             obj: null,
             create: () => {
@@ -371,21 +371,43 @@ const App = {
                     throw error;
                 }
             },
-            createMainData: async (examineDate, status, description, purchaseOrderId,  createdById,commiteeDate, committeeDesionNumber,  committeeList) => {
+            
+            createMainData: async (
+
+                examineDate,
+                description,
+                commiteeDate,
+                committeeDesionNumber,
+                status,
+                purchaseOrderId,
+                committeeList,
+                createdById
+            ) => {
+                console.log("🔥 createMainData CALLED");
                 try {
-                    const response = await AxiosManager.post('/GoodsExamine/CreateGoodsExamine', {
-                        examineDate,
-                        status,
-                        description,
-                        purchaseOrderId,
-                        createdById,
-                        commiteeDate,
-                        committeeDesionNumber,
-                        committeeList,
-                        
-                    });
+                    const payload = {
+                        examineDate: examineDate ? new Date(examineDate).toISOString() : null,
+                        description: description ?? '',
+                        commiteeDate: commiteeDate ? new Date(commiteeDate).toISOString() : null,
+                        committeeDesionNumber: committeeDesionNumber ?? '',
+                        status: String(status ?? ''), // 👈 مهم
+                        purchaseOrderId: purchaseOrderId ?? null,
+                        committeeList: committeeList ?? [],
+                        createdById: createdById ?? null
+                    };
+
+                    console.log(JSON.stringify(payload, null, 2));
+                    const response = await AxiosManager.post(
+                        '/GoodsExamine/CreateGoodsExamine',
+                        JSON.stringify(payload),
+                        {
+                            headers: { 'Content-Type': 'application/json' }
+                        }
+                    );
+
                     return response;
                 } catch (error) {
+                    console.error(error);
                     throw error;
                 }
             },
@@ -563,7 +585,7 @@ const App = {
                     })) || [];
 
                     // 🔍 هنا بالظبط
-                    console.log('secondaryData:', state.secondaryData.length);
+                    console.log('secondaryData1111:', state.secondaryData.length);
 
                     if (secondaryGrid.obj) {
                         secondaryGrid.obj.dataSource = [...state.secondaryData];
@@ -603,7 +625,10 @@ const App = {
                     state.isSubmitting = true;
                     await new Promise(resolve => setTimeout(resolve, 300));
 
+                    console.log("🔥 clicked");
+
                     if (!validateForm()) {
+                        console.log("❌ validation failed");
                         return;
                     }
 
@@ -616,9 +641,9 @@ const App = {
                         description: member.description,
                         isDeleted: member.isDeleted === true
                     }));
+                    console.log("state.id:", state.id);
 
-
-                    const response = state.id === ''
+                    const response = !state.id
                         ? await services.createMainData(
                             state.examineDate,
                             state.description,

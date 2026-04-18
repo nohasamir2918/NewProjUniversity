@@ -1,53 +1,52 @@
 ﻿ej.base.L10n.load({
     'ar': {
-        'grid': {
-            'EmptyRecord': 'لا توجد بيانات للعرض',
-            'GroupDropArea': 'اسحب عنوان العمود هنا لتجميع البيانات',
-            'UnGroup': 'اضغط لإلغاء التجميع',
-            'Item': 'عنصر',
-            'Items': 'عناصر',
-            'Add': 'إضافة',
-            'Edit': 'تعديل',
-            'Delete': 'حذف',
-            'Update': 'تحديث',
-            'Cancel': 'إلغاء',
-            'Search': 'بحث',
-            'Save': 'حفظ',
-            'Close': 'إغلاق',
-            'ExcelExport': 'تصدير إكسل',
-            'AddVendorCategory': 'إضافة فئة موردين',
-            "FilterButton": "تطبيق",
-            "ClearButton": "مسح",
-            "StartsWith": " يبدأ بـ ",
-            "EndsWith": " ينتهي بـ ",
-            "Contains": " يحتوي على ",
-            "Equal": " يساوي ",
-            "NotEqual": " لا يساوي ",
-            "LessThan": " أصغر من ",
-            "LessThanOrEqual": " أصغر أو يساوي ",
-            "GreaterThan": " أكبر من ",
-            "GreaterThanOrEqual": " أكبر أو يساوي "
+        grid: {
+            EmptyRecord: 'لا توجد بيانات للعرض',
+            GroupDropArea: 'اسحب عنوان العمود هنا لتجميع البيانات',
+            UnGroup: 'اضغط لإلغاء التجميع',
+            Item: 'عنصر',
+            Items: 'عناصر',
+            Add: 'إضافة',
+            Edit: 'تعديل',
+            Delete: 'حذف',
+            Update: 'تحديث',
+            Cancel: 'إلغاء',
+            Search: 'بحث',
+            Save: 'حفظ',
+            Close: 'إغلاق',
+            ExcelExport: 'تصدير إكسل',
+            AddVendorCategory: 'إضافة فئة موردين',
+            FilterButton: 'تطبيق',
+            ClearButton: 'مسح',
+            StartsWith: 'يبدأ بـ',
+            EndsWith: 'ينتهي بـ',
+            Contains: 'يحتوي على',
+            Equal: 'يساوي',
+            NotEqual: 'لا يساوي',
+            LessThan: 'أصغر من',
+            LessThanOrEqual: 'أصغر أو يساوي',
+            GreaterThan: 'أكبر من',
+            GreaterThanOrEqual: 'أكبر أو يساوي'
         },
-        'pager': {
-            'currentPageInfo': 'صفحة {0} من {1}',
-            'firstPageTooltip': 'الصفحة الأولى',
-            'lastPageTooltip': 'الصفحة الأخيرة',
-            'nextPageTooltip': 'الصفحة التالية',
-            'previousPageTooltip': 'الصفحة السابقة',
-            'nextPagerTooltip': 'التالي',
-            'previousPagerTooltip': 'السابق',
-            'totalItemsInfo': '({0} عناصر)'
-        },
-        'ar': {
-            'grid': {
-                'ExcelExport': 'تصدير إكسل',
-            }
+        pager: {
+            currentPageInfo: 'صفحة {0} من {1}',
+            firstPageTooltip: 'الصفحة الأولى',
+            lastPageTooltip: 'الصفحة الأخيرة',
+            nextPageTooltip: 'الصفحة التالية',
+            previousPageTooltip: 'الصفحة السابقة',
+            nextPagerTooltip: 'التالي',
+            previousPagerTooltip: 'السابق',
+            totalItemsInfo: '({0} عناصر)'
         }
     }
 });
 const App = {
     setup() {
-        
+        const waitForElement = async (ref) => {
+            while (!ref.value) {
+                await new Promise(r => setTimeout(r, 50));
+            }
+        };
         const state = Vue.reactive({
             mainData: [],
             deleteMode: false,
@@ -329,6 +328,8 @@ const App = {
             populateProductListLookupData: async () => {
                 const response = await services.getProductListLookupData();
                 state.productListLookupData = response?.data?.content?.data;
+                console.log("Products:", state.productListLookupData); // 👈 مهم
+
             },
             refreshPaymentSummary: async (id) => {
                 const record = state.mainData.find(item => item.id === id);
@@ -809,15 +810,22 @@ const App = {
         function getAvailableProducts(currentRow) {
             return state.productListLookupData.filter(p => {
                 return !state.secondaryData.some(item =>
-                    item.productId === p.id &&
+                    String(item.productId) === String(p.id) && // 👈 هنا التعديل
                     item.id !== currentRow.id
                 );
             });
         }
-
+        const products = [...state.productListLookupData];
         const secondaryGrid = {
             obj: null,
             create: async (dataSource) => {
+
+                if (!secondaryGridRef.value) {
+                    console.error("secondaryGridRef is null");
+                    return;
+                }
+
+                
                 secondaryGrid.obj = new ej.grids.Grid({
                     locale: 'ar',
                     height: 400,
@@ -853,37 +861,50 @@ const App = {
                             validationRules: { required: true },
                             edit: {
                                 create: () => document.createElement('input'),
-                                read: () => productObj?.value ?? null,
-                                write: (args) => {
-                                    const filteredProducts = getAvailableProducts(args.rowData);
 
-                                    productObj = new ej.dropdowns.DropDownList({
-                                        dataSource: filteredProducts,
+                                read: (args) => {
+                                    return args;
+                                },
+
+                                write: (args) => {
+
+                                    const ddl = new ej.dropdowns.DropDownList({
+                                        dataSource: state.productListLookupData,
                                         fields: { text: 'name', value: 'id' },
-                                        value: args.rowData.productId ?? null,
+                                        value: args.rowData.productId
+                                            ? String(args.rowData.productId)
+                                            : null,
+
                                         allowFiltering: true,
                                         placeholder: 'اختر المنتج',
+
                                         change: async (e) => {
                                             args.rowData.productId = e.value;
 
-                                            const product = state.productListLookupData.find(x => x.id === e.value);
-                                            if (!product) return;
+                                            const product = state.productListLookupData.find(
+                                                x => String(x.id) === String(e.value)
+                                            );
 
-                                            if (priceObj) priceObj.value = product.unitPrice ?? 0;
-                                            if (summaryObj) summaryObj.value = product.description;
-                                            if (numberObj) numberObj.value = product.number;
-
-                                            await updateAvailableQuantity(args.rowData);
+                                            if (product) {
+                                                args.rowData.unitPrice = product.unitPrice ?? 0;
+                                                args.rowData.summary = product.description ?? '';
+                                                args.rowData.productNumber = product.number ?? '';
+                                            }
                                         }
                                     });
 
-                                    productObj.appendTo(args.element);
+                                    ddl.appendTo(args.element);
                                 }
                             },
+
                             valueAccessor: (field, data) => {
-                                const p = state.productListLookupData.find(x => x.id === data[field]);
+                                const p = state.productListLookupData.find(
+                                    x => String(x.id) === String(data[field])
+                                );
+                               
                                 return p ? p.name : '';
                             }
+                        
                         },
 
                         {
@@ -1188,8 +1209,13 @@ const App = {
                 await methods.populateWarehouseListLookupData();
                 warehouseListLookup.create();
 
+
                 await methods.populateProductListLookupData();
+
+                await Vue.nextTick();
+
                 await secondaryGrid.create(state.secondaryData);
+
             } catch (e) {
                 console.error('page init error:', e);
             } finally {

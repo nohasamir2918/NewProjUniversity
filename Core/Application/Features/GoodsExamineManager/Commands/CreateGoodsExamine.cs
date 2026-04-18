@@ -21,14 +21,18 @@ public class CreateGoodsExamineResult
 public class CreateGoodsExamineRequest : IRequest<CreateGoodsExamineResult>
 {
     public DateTime? ExamineDate { get; set; }
-    public string? Status { get; set; }
+   
     public string? Description { get; init; }
-    public string? PurchaseOrderId { get; init; }
-    public string? CreatedById { get; set; }
+   
     public DateTime? CommiteeDate { get; set; }
     public string? CommitteeDesionNumber { get; set; }
+    public string? Status { get; set; }
+    public string? PurchaseOrderId { get; init; }
+    public List<ExamineCommiteeDto>? CommitteeList { get; init; }
+    public string? CreatedById { get; set; }
+   
     // ✅ إضافة بيانات اللجنة
-    public List<ExamineCommiteeDto>? committeeList { get; init; }
+
 
 }
 public class ExamineCommiteeDto
@@ -141,9 +145,9 @@ public class CreateGoodsExamineHandler : IRequestHandler<CreateGoodsExamineReque
         //}
 
 
-        if (request.committeeList != null && request.committeeList.Any())
+        if (request.CommitteeList != null && request.CommitteeList.Any())
         {
-            foreach (var committeeDto in request.committeeList)
+            foreach (var committeeDto in request.CommitteeList)
             {
                 var committee = new ExamineCommitee
                 {
