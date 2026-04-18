@@ -357,23 +357,25 @@ const App = {
                             : await services.updateMainData(state.id, state.orderDate, state.description, state.orderStatus, state.departmentId, state.employeeId, state.warehouseId, StorageManager.getUserId());
 
                     if (response.data.code === 200) {
+
                         await methods.populateMainData();
                         mainGrid.refresh();
 
                         if (!state.deleteMode) {
-                            state.mainTitle = 'Edit Sales Order';
+
                             state.id = response?.data?.content?.data.id ?? '';
-                            state.number = response?.data?.content?.data.number ?? '';
-                            state.orderDate = response?.data?.content?.data.orderDate ? new Date(response.data.content.data.orderDate) : null;
-                            state.description = response?.data?.content?.data.description ?? '';
-                            state.employeeId = response?.data?.content?.data.employeeId ?? '';
-                            state.departmentId = response?.data?.content?.data.departmentId ?? '';
-                            state.warehouseId = response?.data?.content?.data.warehouseId ?? '';
-                            state.orderStatus = Number(response?.data?.content?.data.orderStatus ?? 0);
-                           // state.orderStatus = String(response?.data?.content?.data.orderStatus ?? '');
                             state.showComplexDiv = true;
 
-                            await methods.refreshPaymentSummary(state.id);
+                            // 🔥 هنا المكان الصحيح
+                            await methods.populateSecondaryData(state.id);
+                            await methods.populateProductListLookupData();
+
+                            await Vue.nextTick();
+
+                            if (secondaryGrid.obj) {
+                                secondaryGrid.obj.dataSource = state.secondaryData;
+                                secondaryGrid.obj.refresh();
+                            }
 
                             Swal.fire({
                                 icon: 'success',
@@ -381,20 +383,7 @@ const App = {
                                 timer: 1000,
                                 showConfirmButton: false
                             });
-                        } else {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'تم الحذف',
-                                text: 'الاغلاق من هنا...',
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
-                            setTimeout(() => {
-                                mainModal.obj.hide();
-                                resetFormState();
-                            }, 2000);
                         }
-
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -869,7 +858,7 @@ const App = {
                                 write: (args) => {
 
                                     const ddl = new ej.dropdowns.DropDownList({
-                                        dataSource: state.productListLookupData,
+                                        dataSource: state.productListLookupData.slice(), // 👈 مهم
                                         fields: { text: 'name', value: 'id' },
                                         value: args.rowData.productId
                                             ? String(args.rowData.productId)
@@ -878,7 +867,7 @@ const App = {
                                         allowFiltering: true,
                                         placeholder: 'اختر المنتج',
 
-                                        change: async (e) => {
+                                        change: (e) => {
                                             args.rowData.productId = e.value;
 
                                             const product = state.productListLookupData.find(
